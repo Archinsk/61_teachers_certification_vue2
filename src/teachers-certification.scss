@@ -1,0 +1,47 @@
+@import "custom-bootstrap-4.6.2.scss";
+
+//Глобальные стили
+.btn-icon-square {
+  line-height: 0.75;
+  padding-left: 0.375rem;
+  padding-right: 0.375rem;
+  max-width: 2.375rem;
+  max-height: 2.375rem;
+
+  .material-icons {
+    font-family: "Material Icons";
+    font-size: 1.5rem;
+    display: inline-block;
+    line-height: 1;
+  }
+}
+
+#app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex-grow: 1;
+
+  #home {
+    .banner {
+      background-color: #003399;
+    }
+  }
+
+  #account {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+}
+
+footer {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+
+  .footer-content {
+    align-items: center;
+  }
+}

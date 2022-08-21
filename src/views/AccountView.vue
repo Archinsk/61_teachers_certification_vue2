@@ -1,0 +1,1450 @@
+<template>
+  <div id="account">
+    <div class="container">
+      <!--      Вкладки педагога-->
+      <template v-if="user.shortInfo.roleId === 39707">
+        <ul class="nav nav-tabs" id="teacher-tab" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link active"
+              id="profile-teacher-tab"
+              data-toggle="tab"
+              data-target="#profile-teacher-tab-pane"
+              type="button"
+              role="tab"
+              aria-controls="profile-teacher-tab-pane"
+              aria-selected="true"
+            >
+              Личная информация
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="app-teacher-tab"
+              data-toggle="tab"
+              data-target="#app-teacher-tab-pane"
+              type="button"
+              role="tab"
+              aria-controls="app-teacher-tab-pane"
+              aria-selected="false"
+            >
+              Мои заявления
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="messages-teacher-tab"
+              data-toggle="tab"
+              data-target="#messages-teacher-tab-pane"
+              type="button"
+              role="tab"
+              aria-controls="messages-teacher-tab-pane"
+              aria-selected="false"
+            >
+              Мои сообщения
+            </button>
+          </li>
+        </ul>
+        <div class="tab-content" id="teacherTabContent">
+          <div
+            class="tab-pane fade show active"
+            id="profile-teacher-tab-pane"
+            role="tabpanel"
+            aria-labelledby="profile-teacher-tab"
+            tabindex="0"
+          >
+            <div class="accordion" id="accordionTeacherInfo">
+              <div class="card">
+                <div class="card-header p-0" id="teacherBasicInfoHeader">
+                  <button
+                    class="btn btn-link btn-block p-3 text-left"
+                    type="button"
+                    data-toggle="collapse"
+                    data-target="#teacherBasicInfo"
+                    aria-expanded="true"
+                    aria-controls="teacherBasicInfo"
+                  >
+                    Основные сведения
+                  </button>
+                </div>
+                <div
+                  id="teacherBasicInfo"
+                  class="collapse show pt-3 px-3 pb-0"
+                  aria-labelledby="teacherBasicInfoHeader"
+                  data-parent="#teacherBasicInfo"
+                >
+                  <div class="accordion-body">
+                    <form class="row">
+                      <div class="col-6 form-group">
+                        <label
+                          for="lastName"
+                          class="form-label from-closed-server"
+                          >Фамилия</label
+                        >
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="lastName"
+                          disabled
+                          v-model="teacherProfile.basic.lastName"
+                        />
+                      </div>
+                      <div class="col-6 form-group">
+                        <label
+                          for="firstName"
+                          class="form-label from-closed-server"
+                          >Имя</label
+                        >
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="firstName"
+                          disabled
+                          v-model="teacherProfile.basic.firstName"
+                        />
+                      </div>
+                      <div class="col-6 form-group">
+                        <label
+                          for="middleName"
+                          class="form-label from-closed-server"
+                          >Отчество</label
+                        >
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="middleName"
+                          disabled
+                          v-model="teacherProfile.basic.middleName"
+                        />
+                      </div>
+                      <div class="col-6 form-group">
+                        <label
+                          for="birthDate"
+                          class="form-label from-closed-server"
+                          >Дата рождения</label
+                        >
+                        <input
+                          type="date"
+                          class="form-control"
+                          id="birthDate"
+                          disabled
+                          v-model="teacherProfile.basic.birthDate"
+                        />
+                      </div>
+                      <div class="col-6 form-group">
+                        <label for="snils" class="form-label from-closed-server"
+                          >СНИЛС</label
+                        >
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="snils"
+                          disabled
+                          v-model="teacherProfile.basic.snils"
+                        />
+                      </div>
+                      <div class="col-6 form-group">
+                        <label for="citizenship" class="form-label"
+                          >Гражданство</label
+                        >
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="citizenship"
+                          disabled
+                          v-model="teacherProfile.basic.citizenship"
+                        />
+                      </div>
+                      <div class="col-6 form-group">
+                        <label for="email" class="form-label from-closed-server"
+                          >Электронная почта</label
+                        >
+                        <input
+                          type="email"
+                          class="form-control"
+                          id="email"
+                          :disabled="!editableProfile"
+                          v-model="teacherProfile.basic.email"
+                        />
+                      </div>
+                      <div class="col-6 form-group">
+                        <label for="phone" class="form-label">Телефон</label>
+                        <input
+                          type="tel"
+                          class="form-control"
+                          id="phone"
+                          :disabled="!editableProfile"
+                          v-model="teacherProfile.basic.phone"
+                        />
+                      </div>
+                      <div class="col-6 form-group">
+                        <label for="gender" class="form-label">Пол</label>
+                        <select
+                          id="gender"
+                          class="form-control"
+                          disabled
+                          v-model="teacherProfile.basic.gender"
+                        >
+                          <option selected>Выберите...</option>
+                          <option>Мужской</option>
+                          <option>Женский</option>
+                        </select>
+                      </div>
+                      <div class="col-6 form-group">
+                        <label for="region" class="form-label"
+                          >Муниципальное образование</label
+                        >
+                        <select
+                          id="region"
+                          class="form-control"
+                          :disabled="!editableProfile"
+                          v-model="teacherProfile.basic.region"
+                        >
+                          <option selected>Выберите...</option>
+                          <option>Новосибирская область</option>
+                          <option>Республика Алтай</option>
+                          <option>Алтайский край</option>
+                        </select>
+                      </div>
+                      <div class="col-12 form-group">
+                        <label for="educationSubject" class="form-label"
+                          >Предметная область</label
+                        >
+                        <select
+                          id="educationSubject"
+                          class="form-control"
+                          :disabled="!editableProfile"
+                          v-model="teacherProfile.basic.educationSubject"
+                        >
+                          <option selected>Выберите...</option>
+                          <option>Русский язык и литература</option>
+                          <option>Математика</option>
+                          <option>Химия и биология</option>
+                        </select>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header p-0" id="teacherAddressHeader">
+                  <button
+                    class="btn btn-link btn-block p-3 text-left"
+                    type="button"
+                    data-toggle="collapse"
+                    data-target="#teacherAddress"
+                    aria-expanded="true"
+                    aria-controls="teacherAddress"
+                  >
+                    Адрес
+                  </button>
+                </div>
+                <div
+                  id="teacherAddress"
+                  class="collapse show pt-3 px-3 pb-0"
+                  aria-labelledby="teacherAddressHeader"
+                  data-parent="#teacherBasicInfo"
+                >
+                  <div class="accordion-body">
+                    <form class="row">
+                      <div class="col-12 form-group">
+                        <label for="registrationAddress" class="form-label"
+                          >Адрес регистрации</label
+                        >
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="registrationAddress"
+                          :disabled="!editableProfile"
+                          v-model="teacherProfile.address.registrationAddress"
+                        />
+                      </div>
+                      <div class="col-12 form-group">
+                        <label for="livingAddress" class="form-label"
+                          >Адрес места жительства</label
+                        >
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="livingAddress"
+                          :disabled="!editableProfile"
+                          v-model="teacherProfile.address.livingAddress"
+                        />
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header p-0" id="teacherDocsHeader">
+                  <button
+                    class="btn btn-link btn-block p-3 text-left"
+                    type="button"
+                    data-toggle="collapse"
+                    data-target="#teacherDocs"
+                    aria-expanded="true"
+                    aria-controls="teacherDocs"
+                  >
+                    Документ, удостоверяющий личность
+                  </button>
+                </div>
+                <div
+                  id="teacherDocs"
+                  class="collapse show pt-3 px-3 pb-0"
+                  aria-labelledby="teacherDocsHeader"
+                  data-parent="#teacherBasicInfo"
+                >
+                  <div class="accordion-body">
+                    <form class="row">
+                      <div class="col-12 form-group">
+                        <label for="docType" class="form-label"
+                          >Наименование документа</label
+                        >
+                        <select
+                          id="docType"
+                          class="form-control"
+                          :disabled="!editableProfile"
+                          v-model="teacherProfile.document.docType"
+                        >
+                          <option selected>Выберите...</option>
+                          <option>Паспорт гражданина РФ</option>
+                          <option>Паспорт иностранного гражданина</option>
+                        </select>
+                      </div>
+                      <div class="col-6 form-group">
+                        <label for="docSeries" class="form-label">Серия</label>
+                        <input
+                          type="email"
+                          class="form-control"
+                          id="docSeries"
+                          :disabled="!editableProfile"
+                          v-model="teacherProfile.document.docSeries"
+                        />
+                      </div>
+                      <div class="col-6 form-group">
+                        <label for="docNumber" class="form-label">Номер</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="docNumber"
+                          :disabled="!editableProfile"
+                          v-model="teacherProfile.document.docNumber"
+                        />
+                      </div>
+                      <div class="col-6 form-group">
+                        <label for="docIssueDate" class="form-label"
+                          >Дата выдачи</label
+                        >
+                        <input
+                          type="date"
+                          class="form-control"
+                          id="docIssueDate"
+                          :disabled="!editableProfile"
+                          v-model="teacherProfile.document.docIssueDate"
+                        />
+                      </div>
+                      <div class="col-6 form-group">
+                        <label for="docFinishDate" class="form-label"
+                          >Срок действия</label
+                        >
+                        <input
+                          type="date"
+                          class="form-control"
+                          id="docFinishDate"
+                          :disabled="!editableProfile"
+                          v-model="teacherProfile.document.docFinishDate"
+                        />
+                      </div>
+                      <div class="col-12 form-group">
+                        <label for="docIssuer" class="form-label"
+                          >Кем выдан</label
+                        >
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="docIssuer"
+                          :disabled="!editableProfile"
+                          v-model="teacherProfile.document.docIssuer"
+                        />
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header p-0" id="teacherMailingHeader">
+                  <button
+                    class="btn btn-link btn-block p-3 text-left"
+                    type="button"
+                    data-toggle="collapse"
+                    data-target="#teacherMailing"
+                    aria-expanded="true"
+                    aria-controls="teacherMailing"
+                  >
+                    Уведомления
+                  </button>
+                </div>
+                <div
+                  id="teacherMailing"
+                  class="collapse show pt-3 px-3 pb-0"
+                  aria-labelledby="teacherMailingHeader"
+                  data-parent="#teacherBasicInfo"
+                >
+                  <div class="accordion-body">
+                    <form class="row">
+                      <div class="col-12 form-group">
+                        <div class="form-check">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="mailing"
+                            :disabled="!editableProfile"
+                            v-model="teacherProfile.mailing"
+                          />
+                          <label class="form-check-label" for="mailing">
+                            Я согласен(а) на получение уведомлений на
+                            электронную почту
+                          </label>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button
+              class="btn btn-primary mt-3"
+              @click="editableProfile = !editableProfile"
+            >
+              {{
+                editableProfile ? "Сохранить профиль" : "Редактировать профиль"
+              }}
+            </button>
+          </div>
+          <div
+            class="tab-pane fade"
+            id="app-teacher-tab-pane"
+            role="tabpanel"
+            aria-labelledby="app-teacher-tab"
+            tabindex="0"
+          >
+            <button
+              class="btn btn-primary mt-3"
+              @click="createNewApp('Новое заявление')"
+            >
+              Подать заявление
+            </button>
+            <TableBootstrapCustom
+              :table-data="appsTable"
+              @row-click="openExistingApp('Детали заявления', $event)"
+              @sort-table="sortTable(appsTable, $event)"
+            />
+          </div>
+          <div
+            class="tab-pane fade"
+            id="messages-teacher-tab-pane"
+            role="tabpanel"
+            aria-labelledby="messages-teacher-tab"
+            tabindex="0"
+          >
+            <button
+              class="btn btn-primary mt-3"
+              @click="openModal('Новое сообщение')"
+            >
+              Отправить сообщение
+            </button>
+            <TableBootstrapCustom
+              :table-data="tableMessages"
+              @row-click="openModal('Детали сообщения')"
+              @sort-table="sortTable(tableMessages, $event)"
+            />
+          </div>
+        </div>
+      </template>
+
+      <!--      Вкладки эксперта-->
+      <template v-if="selectedRole === '2'">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link active"
+              id="profile-expert-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#profile-expert-tab-pane"
+              type="button"
+              role="tab"
+              aria-controls="profile-expert-tab-pane"
+              aria-selected="true"
+            >
+              Личная информация
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="expertises-expert-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#expertises-expert-tab-pane"
+              type="button"
+              role="tab"
+              aria-controls="expertises-expert-tab-pane"
+              aria-selected="false"
+            >
+              Мои экспертизы
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="analitics-expert-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#analitics-expert-tab-pane"
+              type="button"
+              role="tab"
+              aria-controls="analitics-expert-tab-pane"
+              aria-selected="false"
+            >
+              Аналитика
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="actions-expert-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#actions-expert-tab-pane"
+              type="button"
+              role="tab"
+              aria-controls="actions-expert-tab-pane"
+              aria-selected="false"
+            >
+              Журнал действий
+            </button>
+          </li>
+        </ul>
+        <div class="tab-content" id="expertTabContent">
+          <div
+            class="tab-pane fade show active"
+            id="profile-expert-tab-pane"
+            role="tabpanel"
+            aria-labelledby="profile-expert-tab"
+            tabindex="0"
+          >
+            <form class="row g-3">
+              <div class="col-6">
+                <label for="ex-lastName" class="form-label from-closed-server"
+                  >Фамилия</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="ex-lastName"
+                  disabled
+                  v-model="expertProfile.lastName"
+                />
+              </div>
+              <div class="col-6">
+                <label for="ex-firstName" class="form-label from-closed-server"
+                  >Имя</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="ex-firstName"
+                  disabled
+                  v-model="expertProfile.firstName"
+                />
+              </div>
+              <div class="col-6">
+                <label for="ex-middleName" class="form-label from-closed-server"
+                  >Отчество</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="ex-middleName"
+                  disabled
+                  v-model="expertProfile.middleName"
+                />
+              </div>
+              <div class="col-6">
+                <label for="ex-snils" class="form-label from-closed-server"
+                  >СНИЛС</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="ex-snils"
+                  disabled
+                  v-model="expertProfile.snils"
+                />
+              </div>
+              <div class="col-6">
+                <label for="ex-email" class="form-label from-closed-server"
+                  >Электронная почта</label
+                >
+                <input
+                  type="email"
+                  class="form-control"
+                  id="ex-email"
+                  :disabled="!editableProfile"
+                  v-model="expertProfile.email"
+                />
+              </div>
+              <div class="col-6">
+                <label for="ex-phone" class="form-label">Телефон</label>
+                <input
+                  type="tel"
+                  class="form-control"
+                  id="ex-phone"
+                  :disabled="!editableProfile"
+                  v-model="expertProfile.phone"
+                />
+              </div>
+              <div class="col-6">
+                <label for="ex-region" class="form-label"
+                  >Муниципальное образование</label
+                >
+                <select
+                  id="ex-region"
+                  class="form-select"
+                  :disabled="!editableProfile"
+                  v-model="expertProfile.region"
+                >
+                  <option selected disabled>Выберите...</option>
+                  <option>Иркутская область</option>
+                  <option>Республика Бурятия</option>
+                  <option>Забайкальский край</option>
+                </select>
+              </div>
+              <div class="col-6">
+                <label for="ex-workPosition" class="form-label"
+                  >Должность</label
+                >
+                <select
+                  id="ex-workPosition"
+                  class="form-select"
+                  :disabled="!editableProfile"
+                  v-model="expertProfile.workPosition"
+                >
+                  <option selected disabled>Выберите...</option>
+                  <option>Специалист отдела образования</option>
+                  <option>Начальник отдела</option>
+                  <option>Министр</option>
+                </select>
+              </div>
+              <div class="col-6">
+                <label for="ex-organization" class="form-label"
+                  >Организация</label
+                >
+                <select
+                  id="ex-organization"
+                  class="form-select"
+                  :disabled="!editableProfile"
+                  v-model="expertProfile.organization"
+                >
+                  <option selected disabled>Выберите...</option>
+                  <option>Министерство образования</option>
+                  <option>Отдел образования Администрации</option>
+                </select>
+              </div>
+              <div class="col-6">
+                <label for="ex-educationSubject" class="form-label"
+                  >Предметная область</label
+                >
+                <select
+                  id="ex-educationSubject"
+                  class="form-select"
+                  :disabled="!editableProfile"
+                  v-model="expertProfile.educationSubject"
+                >
+                  <option selected disabled>Выберите...</option>
+                  <option>Русский язык и литература</option>
+                  <option>Математика</option>
+                  <option>Химия и биология</option>
+                </select>
+              </div>
+              <div class="col-6">
+                <label for="rating" class="form-label">Рейтинг</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="rating"
+                  disabled
+                  v-model="expertProfile.rating"
+                />
+              </div>
+              <div class="col-6">
+                <label for="ex-activity" class="form-label">
+                  Статус активности</label
+                >
+                <select
+                  id="ex-activity"
+                  class="form-select"
+                  :disabled="!editableProfile"
+                  v-model="expertProfile.activity"
+                >
+                  <option selected disabled>Выберите...</option>
+                  <option>Активен</option>
+                  <option>Не активен</option>
+                </select>
+              </div>
+              <div class="col-12">
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="ex-mailing"
+                    v-model="expertProfile.mailing"
+                  />
+                  <label class="form-check-label" for="ex-mailing">
+                    Я согласен(а) на получение уведомлений на электронную почту
+                  </label>
+                </div>
+              </div>
+            </form>
+            <button
+              class="btn btn-primary mt-3"
+              @click="editableProfile = !editableProfile"
+            >
+              {{
+                editableProfile ? "Сохранить профиль" : "Редактировать профиль"
+              }}
+            </button>
+          </div>
+          <div
+            class="tab-pane fade"
+            id="expertises-expert-tab-pane"
+            role="tabpanel"
+            aria-labelledby="expertises-expert-tab"
+            tabindex="0"
+          >
+            <TableBootstrapCustom
+              :table-data="tableExpertises"
+              @row-click="openModal('Детали экспертизы')"
+              @sort-table="sortTable(tableExpertises, $event)"
+            />
+          </div>
+          <div
+            class="tab-pane fade"
+            id="analitics-expert-tab-pane"
+            role="tabpanel"
+            aria-labelledby="analitics-expert-tab"
+            tabindex="0"
+          >
+            <TableBootstrapCustom :table-data="tableAnalytics" />
+          </div>
+          <div
+            class="tab-pane fade"
+            id="actions-expert-tab-pane"
+            role="tabpanel"
+            aria-labelledby="actions-expert-tab"
+            tabindex="0"
+          >
+            <TableBootstrapCustom
+              :table-data="tableLogs"
+              @row-click="openModal('Детали действия')"
+              @sort-table="sortTable(tableLogs, $event)"
+            />
+          </div>
+        </div>
+      </template>
+
+      <ModalBootstrapCustom46 :modal-id="modal.modalId" header>
+        <template v-slot:modal-title>
+          {{ modal.modalTitle }}
+        </template>
+
+        <template v-slot:modal-body>
+          <!--          Форма нового заявления-->
+          <form v-if="modal.modalTitle === 'Новое заявление'">
+            <div v-if="appForm.form.id" class="row">
+              <div class="col-10">
+                <Form
+                  :form="appForm.form.scheme"
+                  :submission="appForm"
+                  language="ru"
+                  :options="appFormOptions"
+                  ref="vueForm"
+                />
+              </div>
+              <div
+                v-if="appForm.form.actions && appForm.form.actions.length > 0"
+                class="col-2"
+              >
+                <template v-for="action of appForm.form.actions">
+                  <template v-if="appForm.active || action.alwaysActive">
+                    <button
+                      v-if="action.backAction"
+                      :key="action.id"
+                      type="button"
+                      class="btn btn-block btn-primary"
+                      @click="invokeAction(action.id, true)"
+                    >
+                      {{ action.name }}
+                    </button>
+                    <button
+                      v-else
+                      :key="action.id"
+                      type="button"
+                      class="btn btn-block btn-primary"
+                      @click="invokeAction(action.id)"
+                    >
+                      {{ action.name }}
+                    </button>
+                  </template>
+                </template>
+              </div>
+            </div>
+          </form>
+          <!--          Заполненная форма заявления-->
+          <form v-if="modal.modalTitle === 'Детали заявления'">
+            <div v-if="appForm.form.id" class="row">
+              <div class="col-10">
+                <Form
+                  :form="appForm.form.scheme"
+                  :submission="appForm"
+                  language="ru"
+                  :options="appFormOptions"
+                  ref="vueForm"
+                />
+              </div>
+              <div
+                v-if="appForm.form.actions && appForm.form.actions.length > 0"
+                class="col-2"
+              >
+                <template v-for="action of appForm.form.actions">
+                  <template v-if="appForm.active || action.alwaysActive">
+                    <button
+                      v-if="action.backAction"
+                      :key="action.id"
+                      type="button"
+                      class="btn btn-block btn-primary"
+                      @click="
+                        $emit('invoke-action', {
+                          actionId: action.id,
+                          backAction: true,
+                        })
+                      "
+                    >
+                      {{ action.name }}
+                    </button>
+                    <button
+                      v-else
+                      :key="action.id"
+                      type="button"
+                      class="btn btn-block btn-primary"
+                      @click="
+                        $emit('invoke-action', {
+                          actionId: action.id,
+                          backAction: false,
+                        })
+                      "
+                    >
+                      {{ action.name }}
+                    </button>
+                  </template>
+                </template>
+              </div>
+            </div>
+          </form>
+
+          <!--          Форма нового сообщения-->
+          <form v-if="modal.modalTitle === 'Новое сообщение'">
+            <div class="row">
+              <div class="col-12">
+                <label for="new-message-form-view-theme" class="form-label"
+                  >Тема сообщения</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="new-message-form-view-theme"
+                />
+              </div>
+              <div class="col-12">
+                <label for="new-message-form-view-text" class="form-label"
+                  >Тект сообщения</label
+                >
+                <textarea
+                  class="form-control"
+                  id="new-message-form-view-text"
+                  rows="3"
+                ></textarea>
+              </div>
+            </div>
+          </form>
+          <!--          Заполненная форма сообщения-->
+          <form v-if="modal.modalTitle === 'Детали сообщения'">
+            <div class="row">
+              <div class="col-12">
+                <label for="message-form-view-theme" class="form-label"
+                  >Тема сообщения</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="message-form-view-theme"
+                  disabled
+                  value="Детали аттестации"
+                />
+              </div>
+              <div class="col-6">
+                <label for="message-form-view-number" class="form-label"
+                  >№ сообщения</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="message-form-view-number"
+                  disabled
+                  value="0123"
+                />
+              </div>
+              <div class="col-6">
+                <label for="message-form-view-creationDate" class="form-label"
+                  >Дата создания сообщения</label
+                >
+                <input
+                  type="date"
+                  class="form-control"
+                  id="message-form-view-creationDate"
+                  disabled
+                  value="2022-08-01"
+                />
+              </div>
+              <div class="col-12">
+                <label for="message-form-view-status" class="form-label"
+                  >Статус</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="message-form-view-status"
+                  disabled
+                  value="В работе"
+                />
+              </div>
+              <div class="col-6">
+                <label for="message-form-view-editDate" class="form-label"
+                  >Дата входа в статус</label
+                >
+                <input
+                  type="date"
+                  class="form-control"
+                  id="message-form-view-editDate"
+                  disabled
+                  value="2022-08-03"
+                />
+              </div>
+              <div class="col-6">
+                <label for="message-form-view-deadlineDate" class="form-label"
+                  >Срок отправки ответа</label
+                >
+                <input
+                  type="date"
+                  class="form-control"
+                  id="message-form-view-deadlineDate"
+                  disabled
+                  value="2022-08-05"
+                />
+              </div>
+              <div class="col-12">
+                <label for="message-form-view-text" class="form-label"
+                  >Тект сообщения</label
+                >
+                <textarea
+                  class="form-control"
+                  id="message-form-view-text"
+                  rows="3"
+                  disabled
+                >
+Прошу уточнить состав документов...</textarea
+                >
+              </div>
+            </div>
+          </form>
+
+          <!--          Заполненная форма экспертизы-->
+          <form v-if="modal.modalTitle === 'Детали экспертизы'">
+            <div class="row">
+              <div class="col-6">
+                <label for="exp-form-view-number" class="form-label"
+                  >№ заявления</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="exp-form-view-number"
+                  disabled
+                  value="0001"
+                />
+              </div>
+              <div class="col-6">
+                <label for="exp-form-view-fullName" class="form-label"
+                  >ФИО педагогического работника</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="exp-form-view-fullName"
+                  disabled
+                  value="Иванов А.П."
+                />
+              </div>
+              <div class="col-6">
+                <label for="exp-form-view-startDate" class="form-label"
+                  >Дата начала экспертизы</label
+                >
+                <input
+                  type="date"
+                  class="form-control"
+                  id="exp-form-view-startDate"
+                  disabled
+                  value="2022-08-01"
+                />
+              </div>
+              <div class="col-6">
+                <label for="exp-form-view-deadlineDate" class="form-label"
+                  >Срок окончания экспертизы</label
+                >
+                <input
+                  type="date"
+                  class="form-control"
+                  id="exp-form-view-deadlineDate"
+                  disabled
+                  value="2022-10-01"
+                />
+              </div>
+              <div class="col-6">
+                <label for="exp-form-view-finishDate" class="form-label"
+                  >Дата окончания экспертизы</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="exp-form-view-finishDate"
+                  disabled
+                  value="---"
+                />
+              </div>
+              <div class="col-6">
+                <label for="exp-form-view-result" class="form-label"
+                  >Результат</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="exp-form-view-result"
+                  disabled
+                  value="---"
+                />
+              </div>
+              <div class="col-6">
+                <label for="exp-form-view-status" class="form-label"
+                  >Статус</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="exp-form-view-status"
+                  disabled
+                  value="В работе"
+                />
+              </div>
+            </div>
+          </form>
+
+          <!--          Заполненная форма действия-->
+          <form v-if="modal.modalTitle === 'Детали действия'">
+            <div class="row">
+              <div class="col-6">
+                <label for="logs-form-view-number" class="form-label"
+                  >Id записи</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="logs-form-view-number"
+                  disabled
+                  value="0001"
+                />
+              </div>
+              <div class="col-6">
+                <label for="logs-form-view-date" class="form-label"
+                  >Дата события</label
+                >
+                <input
+                  type="date"
+                  class="form-control"
+                  id="logs-form-view-date"
+                  disabled
+                  value="2022-08-01"
+                />
+              </div>
+              <div class="col-6">
+                <label for="logs-form-view-description" class="form-label"
+                  >Описание</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="logs-form-view-description"
+                  disabled
+                  value="Изменения ошибочной записи"
+                />
+              </div>
+              <div class="col-6">
+                <label for="logs-form-view-event" class="form-label"
+                  >Событие</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="logs-form-view-event"
+                  disabled
+                  value="Изменение записи"
+                />
+              </div>
+              <div class="col-6">
+                <label for="logs-form-view-changes" class="form-label"
+                  >Изменения</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="logs-form-view-changes"
+                  disabled
+                  value="Изменение даты рождения"
+                />
+              </div>
+            </div>
+          </form>
+        </template>
+      </ModalBootstrapCustom46>
+
+      <!--      <FilterBootstrapCustom :filter-data="filterData" />-->
+    </div>
+  </div>
+</template>
+
+<script>
+import { Modal } from "bootstrap";
+import ModalBootstrapCustom46 from "../components/universal/ModalBootstrapCustomBS46";
+import TableBootstrapCustom from "../components/universal/TableBootstrapCustom";
+import { Form } from "vue-formio";
+// import FilterBootstrapCustom from "../components/universal/FilterBootstrapCustom";
+
+export default {
+  name: "AccountView",
+  components: {
+    // FilterBootstrapCustom,
+    TableBootstrapCustom,
+    ModalBootstrapCustom46,
+    Form,
+  },
+  props: ["user", "appsTable", "appForm", "appFormOptions"],
+  data() {
+    return {
+      modal: {
+        modalId: "modalId",
+        modalTitle: "",
+        instance: null,
+      },
+      selectedRole: "",
+      editableProfile: false,
+      teacherProfile: {
+        basic: {
+          lastName: this.user.fullInfo.userData.lastName,
+          firstName: this.user.fullInfo.userData.firstName,
+          middleName: this.user.fullInfo.userData.middleName,
+          birthDate: this.user.fullInfo.userData.birthDate.substr(0, 10),
+          snils: this.user.fullInfo.userData.snils,
+          citizenship: "Российская Федерация",
+          email: this.user.fullInfo.contacts[0].value,
+          phone: "8-903-903-9000",
+          gender: "Женский",
+          region: "Новосибирская область",
+          educationSubject: "Русский язык и литература",
+        },
+        address: {
+          registrationAddress: "г.Новосибирск, ул.Советская, д.23, кв.45",
+          livingAddress: "г.Новосибирск, ул.Ленина, д.12, кв.23",
+        },
+        document: {
+          docType: "Паспорт гражданина РФ",
+          docSeries: "5000",
+          docNumber: "345678",
+          docIssueDate: "2000-05-05",
+          docFinishDate: "2050-05-04",
+          docIssuer: "УВД Центрального района г.Новосибирска",
+        },
+        mailing: true,
+      },
+      expertProfile: {
+        lastName: this.user.fullInfo.userData.lastName,
+        firstName: this.user.fullInfo.userData.firstName,
+        middleName: this.user.fullInfo.userData.middleName,
+        snils: this.user.fullInfo.userData.snils,
+        email: this.user.fullInfo.contacts[0].value,
+        phone: "8-913-913-9999",
+        region: "Иркутская область",
+        workPosition: "Специалист отдела образования",
+        organization: "Министерство образования",
+        educationSubject: "Математика",
+        rating: 5,
+        activity: "Активен",
+        mailing: false,
+      },
+      tableApps: {
+        columnsList: [
+          "№ сообщения",
+          "Наименование услуги",
+          "Дата создания",
+          "Номер ЕПГУ",
+          "Статус",
+          "Дата изменения статуса",
+        ],
+        primaryColumn: "№ сообщения",
+        rowsList: [
+          [
+            "0001",
+            "Аттестация педагогических работников",
+            "01.08.2022",
+            "540118",
+            "В работе",
+            "05.08.2022",
+          ],
+          [
+            "0002",
+            "Аттестация педагогических работников",
+            "05.08.2022",
+            "540115",
+            "В работе",
+            "05.08.2022",
+          ],
+          [
+            "0003",
+            "Аттестация педагогических работников",
+            "09.08.2022",
+            "540120",
+            "Черновик",
+            "10.08.2022",
+          ],
+        ],
+        sortColumn: "",
+        ascendingSortOrder: false,
+        filters: [],
+      },
+      tableMessages: {
+        columnsList: [
+          "№ сообщения",
+          "Дата создания сообщения",
+          "Тема",
+          "Дата входа в статус",
+          "Статус",
+          "Срок отправки ответа",
+        ],
+        primaryColumn: "№ сообщения",
+        rowsList: [
+          [
+            "0123",
+            "01.08.2022",
+            "Детали аттестации",
+            "03.08.2022",
+            "В работе",
+            "05.08.2022",
+          ],
+          [
+            "0125",
+            "05.08.2022",
+            "Аттестация педагогических работников",
+            "05.08.2022",
+            "В работе",
+            "07.08.2022",
+          ],
+          [
+            "0128",
+            "09.08.2022",
+            "Аттестация педагогических работников",
+            "07.08.2022",
+            "Черновик",
+            "10.08.2022",
+          ],
+        ],
+        sortColumn: "",
+        ascendingSortOrder: false,
+        filters: [],
+      },
+      tableExpertises: {
+        columnsList: [
+          "№ заявления",
+          "ФИО педагогического работника",
+          "Дата начала экспертизы",
+          "Срок окончания экспертизы",
+          "Дата окончания экспертизы",
+          "Результат экспертизы",
+          "Статус",
+        ],
+        primaryColumn: "№ заявления",
+        rowsList: [
+          [
+            "0001",
+            "Иванов А.П.",
+            "01.08.2022",
+            "01.10.2022",
+            "---",
+            "---",
+            "В работе",
+          ],
+          [
+            "0002",
+            "Попов И.С.",
+            "05.08.2022",
+            "05.10.2022",
+            "12.08.2022",
+            "Положительный",
+            "Завершена",
+          ],
+          [
+            "0003",
+            "Кузнецова Н.Б.",
+            "09.08.2022",
+            "09.10.2022",
+            "---",
+            "---",
+            "Черновик",
+          ],
+        ],
+        sortColumn: "",
+        ascendingSortOrder: false,
+        filters: [],
+      },
+      tableAnalytics: {
+        columnsList: [
+          "Количество проведенных экспертиз",
+          "Количество положительных результатов",
+          "Количество отрицательных результатов",
+          "Количество совпадений",
+        ],
+        primaryColumn: "Количество проведенных экспертиз",
+        rowsList: [["30", "5", "10", "15"]],
+        sortColumn: "",
+        ascendingSortOrder: false,
+        filters: [],
+      },
+      tableLogs: {
+        columnsList: [
+          "Id записи",
+          "Дата события",
+          "Описание",
+          "Событие",
+          "Изменения",
+        ],
+        primaryColumn: "Id записи",
+        rowsList: [
+          [
+            "0001",
+            "01.08.2022",
+            "Изменение ошибочной записи",
+            "Изменение записи",
+            "Изменение даты рождения",
+          ],
+          [
+            "0002",
+            "05.08.2022",
+            "Изменение статуса",
+            "Проведение аттестации",
+            "Положительный результат аттестации",
+          ],
+          [
+            "0003",
+            "09.08.2022",
+            "Изменение статуса",
+            "Проведение аттестации",
+            "Отрицательный результат аттестации",
+          ],
+        ],
+        sortColumn: "",
+        ascendingSortOrder: false,
+        filters: [],
+      },
+      filterData: [
+        { name: "№ сообщения", type: "input", subtype: "number", width: 6 },
+        {
+          name: "Наименование услуги",
+          type: "select",
+          optionsList: [
+            { name: "Выберите...", selected: true, disabled: true },
+            {
+              name: "Аттестация педагогических работников",
+              selected: false,
+              disabled: false,
+            },
+            {
+              name: "Субсидирование педагогических работников",
+              selected: false,
+              disabled: false,
+            },
+            {
+              name: "предоставление жилья педагогическим работникам",
+              selected: false,
+              disabled: false,
+            },
+          ],
+          subtype: "",
+          width: 6,
+        },
+        { name: "Дата создания", type: "input", subtype: "date", width: 6 },
+        {
+          name: "Диапазон дат",
+          type: "input",
+          subtype: "date",
+          startDate: "",
+          finishDate: "",
+          isInclusive: true,
+          width: 6,
+        },
+      ],
+    };
+  },
+
+  methods: {
+    openExistingApp(modalTitle, appId) {
+      this.$emit("open-existing-app", appId);
+      this.openModal(modalTitle);
+    },
+    createNewApp(modalTitle) {
+      this.$emit("create-new-app");
+      this.openModal(modalTitle);
+    },
+    openModal(modalTitle) {
+      console.log(modalTitle);
+      this.modal.modalTitle = modalTitle;
+      this.modal.instance.show();
+    },
+    sortTable(table, column) {
+      if (table.sortColumn === table.columnsList[column]) {
+        table.ascendingSortOrder = !table.ascendingSortOrder;
+      } else {
+        table.ascendingSortOrder = true;
+      }
+      table.sortColumn = table.columnsList[column];
+    },
+  },
+
+  mounted() {
+    this.modal.instance = new Modal(
+      document.getElementById(this.modal.modalId)
+    );
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+.from-closed-server {
+  color: green;
+}
+</style>
