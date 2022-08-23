@@ -48,32 +48,37 @@
           </CardBootstrapCustom>
         </div>
         <div class="col-12 col-sm-6 mt-4">
-          <CardBootstrapCustom header class="h-100 shadow">
-            <template v-slot:card-header>
-              <h5 class="text-uppercase mb-0">Авторизация</h5>
-            </template>
-            <template v-slot:card-body>
-              <TheSignInFormBS46
-                v-if="!isAuthUser"
-                :auth-error="authError"
-                @sign-in-local="$emit('sign-in-local', $event)"
-                @sign-in-esia="$emit('sign-in-esia', $event)"
-              />
-              <template v-else>
-                <p>
-                  Вы авторизованы как пользователь
-                  <b>{{ user.shortInfo.userName }}</b>
-                </p>
-                <p v-if="user.shortInfo.roleId">
-                  Текущая роль - <b>{{ user.shortInfo.roleId }}</b>
-                </p>
-                <p v-else>У пользователя отсутствуют роли</p>
-                <button class="btn btn-primary" @click="$emit('sign-out')">
-                  Выход
-                </button>
+          <LoaderBootstrapCustomBS46
+            v-if="authLoader.isLoading && !authLoader.isResponse"
+          />
+          <template v-else>
+            <CardBootstrapCustom header class="h-100 shadow">
+              <template v-slot:card-header>
+                <h5 class="text-uppercase mb-0">Авторизация</h5>
               </template>
-            </template>
-          </CardBootstrapCustom>
+              <template v-slot:card-body>
+                <TheSignInFormBS46
+                  v-if="!isAuthUser"
+                  :auth-error="authError"
+                  @sign-in-local="$emit('sign-in-local', $event)"
+                  @sign-in-esia="$emit('sign-in-esia', $event)"
+                />
+                <template v-else>
+                  <p>
+                    Вы авторизованы как пользователь
+                    <b>{{ user.shortInfo.userName }}</b>
+                  </p>
+                  <p v-if="user.shortInfo.roleId">
+                    Текущая роль - <b>{{ user.shortInfo.roleId }}</b>
+                  </p>
+                  <p v-else>У пользователя отсутствуют роли</p>
+                  <button class="btn btn-primary" @click="$emit('sign-out')">
+                    Выход
+                  </button>
+                </template>
+              </template>
+            </CardBootstrapCustom>
+          </template>
         </div>
         <div class="col-12 mt-4">
           <CardBootstrapCustom header class="h-100 shadow">
@@ -120,10 +125,15 @@
 <script>
 import CardBootstrapCustom from "../components/universal/CardBootstrapCustom";
 import TheSignInFormBS46 from "../components/TheSignInFormBS46";
+import LoaderBootstrapCustomBS46 from "../components/universal/LoaderBootstrapCustomBS46";
 
 export default {
   name: "HomeView",
-  components: { TheSignInFormBS46, CardBootstrapCustom },
-  props: ["url", "user", "isAuthUser", "newsList", "authError"],
+  components: {
+    LoaderBootstrapCustomBS46,
+    TheSignInFormBS46,
+    CardBootstrapCustom,
+  },
+  props: ["url", "user", "isAuthUser", "authLoader", "newsList", "authError"],
 };
 </script>

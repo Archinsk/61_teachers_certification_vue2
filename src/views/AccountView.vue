@@ -49,7 +49,7 @@
         </ul>
         <div class="tab-content" id="teacherTabContent">
           <div
-            class="tab-pane fade show active"
+            class="tab-pane fade show active pt-3"
             id="profile-teacher-tab-pane"
             role="tabpanel"
             aria-labelledby="profile-teacher-tab"
@@ -424,41 +424,51 @@
             </button>
           </div>
           <div
-            class="tab-pane fade"
+            class="tab-pane fade pt-3"
             id="app-teacher-tab-pane"
             role="tabpanel"
             aria-labelledby="app-teacher-tab"
             tabindex="0"
           >
             <button
-              class="btn btn-primary mt-3"
+              class="btn btn-primary mb-3"
               @click="createNewApp('Новое заявление')"
             >
               Подать заявление
             </button>
             <TableBootstrapCustom
+              hover
+              bordered
               :table-data="appsTable"
               @row-click="openExistingApp('Детали заявления', $event)"
               @sort-table="sortTable(appsTable, $event)"
             />
           </div>
           <div
-            class="tab-pane fade"
+            class="tab-pane fade pt-3"
             id="messages-teacher-tab-pane"
             role="tabpanel"
             aria-labelledby="messages-teacher-tab"
             tabindex="0"
           >
             <button
-              class="btn btn-primary mt-3"
-              @click="openModal('Новое сообщение')"
+              class="btn btn-primary mb-3"
+              @click="createNewMessage('Новое сообщение')"
             >
               Отправить сообщение
             </button>
             <TableBootstrapCustom
-              :table-data="tableMessages"
-              @row-click="openModal('Детали сообщения')"
-              @sort-table="sortTable(tableMessages, $event)"
+              hover
+              bordered
+              :table-data="messagesTable"
+              :items-total="messagesTable.pagination.itemsTotal"
+              :page="messagesTable.pagination.page"
+              :page-size="messagesTable.pagination.pageSize"
+              :items-per-page="messagesTable.pagination.itemsPerPage"
+              @row-click="openExistingMessage('Детали сообщения', $event)"
+              @sort-table="sortTable(messagesTable, $event)"
+              @change-page-size="$emit('change-message-page-size', $event)"
+              @change-page="$emit('change-message-page', $event)"
             />
           </div>
         </div>
@@ -526,7 +536,7 @@
         </ul>
         <div class="tab-content" id="expertTabContent">
           <div
-            class="tab-pane fade show active"
+            class="tab-pane fade show active pt-3"
             id="profile-expert-tab-pane"
             role="tabpanel"
             aria-labelledby="profile-expert-tab"
@@ -715,35 +725,39 @@
             </button>
           </div>
           <div
-            class="tab-pane fade"
+            class="tab-pane fade pt-3"
             id="expertises-expert-tab-pane"
             role="tabpanel"
             aria-labelledby="expertises-expert-tab"
             tabindex="0"
           >
             <TableBootstrapCustom
+              hover
+              bordered
               :table-data="tableExpertises"
               @row-click="openModal('Детали экспертизы')"
               @sort-table="sortTable(tableExpertises, $event)"
             />
           </div>
           <div
-            class="tab-pane fade"
+            class="tab-pane fade pt-3"
             id="analitics-expert-tab-pane"
             role="tabpanel"
             aria-labelledby="analitics-expert-tab"
             tabindex="0"
           >
-            <TableBootstrapCustom :table-data="tableAnalytics" />
+            <TableBootstrapCustom hover bordered :table-data="tableAnalytics" />
           </div>
           <div
-            class="tab-pane fade"
+            class="tab-pane fade pt-3"
             id="actions-expert-tab-pane"
             role="tabpanel"
             aria-labelledby="actions-expert-tab"
             tabindex="0"
           >
             <TableBootstrapCustom
+              hover
+              bordered
               :table-data="tableLogs"
               @row-click="openModal('Детали действия')"
               @sort-table="sortTable(tableLogs, $event)"
@@ -781,7 +795,13 @@
                       :key="action.id"
                       type="button"
                       class="btn btn-block btn-primary"
-                      @click="invokeAction(action.id, true)"
+                      @click="
+                        $emit('invoke-action', {
+                          actionId: action.id,
+                          backAction: true,
+                          modelId: appForm.modelId,
+                        })
+                      "
                     >
                       {{ action.name }}
                     </button>
@@ -790,7 +810,13 @@
                       :key="action.id"
                       type="button"
                       class="btn btn-block btn-primary"
-                      @click="invokeAction(action.id)"
+                      @click="
+                        $emit('invoke-action', {
+                          actionId: action.id,
+                          backAction: false,
+                          modelId: appForm.modelId,
+                        })
+                      "
                     >
                       {{ action.name }}
                     </button>
@@ -826,6 +852,7 @@
                         $emit('invoke-action', {
                           actionId: action.id,
                           backAction: true,
+                          modelId: appForm.modelId,
                         })
                       "
                     >
@@ -840,6 +867,7 @@
                         $emit('invoke-action', {
                           actionId: action.id,
                           backAction: false,
+                          modelId: appForm.modelId,
                         })
                       "
                     >
@@ -853,116 +881,113 @@
 
           <!--          Форма нового сообщения-->
           <form v-if="modal.modalTitle === 'Новое сообщение'">
-            <div class="row">
-              <div class="col-12">
-                <label for="new-message-form-view-theme" class="form-label"
-                  >Тема сообщения</label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  id="new-message-form-view-theme"
+            <div v-if="messageForm.form.id" class="row">
+              <div class="col-10">
+                <Form
+                  :form="messageForm.form.scheme"
+                  :submission="messageForm"
+                  language="ru"
+                  :options="messageFormOptions"
+                  ref="vueForm"
                 />
               </div>
-              <div class="col-12">
-                <label for="new-message-form-view-text" class="form-label"
-                  >Тект сообщения</label
-                >
-                <textarea
-                  class="form-control"
-                  id="new-message-form-view-text"
-                  rows="3"
-                ></textarea>
+              <div
+                v-if="
+                  messageForm.form.actions &&
+                  messageForm.form.actions.length > 0
+                "
+                class="col-2"
+              >
+                <template v-for="action of messageForm.form.actions">
+                  <template v-if="messageForm.active || action.alwaysActive">
+                    <button
+                      v-if="action.backAction"
+                      :key="action.id"
+                      type="button"
+                      class="btn btn-block btn-primary"
+                      @click="
+                        $emit('invoke-action', {
+                          actionId: action.id,
+                          backAction: true,
+                          modelId: messageForm.modelId,
+                        })
+                      "
+                    >
+                      {{ action.name }}
+                    </button>
+                    <button
+                      v-else
+                      :key="action.id"
+                      type="button"
+                      class="btn btn-block btn-primary"
+                      @click="
+                        $emit('invoke-action', {
+                          actionId: action.id,
+                          backAction: false,
+                          modelId: messageForm.modelId,
+                        })
+                      "
+                    >
+                      {{ action.name }}
+                    </button>
+                  </template>
+                </template>
               </div>
             </div>
           </form>
           <!--          Заполненная форма сообщения-->
           <form v-if="modal.modalTitle === 'Детали сообщения'">
-            <div class="row">
-              <div class="col-12">
-                <label for="message-form-view-theme" class="form-label"
-                  >Тема сообщения</label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  id="message-form-view-theme"
-                  disabled
-                  value="Детали аттестации"
+            <div v-if="messageForm.form.id" class="row">
+              <div class="col-10">
+                <Form
+                  :form="messageForm.form.scheme"
+                  :submission="messageForm"
+                  language="ru"
+                  :options="messageFormOptions"
+                  ref="vueForm"
                 />
               </div>
-              <div class="col-6">
-                <label for="message-form-view-number" class="form-label"
-                  >№ сообщения</label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  id="message-form-view-number"
-                  disabled
-                  value="0123"
-                />
-              </div>
-              <div class="col-6">
-                <label for="message-form-view-creationDate" class="form-label"
-                  >Дата создания сообщения</label
-                >
-                <input
-                  type="date"
-                  class="form-control"
-                  id="message-form-view-creationDate"
-                  disabled
-                  value="2022-08-01"
-                />
-              </div>
-              <div class="col-12">
-                <label for="message-form-view-status" class="form-label"
-                  >Статус</label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  id="message-form-view-status"
-                  disabled
-                  value="В работе"
-                />
-              </div>
-              <div class="col-6">
-                <label for="message-form-view-editDate" class="form-label"
-                  >Дата входа в статус</label
-                >
-                <input
-                  type="date"
-                  class="form-control"
-                  id="message-form-view-editDate"
-                  disabled
-                  value="2022-08-03"
-                />
-              </div>
-              <div class="col-6">
-                <label for="message-form-view-deadlineDate" class="form-label"
-                  >Срок отправки ответа</label
-                >
-                <input
-                  type="date"
-                  class="form-control"
-                  id="message-form-view-deadlineDate"
-                  disabled
-                  value="2022-08-05"
-                />
-              </div>
-              <div class="col-12">
-                <label for="message-form-view-text" class="form-label"
-                  >Тект сообщения</label
-                >
-                <textarea
-                  class="form-control"
-                  id="message-form-view-text"
-                  rows="3"
-                  disabled
-                >
-Прошу уточнить состав документов...</textarea
-                >
+              <div
+                v-if="
+                  messageForm.form.actions &&
+                  messageForm.form.actions.length > 0
+                "
+                class="col-2"
+              >
+                <template v-for="action of messageForm.form.actions">
+                  <template v-if="messageForm.active || action.alwaysActive">
+                    <button
+                      v-if="action.backAction"
+                      :key="action.id"
+                      type="button"
+                      class="btn btn-block btn-primary"
+                      @click="
+                        $emit('invoke-action', {
+                          actionId: action.id,
+                          backAction: true,
+                          modelId: messageForm.modelId,
+                        })
+                      "
+                    >
+                      {{ action.name }}
+                    </button>
+                    <button
+                      v-else
+                      :key="action.id"
+                      type="button"
+                      class="btn btn-block btn-primary"
+                      @click="
+                        $emit('invoke-action', {
+                          actionId: action.id,
+                          backAction: false,
+                          modelId: messageForm.modelId,
+                        })
+                      "
+                    >
+                      {{ action.name }}
+                    </button>
+                  </template>
+                </template>
               </div>
             </div>
           </form>
@@ -1145,7 +1170,15 @@ export default {
     ModalBootstrapCustom46,
     Form,
   },
-  props: ["user", "appsTable", "appForm", "appFormOptions"],
+  props: [
+    "user",
+    "appsTable",
+    "appForm",
+    "appFormOptions",
+    "messagesTable",
+    "messageForm",
+    "messageFormOptions",
+  ],
   data() {
     return {
       modal: {
@@ -1418,6 +1451,14 @@ export default {
     },
     createNewApp(modalTitle) {
       this.$emit("create-new-app");
+      this.openModal(modalTitle);
+    },
+    openExistingMessage(modalTitle, appId) {
+      this.$emit("open-existing-message", appId);
+      this.openModal(modalTitle);
+    },
+    createNewMessage(modalTitle) {
+      this.$emit("create-new-message");
       this.openModal(modalTitle);
     },
     openModal(modalTitle) {

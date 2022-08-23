@@ -24,7 +24,7 @@
 export default {
   name: "TableHeadBootstrapCustom",
   props: {
-    columnsList: Object,
+    columnsList: Array,
     sortColumn: String,
     ascendingSortOrder: Boolean,
   },

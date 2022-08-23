@@ -27,8 +27,11 @@
         </button>
 
         <div class="collapse navbar-collapse" id="navbarCollapse">
-          <NavBootstrapCustomBS46 :nav-list="navbarItems" class="navbar-nav">
-          </NavBootstrapCustomBS46>
+          <NavBootstrapCustomBS46
+            :nav-list="navbarItems"
+            :is-auth-user="isAuthUser"
+            class="navbar-nav"
+          />
         </div>
       </nav>
     </div>
@@ -52,6 +55,7 @@ export default {
     shadow: Boolean,
     expand: Boolean,
     expandWidthPoint: String,
+    isAuthUser: Boolean,
   },
 
   computed: {
