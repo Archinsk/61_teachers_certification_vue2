@@ -48,15 +48,17 @@
           </CardBootstrapCustom>
         </div>
         <div class="col-12 col-sm-6 mt-4">
-          <LoaderBootstrapCustomBS46
-            v-if="authLoader.isLoading && !authLoader.isResponse"
-          />
-          <template v-else>
-            <CardBootstrapCustom header class="h-100 shadow">
-              <template v-slot:card-header>
-                <h5 class="text-uppercase mb-0">Авторизация</h5>
-              </template>
-              <template v-slot:card-body>
+          <CardBootstrapCustom header class="h-100 shadow">
+            <template v-slot:card-header>
+              <h5 class="text-uppercase mb-0">Авторизация</h5>
+            </template>
+            <template v-slot:card-body>
+              <LoaderBootstrapCustomBS46
+                v-if="authLoader.isLoading && !authLoader.isResponse"
+                :comment="authLoader.comment"
+                :theme="authLoader.theme"
+              />
+              <template v-else>
                 <TheSignInFormBS46
                   v-if="!isAuthUser"
                   :auth-error="authError"
@@ -77,8 +79,8 @@
                   </button>
                 </template>
               </template>
-            </CardBootstrapCustom>
-          </template>
+            </template>
+          </CardBootstrapCustom>
         </div>
         <div class="col-12 mt-4">
           <CardBootstrapCustom header class="h-100 shadow">

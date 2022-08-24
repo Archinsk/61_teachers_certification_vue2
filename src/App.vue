@@ -17,19 +17,24 @@
         :is-auth-user="isAuthUser"
         :auth-error="authError"
         :auth-loader="authLoader"
+        :profile-loader="profileLoader"
         :apps-table="appsTable"
         :app-form="appForm"
         :app-form-options="formOptions"
+        :apps-loader="appsLoader"
         :messages-table="messagesTable"
         :message-form="messageForm"
         :message-form-options="formOptions"
+        :messages-loader="messagesLoader"
         @sign-in-local="signInLocal($event)"
         @sign-in-esia="getLogin"
         @sign-out="signOut"
-        @create-new-app="getStartForm(appsServiceId)"
-        @open-existing-app="getStartForm(appsServiceId, $event)"
-        @create-new-message="getStartForm(messagesServiceId)"
-        @open-existing-message="getStartForm(messagesServiceId, $event)"
+        @edit-profile="editProfile"
+        @save-profile="saveProfile"
+        @create-new-app="createNewApp(appsServiceId)"
+        @open-existing-app="openExistingApp(appsServiceId, $event)"
+        @create-new-message="createNewMessage(messagesServiceId)"
+        @open-existing-message="openExistingMessage(messagesServiceId, $event)"
         @change-message-page-size="
           changePageSize(messagesTable, $event, messagesServiceId)
         "
@@ -78,6 +83,7 @@ export default {
         },
       },
       isFirstLoad: true,
+      loadersDelay: 1000,
       esiaLink: "",
       esiaLogoutLink: "",
       userInfoFromResponse: {
@@ -99,6 +105,15 @@ export default {
         isLoading: false,
         isResponse: false,
         comment: "",
+        theme: "secondary",
+      },
+
+      // Профиль пользователя
+      profileLoader: {
+        isLoading: false,
+        isResponse: false,
+        comment: "",
+        theme: "secondary",
       },
 
       // Заявления
@@ -149,6 +164,12 @@ export default {
           itemsPerPage: [10, 25, 50],
         },
       },
+      appsLoader: {
+        isLoading: false,
+        isResponse: false,
+        comment: "",
+        theme: "secondary",
+      },
 
       // Сообщения
       messagesServiceId: 1,
@@ -197,6 +218,12 @@ export default {
           pageSize: 10,
           itemsPerPage: [10, 25, 50],
         },
+      },
+      messagesLoader: {
+        isLoading: false,
+        isResponse: false,
+        comment: "",
+        theme: "secondary",
       },
 
       // Текущее заявление
@@ -471,8 +498,7 @@ export default {
     },
     // Вход по логину и паролю
     signInLocal(signInData) {
-      console.log(signInData.login);
-      console.log(signInData.password);
+      this.loaderStart(this.authLoader, "Проверка данных пользователя");
       const request = {
         login: signInData.login,
         password: signInData.password,
@@ -482,18 +508,15 @@ export default {
           withCredentials: true,
         })
         .then(() => {
-          this.loaderStart(this.authLoader, "Проверка данных пользователя");
-          setTimeout(this.getUserId, 5000);
-          setTimeout(this.getUserInfo, 5000);
-          // this.getUserId();
-          // this.getUserInfo();
+          this.getUserId();
+          this.getUserInfo();
         })
         .then(() => {
           this.user = this.userInfoFromResponse;
           // this.$refs["nav-sidebar"].hide();
         })
         .then(() => {
-          this.loaderFinish(this.authLoader);
+          setTimeout(this.loaderFinish, this.loadersDelay, this.authLoader);
         })
         .catch((error) => {
           if (error.response.status === 401) {
@@ -626,6 +649,7 @@ export default {
     },
     // Локальный выход
     signOutLocal() {
+      this.loaderStart(this.authLoader, "Выход из системы");
       axios(this.url + "auth/local-logout", {
         withCredentials: true,
       })
@@ -660,6 +684,9 @@ export default {
             };
             console.log("Выход пользователя из системы");
           }
+        })
+        .then(() => {
+          setTimeout(this.loaderFinish, this.loadersDelay, this.authLoader);
         })
         .then(() => {
           // this.$refs["nav-sidebar"].hide();
@@ -990,6 +1017,40 @@ export default {
     loaderFinish(loader) {
       loader.isResponse = true;
       loader.isLoading = false;
+    },
+
+    // Редактирование профиля
+    editProfile() {
+      this.loaderStart(this.profileLoader, "Редактирование личных данных");
+      setTimeout(this.loaderFinish, this.loadersDelay, this.profileLoader);
+    },
+    saveProfile() {
+      this.loaderStart(this.profileLoader, "Сохранение личных данных");
+      setTimeout(this.loaderFinish, this.loadersDelay, this.profileLoader);
+    },
+
+    // Заявления
+    createNewApp(appsServiceId) {
+      this.getStartForm(appsServiceId);
+      this.loaderStart(this.appsLoader, "Загрузка формы заявления");
+      setTimeout(this.loaderFinish, this.loadersDelay, this.appsLoader);
+    },
+    openExistingApp(appsServiceId, appId) {
+      this.getStartForm(appsServiceId, appId);
+      this.loaderStart(this.appsLoader, "Загрузка заявления");
+      setTimeout(this.loaderFinish, this.loadersDelay, this.appsLoader);
+    },
+
+    // Сообщения
+    createNewMessage(appsServiceId) {
+      this.getStartForm(appsServiceId);
+      this.loaderStart(this.messagesLoader, "Загрузка формы сообщения");
+      setTimeout(this.loaderFinish, this.loadersDelay, this.messagesLoader);
+    },
+    openExistingMessage(appsServiceId, appId) {
+      this.getStartForm(appsServiceId, appId);
+      this.loaderStart(this.messagesLoader, "Загрузка сообщения");
+      setTimeout(this.loaderFinish, this.loadersDelay, this.messagesLoader);
     },
   },
 

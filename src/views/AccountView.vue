@@ -55,373 +55,390 @@
             aria-labelledby="profile-teacher-tab"
             tabindex="0"
           >
-            <div class="accordion" id="accordionTeacherInfo">
-              <div class="card">
-                <div class="card-header p-0" id="teacherBasicInfoHeader">
-                  <button
-                    class="btn btn-link btn-block p-3 text-left"
-                    type="button"
-                    data-toggle="collapse"
-                    data-target="#teacherBasicInfo"
-                    aria-expanded="true"
-                    aria-controls="teacherBasicInfo"
-                  >
-                    Основные сведения
-                  </button>
-                </div>
-                <div
-                  id="teacherBasicInfo"
-                  class="collapse show pt-3 px-3 pb-0"
-                  aria-labelledby="teacherBasicInfoHeader"
-                  data-parent="#teacherBasicInfo"
-                >
-                  <div class="accordion-body">
-                    <form class="row">
-                      <div class="col-6 form-group">
-                        <label
-                          for="lastName"
-                          class="form-label from-closed-server"
-                          >Фамилия</label
-                        >
-                        <input
-                          type="text"
-                          class="form-control"
-                          id="lastName"
-                          disabled
-                          v-model="teacherProfile.basic.lastName"
-                        />
-                      </div>
-                      <div class="col-6 form-group">
-                        <label
-                          for="firstName"
-                          class="form-label from-closed-server"
-                          >Имя</label
-                        >
-                        <input
-                          type="text"
-                          class="form-control"
-                          id="firstName"
-                          disabled
-                          v-model="teacherProfile.basic.firstName"
-                        />
-                      </div>
-                      <div class="col-6 form-group">
-                        <label
-                          for="middleName"
-                          class="form-label from-closed-server"
-                          >Отчество</label
-                        >
-                        <input
-                          type="text"
-                          class="form-control"
-                          id="middleName"
-                          disabled
-                          v-model="teacherProfile.basic.middleName"
-                        />
-                      </div>
-                      <div class="col-6 form-group">
-                        <label
-                          for="birthDate"
-                          class="form-label from-closed-server"
-                          >Дата рождения</label
-                        >
-                        <input
-                          type="date"
-                          class="form-control"
-                          id="birthDate"
-                          disabled
-                          v-model="teacherProfile.basic.birthDate"
-                        />
-                      </div>
-                      <div class="col-6 form-group">
-                        <label for="snils" class="form-label from-closed-server"
-                          >СНИЛС</label
-                        >
-                        <input
-                          type="text"
-                          class="form-control"
-                          id="snils"
-                          disabled
-                          v-model="teacherProfile.basic.snils"
-                        />
-                      </div>
-                      <div class="col-6 form-group">
-                        <label for="citizenship" class="form-label"
-                          >Гражданство</label
-                        >
-                        <input
-                          type="text"
-                          class="form-control"
-                          id="citizenship"
-                          disabled
-                          v-model="teacherProfile.basic.citizenship"
-                        />
-                      </div>
-                      <div class="col-6 form-group">
-                        <label for="email" class="form-label from-closed-server"
-                          >Электронная почта</label
-                        >
-                        <input
-                          type="email"
-                          class="form-control"
-                          id="email"
-                          :disabled="!editableProfile"
-                          v-model="teacherProfile.basic.email"
-                        />
-                      </div>
-                      <div class="col-6 form-group">
-                        <label for="phone" class="form-label">Телефон</label>
-                        <input
-                          type="tel"
-                          class="form-control"
-                          id="phone"
-                          :disabled="!editableProfile"
-                          v-model="teacherProfile.basic.phone"
-                        />
-                      </div>
-                      <div class="col-6 form-group">
-                        <label for="gender" class="form-label">Пол</label>
-                        <select
-                          id="gender"
-                          class="form-control"
-                          disabled
-                          v-model="teacherProfile.basic.gender"
-                        >
-                          <option selected>Выберите...</option>
-                          <option>Мужской</option>
-                          <option>Женский</option>
-                        </select>
-                      </div>
-                      <div class="col-6 form-group">
-                        <label for="region" class="form-label"
-                          >Муниципальное образование</label
-                        >
-                        <select
-                          id="region"
-                          class="form-control"
-                          :disabled="!editableProfile"
-                          v-model="teacherProfile.basic.region"
-                        >
-                          <option selected>Выберите...</option>
-                          <option>Новосибирская область</option>
-                          <option>Республика Алтай</option>
-                          <option>Алтайский край</option>
-                        </select>
-                      </div>
-                      <div class="col-12 form-group">
-                        <label for="educationSubject" class="form-label"
-                          >Предметная область</label
-                        >
-                        <select
-                          id="educationSubject"
-                          class="form-control"
-                          :disabled="!editableProfile"
-                          v-model="teacherProfile.basic.educationSubject"
-                        >
-                          <option selected>Выберите...</option>
-                          <option>Русский язык и литература</option>
-                          <option>Математика</option>
-                          <option>Химия и биология</option>
-                        </select>
-                      </div>
-                    </form>
+            <LoaderBootstrapCustomBS46
+              v-if="profileLoader.isLoading && !profileLoader.isResponse"
+              :comment="profileLoader.comment"
+              :theme="profileLoader.theme"
+            />
+            <template v-else>
+              <div class="accordion" id="accordionTeacherInfo">
+                <div class="card">
+                  <div class="card-header p-0" id="teacherBasicInfoHeader">
+                    <button
+                      class="btn btn-link btn-block p-3 text-left"
+                      type="button"
+                      data-toggle="collapse"
+                      data-target="#teacherBasicInfo"
+                      aria-expanded="true"
+                      aria-controls="teacherBasicInfo"
+                    >
+                      Основные сведения
+                    </button>
                   </div>
-                </div>
-              </div>
-              <div class="card">
-                <div class="card-header p-0" id="teacherAddressHeader">
-                  <button
-                    class="btn btn-link btn-block p-3 text-left"
-                    type="button"
-                    data-toggle="collapse"
-                    data-target="#teacherAddress"
-                    aria-expanded="true"
-                    aria-controls="teacherAddress"
+                  <div
+                    id="teacherBasicInfo"
+                    class="collapse show pt-3 px-3 pb-0"
+                    aria-labelledby="teacherBasicInfoHeader"
+                    data-parent="#teacherBasicInfo"
                   >
-                    Адрес
-                  </button>
-                </div>
-                <div
-                  id="teacherAddress"
-                  class="collapse show pt-3 px-3 pb-0"
-                  aria-labelledby="teacherAddressHeader"
-                  data-parent="#teacherBasicInfo"
-                >
-                  <div class="accordion-body">
-                    <form class="row">
-                      <div class="col-12 form-group">
-                        <label for="registrationAddress" class="form-label"
-                          >Адрес регистрации</label
-                        >
-                        <input
-                          type="text"
-                          class="form-control"
-                          id="registrationAddress"
-                          :disabled="!editableProfile"
-                          v-model="teacherProfile.address.registrationAddress"
-                        />
-                      </div>
-                      <div class="col-12 form-group">
-                        <label for="livingAddress" class="form-label"
-                          >Адрес места жительства</label
-                        >
-                        <input
-                          type="text"
-                          class="form-control"
-                          id="livingAddress"
-                          :disabled="!editableProfile"
-                          v-model="teacherProfile.address.livingAddress"
-                        />
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              </div>
-              <div class="card">
-                <div class="card-header p-0" id="teacherDocsHeader">
-                  <button
-                    class="btn btn-link btn-block p-3 text-left"
-                    type="button"
-                    data-toggle="collapse"
-                    data-target="#teacherDocs"
-                    aria-expanded="true"
-                    aria-controls="teacherDocs"
-                  >
-                    Документ, удостоверяющий личность
-                  </button>
-                </div>
-                <div
-                  id="teacherDocs"
-                  class="collapse show pt-3 px-3 pb-0"
-                  aria-labelledby="teacherDocsHeader"
-                  data-parent="#teacherBasicInfo"
-                >
-                  <div class="accordion-body">
-                    <form class="row">
-                      <div class="col-12 form-group">
-                        <label for="docType" class="form-label"
-                          >Наименование документа</label
-                        >
-                        <select
-                          id="docType"
-                          class="form-control"
-                          :disabled="!editableProfile"
-                          v-model="teacherProfile.document.docType"
-                        >
-                          <option selected>Выберите...</option>
-                          <option>Паспорт гражданина РФ</option>
-                          <option>Паспорт иностранного гражданина</option>
-                        </select>
-                      </div>
-                      <div class="col-6 form-group">
-                        <label for="docSeries" class="form-label">Серия</label>
-                        <input
-                          type="email"
-                          class="form-control"
-                          id="docSeries"
-                          :disabled="!editableProfile"
-                          v-model="teacherProfile.document.docSeries"
-                        />
-                      </div>
-                      <div class="col-6 form-group">
-                        <label for="docNumber" class="form-label">Номер</label>
-                        <input
-                          type="text"
-                          class="form-control"
-                          id="docNumber"
-                          :disabled="!editableProfile"
-                          v-model="teacherProfile.document.docNumber"
-                        />
-                      </div>
-                      <div class="col-6 form-group">
-                        <label for="docIssueDate" class="form-label"
-                          >Дата выдачи</label
-                        >
-                        <input
-                          type="date"
-                          class="form-control"
-                          id="docIssueDate"
-                          :disabled="!editableProfile"
-                          v-model="teacherProfile.document.docIssueDate"
-                        />
-                      </div>
-                      <div class="col-6 form-group">
-                        <label for="docFinishDate" class="form-label"
-                          >Срок действия</label
-                        >
-                        <input
-                          type="date"
-                          class="form-control"
-                          id="docFinishDate"
-                          :disabled="!editableProfile"
-                          v-model="teacherProfile.document.docFinishDate"
-                        />
-                      </div>
-                      <div class="col-12 form-group">
-                        <label for="docIssuer" class="form-label"
-                          >Кем выдан</label
-                        >
-                        <input
-                          type="text"
-                          class="form-control"
-                          id="docIssuer"
-                          :disabled="!editableProfile"
-                          v-model="teacherProfile.document.docIssuer"
-                        />
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              </div>
-              <div class="card">
-                <div class="card-header p-0" id="teacherMailingHeader">
-                  <button
-                    class="btn btn-link btn-block p-3 text-left"
-                    type="button"
-                    data-toggle="collapse"
-                    data-target="#teacherMailing"
-                    aria-expanded="true"
-                    aria-controls="teacherMailing"
-                  >
-                    Уведомления
-                  </button>
-                </div>
-                <div
-                  id="teacherMailing"
-                  class="collapse show pt-3 px-3 pb-0"
-                  aria-labelledby="teacherMailingHeader"
-                  data-parent="#teacherBasicInfo"
-                >
-                  <div class="accordion-body">
-                    <form class="row">
-                      <div class="col-12 form-group">
-                        <div class="form-check">
+                    <div class="accordion-body">
+                      <form class="row">
+                        <div class="col-6 form-group">
+                          <label
+                            for="lastName"
+                            class="form-label from-closed-server"
+                            >Фамилия</label
+                          >
                           <input
-                            class="form-check-input"
-                            type="checkbox"
-                            id="mailing"
-                            :disabled="!editableProfile"
-                            v-model="teacherProfile.mailing"
+                            type="text"
+                            class="form-control"
+                            id="lastName"
+                            disabled
+                            v-model="teacherProfile.basic.lastName"
                           />
-                          <label class="form-check-label" for="mailing">
-                            Я согласен(а) на получение уведомлений на
-                            электронную почту
-                          </label>
                         </div>
-                      </div>
-                    </form>
+                        <div class="col-6 form-group">
+                          <label
+                            for="firstName"
+                            class="form-label from-closed-server"
+                            >Имя</label
+                          >
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="firstName"
+                            disabled
+                            v-model="teacherProfile.basic.firstName"
+                          />
+                        </div>
+                        <div class="col-6 form-group">
+                          <label
+                            for="middleName"
+                            class="form-label from-closed-server"
+                            >Отчество</label
+                          >
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="middleName"
+                            disabled
+                            v-model="teacherProfile.basic.middleName"
+                          />
+                        </div>
+                        <div class="col-6 form-group">
+                          <label
+                            for="birthDate"
+                            class="form-label from-closed-server"
+                            >Дата рождения</label
+                          >
+                          <input
+                            type="date"
+                            class="form-control"
+                            id="birthDate"
+                            disabled
+                            v-model="teacherProfile.basic.birthDate"
+                          />
+                        </div>
+                        <div class="col-6 form-group">
+                          <label
+                            for="snils"
+                            class="form-label from-closed-server"
+                            >СНИЛС</label
+                          >
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="snils"
+                            disabled
+                            v-model="teacherProfile.basic.snils"
+                          />
+                        </div>
+                        <div class="col-6 form-group">
+                          <label for="citizenship" class="form-label"
+                            >Гражданство</label
+                          >
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="citizenship"
+                            disabled
+                            v-model="teacherProfile.basic.citizenship"
+                          />
+                        </div>
+                        <div class="col-6 form-group">
+                          <label
+                            for="email"
+                            class="form-label from-closed-server"
+                            >Электронная почта</label
+                          >
+                          <input
+                            type="email"
+                            class="form-control"
+                            id="email"
+                            :disabled="!editableProfile"
+                            v-model="teacherProfile.basic.email"
+                          />
+                        </div>
+                        <div class="col-6 form-group">
+                          <label for="phone" class="form-label">Телефон</label>
+                          <input
+                            type="tel"
+                            class="form-control"
+                            id="phone"
+                            :disabled="!editableProfile"
+                            v-model="teacherProfile.basic.phone"
+                          />
+                        </div>
+                        <div class="col-6 form-group">
+                          <label for="gender" class="form-label">Пол</label>
+                          <select
+                            id="gender"
+                            class="form-control"
+                            disabled
+                            v-model="teacherProfile.basic.gender"
+                          >
+                            <option selected>Выберите...</option>
+                            <option>Мужской</option>
+                            <option>Женский</option>
+                          </select>
+                        </div>
+                        <div class="col-6 form-group">
+                          <label for="region" class="form-label"
+                            >Муниципальное образование</label
+                          >
+                          <select
+                            id="region"
+                            class="form-control"
+                            :disabled="!editableProfile"
+                            v-model="teacherProfile.basic.region"
+                          >
+                            <option selected>Выберите...</option>
+                            <option>Новосибирская область</option>
+                            <option>Республика Алтай</option>
+                            <option>Алтайский край</option>
+                          </select>
+                        </div>
+                        <div class="col-12 form-group">
+                          <label for="educationSubject" class="form-label"
+                            >Предметная область</label
+                          >
+                          <select
+                            id="educationSubject"
+                            class="form-control"
+                            :disabled="!editableProfile"
+                            v-model="teacherProfile.basic.educationSubject"
+                          >
+                            <option selected>Выберите...</option>
+                            <option>Русский язык и литература</option>
+                            <option>Математика</option>
+                            <option>Химия и биология</option>
+                          </select>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-header p-0" id="teacherAddressHeader">
+                    <button
+                      class="btn btn-link btn-block p-3 text-left"
+                      type="button"
+                      data-toggle="collapse"
+                      data-target="#teacherAddress"
+                      aria-expanded="true"
+                      aria-controls="teacherAddress"
+                    >
+                      Адрес
+                    </button>
+                  </div>
+                  <div
+                    id="teacherAddress"
+                    class="collapse show pt-3 px-3 pb-0"
+                    aria-labelledby="teacherAddressHeader"
+                    data-parent="#teacherBasicInfo"
+                  >
+                    <div class="accordion-body">
+                      <form class="row">
+                        <div class="col-12 form-group">
+                          <label for="registrationAddress" class="form-label"
+                            >Адрес регистрации</label
+                          >
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="registrationAddress"
+                            :disabled="!editableProfile"
+                            v-model="teacherProfile.address.registrationAddress"
+                          />
+                        </div>
+                        <div class="col-12 form-group">
+                          <label for="livingAddress" class="form-label"
+                            >Адрес места жительства</label
+                          >
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="livingAddress"
+                            :disabled="!editableProfile"
+                            v-model="teacherProfile.address.livingAddress"
+                          />
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-header p-0" id="teacherDocsHeader">
+                    <button
+                      class="btn btn-link btn-block p-3 text-left"
+                      type="button"
+                      data-toggle="collapse"
+                      data-target="#teacherDocs"
+                      aria-expanded="true"
+                      aria-controls="teacherDocs"
+                    >
+                      Документ, удостоверяющий личность
+                    </button>
+                  </div>
+                  <div
+                    id="teacherDocs"
+                    class="collapse show pt-3 px-3 pb-0"
+                    aria-labelledby="teacherDocsHeader"
+                    data-parent="#teacherBasicInfo"
+                  >
+                    <div class="accordion-body">
+                      <form class="row">
+                        <div class="col-12 form-group">
+                          <label for="docType" class="form-label"
+                            >Наименование документа</label
+                          >
+                          <select
+                            id="docType"
+                            class="form-control"
+                            :disabled="!editableProfile"
+                            v-model="teacherProfile.document.docType"
+                          >
+                            <option selected>Выберите...</option>
+                            <option>Паспорт гражданина РФ</option>
+                            <option>Паспорт иностранного гражданина</option>
+                          </select>
+                        </div>
+                        <div class="col-6 form-group">
+                          <label for="docSeries" class="form-label"
+                            >Серия</label
+                          >
+                          <input
+                            type="email"
+                            class="form-control"
+                            id="docSeries"
+                            :disabled="!editableProfile"
+                            v-model="teacherProfile.document.docSeries"
+                          />
+                        </div>
+                        <div class="col-6 form-group">
+                          <label for="docNumber" class="form-label"
+                            >Номер</label
+                          >
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="docNumber"
+                            :disabled="!editableProfile"
+                            v-model="teacherProfile.document.docNumber"
+                          />
+                        </div>
+                        <div class="col-6 form-group">
+                          <label for="docIssueDate" class="form-label"
+                            >Дата выдачи</label
+                          >
+                          <input
+                            type="date"
+                            class="form-control"
+                            id="docIssueDate"
+                            :disabled="!editableProfile"
+                            v-model="teacherProfile.document.docIssueDate"
+                          />
+                        </div>
+                        <div class="col-6 form-group">
+                          <label for="docFinishDate" class="form-label"
+                            >Срок действия</label
+                          >
+                          <input
+                            type="date"
+                            class="form-control"
+                            id="docFinishDate"
+                            :disabled="!editableProfile"
+                            v-model="teacherProfile.document.docFinishDate"
+                          />
+                        </div>
+                        <div class="col-12 form-group">
+                          <label for="docIssuer" class="form-label"
+                            >Кем выдан</label
+                          >
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="docIssuer"
+                            :disabled="!editableProfile"
+                            v-model="teacherProfile.document.docIssuer"
+                          />
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-header p-0" id="teacherMailingHeader">
+                    <button
+                      class="btn btn-link btn-block p-3 text-left"
+                      type="button"
+                      data-toggle="collapse"
+                      data-target="#teacherMailing"
+                      aria-expanded="true"
+                      aria-controls="teacherMailing"
+                    >
+                      Уведомления
+                    </button>
+                  </div>
+                  <div
+                    id="teacherMailing"
+                    class="collapse show pt-3 px-3 pb-0"
+                    aria-labelledby="teacherMailingHeader"
+                    data-parent="#teacherBasicInfo"
+                  >
+                    <div class="accordion-body">
+                      <form class="row">
+                        <div class="col-12 form-group">
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
+                              id="mailing"
+                              :disabled="!editableProfile"
+                              v-model="teacherProfile.mailing"
+                            />
+                            <label class="form-check-label" for="mailing">
+                              Я согласен(а) на получение уведомлений на
+                              электронную почту
+                            </label>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <button
-              class="btn btn-primary mt-3"
-              @click="editableProfile = !editableProfile"
-            >
-              {{
-                editableProfile ? "Сохранить профиль" : "Редактировать профиль"
-              }}
-            </button>
+              <button
+                v-if="!editableProfile"
+                class="btn btn-primary mt-3"
+                @click="editProfile"
+              >
+                Редактировать профиль
+              </button>
+              <button v-else class="btn btn-primary mt-3" @click="saveProfile">
+                Сохранить профиль
+              </button>
+            </template>
           </div>
           <div
             class="tab-pane fade pt-3"
@@ -772,225 +789,239 @@
         </template>
 
         <template v-slot:modal-body>
-          <!--          Форма нового заявления-->
-          <form v-if="modal.modalTitle === 'Новое заявление'">
-            <div v-if="appForm.form.id" class="row">
-              <div class="col-10">
-                <Form
-                  :form="appForm.form.scheme"
-                  :submission="appForm"
-                  language="ru"
-                  :options="appFormOptions"
-                  ref="vueForm"
-                />
-              </div>
-              <div
-                v-if="appForm.form.actions && appForm.form.actions.length > 0"
-                class="col-2"
-              >
-                <template v-for="action of appForm.form.actions">
-                  <template v-if="appForm.active || action.alwaysActive">
-                    <button
-                      v-if="action.backAction"
-                      :key="action.id"
-                      type="button"
-                      class="btn btn-block btn-primary"
-                      @click="
-                        $emit('invoke-action', {
-                          actionId: action.id,
-                          backAction: true,
-                          modelId: appForm.modelId,
-                        })
-                      "
-                    >
-                      {{ action.name }}
-                    </button>
-                    <button
-                      v-else
-                      :key="action.id"
-                      type="button"
-                      class="btn btn-block btn-primary"
-                      @click="
-                        $emit('invoke-action', {
-                          actionId: action.id,
-                          backAction: false,
-                          modelId: appForm.modelId,
-                        })
-                      "
-                    >
-                      {{ action.name }}
-                    </button>
+          <LoaderBootstrapCustomBS46
+            v-if="appsLoader.isLoading && !appsLoader.isResponse"
+            :comment="appsLoader.comment"
+            :theme="appsLoader.theme"
+          />
+          <template v-else>
+            <!--          Форма нового заявления-->
+            <form v-if="modal.modalTitle === 'Новое заявление'">
+              <div v-if="appForm.form.id" class="row">
+                <div class="col-10">
+                  <Form
+                    :form="appForm.form.scheme"
+                    :submission="appForm"
+                    language="ru"
+                    :options="appFormOptions"
+                    ref="vueForm"
+                  />
+                </div>
+                <div
+                  v-if="appForm.form.actions && appForm.form.actions.length > 0"
+                  class="col-2"
+                >
+                  <template v-for="action of appForm.form.actions">
+                    <template v-if="appForm.active || action.alwaysActive">
+                      <button
+                        v-if="action.backAction"
+                        :key="action.id"
+                        type="button"
+                        class="btn btn-block btn-primary"
+                        @click="
+                          $emit('invoke-action', {
+                            actionId: action.id,
+                            backAction: true,
+                            modelId: appForm.modelId,
+                          })
+                        "
+                      >
+                        {{ action.name }}
+                      </button>
+                      <button
+                        v-else
+                        :key="action.id"
+                        type="button"
+                        class="btn btn-block btn-primary"
+                        @click="
+                          $emit('invoke-action', {
+                            actionId: action.id,
+                            backAction: false,
+                            modelId: appForm.modelId,
+                          })
+                        "
+                      >
+                        {{ action.name }}
+                      </button>
+                    </template>
                   </template>
-                </template>
+                </div>
               </div>
-            </div>
-          </form>
-          <!--          Заполненная форма заявления-->
-          <form v-if="modal.modalTitle === 'Детали заявления'">
-            <div v-if="appForm.form.id" class="row">
-              <div class="col-10">
-                <Form
-                  :form="appForm.form.scheme"
-                  :submission="appForm"
-                  language="ru"
-                  :options="appFormOptions"
-                  ref="vueForm"
-                />
-              </div>
-              <div
-                v-if="appForm.form.actions && appForm.form.actions.length > 0"
-                class="col-2"
-              >
-                <template v-for="action of appForm.form.actions">
-                  <template v-if="appForm.active || action.alwaysActive">
-                    <button
-                      v-if="action.backAction"
-                      :key="action.id"
-                      type="button"
-                      class="btn btn-block btn-primary"
-                      @click="
-                        $emit('invoke-action', {
-                          actionId: action.id,
-                          backAction: true,
-                          modelId: appForm.modelId,
-                        })
-                      "
-                    >
-                      {{ action.name }}
-                    </button>
-                    <button
-                      v-else
-                      :key="action.id"
-                      type="button"
-                      class="btn btn-block btn-primary"
-                      @click="
-                        $emit('invoke-action', {
-                          actionId: action.id,
-                          backAction: false,
-                          modelId: appForm.modelId,
-                        })
-                      "
-                    >
-                      {{ action.name }}
-                    </button>
+            </form>
+            <!--          Заполненная форма заявления-->
+            <form v-if="modal.modalTitle === 'Детали заявления'">
+              <div v-if="appForm.form.id" class="row">
+                <div class="col-10">
+                  <Form
+                    :form="appForm.form.scheme"
+                    :submission="appForm"
+                    language="ru"
+                    :options="appFormOptions"
+                    ref="vueForm"
+                  />
+                </div>
+                <div
+                  v-if="appForm.form.actions && appForm.form.actions.length > 0"
+                  class="col-2"
+                >
+                  <template v-for="action of appForm.form.actions">
+                    <template v-if="appForm.active || action.alwaysActive">
+                      <button
+                        v-if="action.backAction"
+                        :key="action.id"
+                        type="button"
+                        class="btn btn-block btn-primary"
+                        @click="
+                          $emit('invoke-action', {
+                            actionId: action.id,
+                            backAction: true,
+                            modelId: appForm.modelId,
+                          })
+                        "
+                      >
+                        {{ action.name }}
+                      </button>
+                      <button
+                        v-else
+                        :key="action.id"
+                        type="button"
+                        class="btn btn-block btn-primary"
+                        @click="
+                          $emit('invoke-action', {
+                            actionId: action.id,
+                            backAction: false,
+                            modelId: appForm.modelId,
+                          })
+                        "
+                      >
+                        {{ action.name }}
+                      </button>
+                    </template>
                   </template>
-                </template>
+                </div>
               </div>
-            </div>
-          </form>
+            </form>
+          </template>
 
-          <!--          Форма нового сообщения-->
-          <form v-if="modal.modalTitle === 'Новое сообщение'">
-            <div v-if="messageForm.form.id" class="row">
-              <div class="col-10">
-                <Form
-                  :form="messageForm.form.scheme"
-                  :submission="messageForm"
-                  language="ru"
-                  :options="messageFormOptions"
-                  ref="vueForm"
-                />
-              </div>
-              <div
-                v-if="
-                  messageForm.form.actions &&
-                  messageForm.form.actions.length > 0
-                "
-                class="col-2"
-              >
-                <template v-for="action of messageForm.form.actions">
-                  <template v-if="messageForm.active || action.alwaysActive">
-                    <button
-                      v-if="action.backAction"
-                      :key="action.id"
-                      type="button"
-                      class="btn btn-block btn-primary"
-                      @click="
-                        $emit('invoke-action', {
-                          actionId: action.id,
-                          backAction: true,
-                          modelId: messageForm.modelId,
-                        })
-                      "
-                    >
-                      {{ action.name }}
-                    </button>
-                    <button
-                      v-else
-                      :key="action.id"
-                      type="button"
-                      class="btn btn-block btn-primary"
-                      @click="
-                        $emit('invoke-action', {
-                          actionId: action.id,
-                          backAction: false,
-                          modelId: messageForm.modelId,
-                        })
-                      "
-                    >
-                      {{ action.name }}
-                    </button>
+          <LoaderBootstrapCustomBS46
+            v-if="messagesLoader.isLoading && !messagesLoader.isResponse"
+            :comment="messagesLoader.comment"
+            :theme="messagesLoader.theme"
+          />
+          <template v-else>
+            <!--          Форма нового сообщения-->
+            <form v-if="modal.modalTitle === 'Новое сообщение'">
+              <div v-if="messageForm.form.id" class="row">
+                <div class="col-10">
+                  <Form
+                    :form="messageForm.form.scheme"
+                    :submission="messageForm"
+                    language="ru"
+                    :options="messageFormOptions"
+                    ref="vueForm"
+                  />
+                </div>
+                <div
+                  v-if="
+                    messageForm.form.actions &&
+                    messageForm.form.actions.length > 0
+                  "
+                  class="col-2"
+                >
+                  <template v-for="action of messageForm.form.actions">
+                    <template v-if="messageForm.active || action.alwaysActive">
+                      <button
+                        v-if="action.backAction"
+                        :key="action.id"
+                        type="button"
+                        class="btn btn-block btn-primary"
+                        @click="
+                          $emit('invoke-action', {
+                            actionId: action.id,
+                            backAction: true,
+                            modelId: messageForm.modelId,
+                          })
+                        "
+                      >
+                        {{ action.name }}
+                      </button>
+                      <button
+                        v-else
+                        :key="action.id"
+                        type="button"
+                        class="btn btn-block btn-primary"
+                        @click="
+                          $emit('invoke-action', {
+                            actionId: action.id,
+                            backAction: false,
+                            modelId: messageForm.modelId,
+                          })
+                        "
+                      >
+                        {{ action.name }}
+                      </button>
+                    </template>
                   </template>
-                </template>
+                </div>
               </div>
-            </div>
-          </form>
-          <!--          Заполненная форма сообщения-->
-          <form v-if="modal.modalTitle === 'Детали сообщения'">
-            <div v-if="messageForm.form.id" class="row">
-              <div class="col-10">
-                <Form
-                  :form="messageForm.form.scheme"
-                  :submission="messageForm"
-                  language="ru"
-                  :options="messageFormOptions"
-                  ref="vueForm"
-                />
-              </div>
-              <div
-                v-if="
-                  messageForm.form.actions &&
-                  messageForm.form.actions.length > 0
-                "
-                class="col-2"
-              >
-                <template v-for="action of messageForm.form.actions">
-                  <template v-if="messageForm.active || action.alwaysActive">
-                    <button
-                      v-if="action.backAction"
-                      :key="action.id"
-                      type="button"
-                      class="btn btn-block btn-primary"
-                      @click="
-                        $emit('invoke-action', {
-                          actionId: action.id,
-                          backAction: true,
-                          modelId: messageForm.modelId,
-                        })
-                      "
-                    >
-                      {{ action.name }}
-                    </button>
-                    <button
-                      v-else
-                      :key="action.id"
-                      type="button"
-                      class="btn btn-block btn-primary"
-                      @click="
-                        $emit('invoke-action', {
-                          actionId: action.id,
-                          backAction: false,
-                          modelId: messageForm.modelId,
-                        })
-                      "
-                    >
-                      {{ action.name }}
-                    </button>
+            </form>
+            <!--          Заполненная форма сообщения-->
+            <form v-if="modal.modalTitle === 'Детали сообщения'">
+              <div v-if="messageForm.form.id" class="row">
+                <div class="col-10">
+                  <Form
+                    :form="messageForm.form.scheme"
+                    :submission="messageForm"
+                    language="ru"
+                    :options="messageFormOptions"
+                    ref="vueForm"
+                  />
+                </div>
+                <div
+                  v-if="
+                    messageForm.form.actions &&
+                    messageForm.form.actions.length > 0
+                  "
+                  class="col-2"
+                >
+                  <template v-for="action of messageForm.form.actions">
+                    <template v-if="messageForm.active || action.alwaysActive">
+                      <button
+                        v-if="action.backAction"
+                        :key="action.id"
+                        type="button"
+                        class="btn btn-block btn-primary"
+                        @click="
+                          $emit('invoke-action', {
+                            actionId: action.id,
+                            backAction: true,
+                            modelId: messageForm.modelId,
+                          })
+                        "
+                      >
+                        {{ action.name }}
+                      </button>
+                      <button
+                        v-else
+                        :key="action.id"
+                        type="button"
+                        class="btn btn-block btn-primary"
+                        @click="
+                          $emit('invoke-action', {
+                            actionId: action.id,
+                            backAction: false,
+                            modelId: messageForm.modelId,
+                          })
+                        "
+                      >
+                        {{ action.name }}
+                      </button>
+                    </template>
                   </template>
-                </template>
+                </div>
               </div>
-            </div>
-          </form>
+            </form>
+          </template>
 
           <!--          Заполненная форма экспертизы-->
           <form v-if="modal.modalTitle === 'Детали экспертизы'">
@@ -1160,11 +1191,13 @@ import { Modal } from "bootstrap";
 import ModalBootstrapCustom46 from "../components/universal/ModalBootstrapCustomBS46";
 import TableBootstrapCustom from "../components/universal/TableBootstrapCustom";
 import { Form } from "vue-formio";
+import LoaderBootstrapCustomBS46 from "../components/universal/LoaderBootstrapCustomBS46";
 // import FilterBootstrapCustom from "../components/universal/FilterBootstrapCustom";
 
 export default {
   name: "AccountView",
   components: {
+    LoaderBootstrapCustomBS46,
     // FilterBootstrapCustom,
     TableBootstrapCustom,
     ModalBootstrapCustom46,
@@ -1172,12 +1205,15 @@ export default {
   },
   props: [
     "user",
+    "profileLoader",
     "appsTable",
     "appForm",
     "appFormOptions",
+    "appsLoader",
     "messagesTable",
     "messageForm",
     "messageFormOptions",
+    "messagesLoader",
   ],
   data() {
     return {
@@ -1445,6 +1481,14 @@ export default {
   },
 
   methods: {
+    editProfile() {
+      this.editableProfile = true;
+      this.$emit("edit-profile");
+    },
+    saveProfile() {
+      this.editableProfile = false;
+      this.$emit("save-profile");
+    },
     openExistingApp(modalTitle, appId) {
       this.$emit("open-existing-app", appId);
       this.openModal(modalTitle);

@@ -1,11 +1,11 @@
 <template>
-  <div class="card pt-2">
-    <div class="card-body text-center">
-      <div :class="loaderStyleClass" role="status">
-        <span class="sr-only">Loading...</span>
-      </div>
-      <div v-if="loadingComment">{{ loadingComment }}</div>
+  <div
+    class="w-100 h-100 text-center d-flex flex-column justify-content-center align-items-center"
+  >
+    <div :class="loaderStyleClass" role="status">
+      <span class="sr-only">Loading...</span>
     </div>
+    <div v-if="comment">{{ comment }}</div>
   </div>
 </template>
 
@@ -13,7 +13,7 @@
 export default {
   name: "LoaderBootstrapCustomBS46",
   props: {
-    loadingComment: String,
+    comment: String,
     theme: String,
     type: String,
   },
