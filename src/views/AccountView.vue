@@ -492,7 +492,7 @@
       </template>
 
       <!--      Вкладки эксперта-->
-      <template v-if="selectedRole === '2'">
+      <template v-if="user.shortInfo.roleId === 39927">
         <ul class="nav nav-tabs" id="myTab" role="tablist">
           <li class="nav-item" role="presentation">
             <button

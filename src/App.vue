@@ -29,6 +29,7 @@
         @sign-in-local="signInLocal($event)"
         @sign-in-esia="getLogin"
         @sign-out="signOut"
+        @set-role="setRole($event)"
         @edit-profile="editProfile"
         @save-profile="saveProfile"
         @create-new-app="createNewApp(appsServiceId)"
@@ -84,6 +85,8 @@ export default {
       },
       isFirstLoad: true,
       loadersDelay: 1000,
+
+      // Авторизация
       esiaLink: "",
       esiaLogoutLink: "",
       userInfoFromResponse: {
@@ -470,7 +473,7 @@ export default {
 
   methods: {
     // Вход
-    // Входчерез ЕСИА
+    // Косвенная проверка авторизованности пользователя, получение ссылки на вход через ЕСИА (переход на страницу авторизации ЕСИА - вынести во внешний метод)
     getLogin() {
       axios(this.url + "auth/get-login", {
         withCredentials: true,
@@ -490,10 +493,25 @@ export default {
           if (error.response) {
             if (error.response.status === 406) {
               console.log("Пользователь уже авторизован");
+              this.getUserId();
+              this.getUserInfo();
+            } else if (error.response.status === 404) {
+              console.log(
+                "Проверка авторизованности пользователя не удалась. Ошибка при составлении ссылки на вход ЕСИА со стороны закрытой части"
+              );
+            } else if (error.response.status === 500) {
+              console.log(
+                "Проверка авторизованности пользователя не удалась. Ошибка со стороны открытой части при отправке запроса получения ссылки на вход ЕСИА на закрытую часть"
+              );
             }
           }
-          this.getUserId();
-          this.getUserInfo();
+        })
+        .then(() => {
+          if (this.user.fullInfo.roles.length > 0) {
+            this.user.selectedRole = this.getRoleById(
+              this.user.shortInfo.roleId
+            );
+          }
         });
     },
     // Вход по логину и паролю
@@ -513,22 +531,54 @@ export default {
         })
         .then(() => {
           this.user = this.userInfoFromResponse;
+          this.authErrorReset();
           // this.$refs["nav-sidebar"].hide();
-        })
-        .then(() => {
-          setTimeout(this.loaderFinish, this.loadersDelay, this.authLoader);
         })
         .catch((error) => {
           if (error.response.status === 401) {
-            this.authError.type = "password";
-            this.authError.text = "Неверно указан пароль!";
+            this.authErrorLog("password", "Неверно указан пароль!");
+          } else if (error.response.status === 404) {
+            this.authErrorLog(
+              "login",
+              "Пользователь с указанным логином не зарегистрирован!"
+            );
+          } else if (error.response.status === 406) {
+            console.log(
+              "Попытка авторизованного пользователя авторизоваться ещё раз"
+            );
+            this.authErrorLog(
+              "client",
+              "Пользователь уже авторизован. Повторная авторизация не требуется"
+            );
+          } else if (error.response.status === 500) {
+            console.log(
+              "Ошибка открытого контура при выполнении запроса локальной авторизации на закрытый контур"
+            );
+            this.authErrorLog(
+              "server",
+              "Произошла ошибка при выполнении запроса авторизации. Пожалуйста обратитесь к администратору системы. Код ошибки - 500"
+            );
+          } else if (error.response.status === 501) {
+            console.log(
+              "Ошибка закрытого контура при выполнении запроса локальной авторизации"
+            );
+            this.authErrorLog(
+              "server",
+              "Произошла ошибка при выполнении запроса авторизации. Пожалуйста обратитесь к администратору системы. Код ошибки - 501"
+            );
           }
-          if (error.response.status === 404) {
-            this.authError.type = "login";
-            this.authError.text =
-              "Пользователь с указанным логином не зарегистрирован!";
-          }
+        })
+        .then(() => {
+          setTimeout(this.loaderFinish, this.loadersDelay, this.authLoader);
         });
+    },
+    // Запись ошибок авторизации
+    authErrorLog(errorType, errorComment) {
+      this.authError.type = errorType;
+      this.authError.text = errorComment;
+    },
+    authErrorReset() {
+      this.authErrorLog("", "");
     },
 
     // Выбор роли пользователя при авторизации по логину/паролю
@@ -554,6 +604,36 @@ export default {
           return roles[i];
         }
       }
+    },
+    // Смена роли пользователя
+    setRole(roleId) {
+      axios
+        .put(this.url + "core/put-metadata?orgId=0&roleId=" + roleId, "", {
+          withCredentials: true,
+        })
+        .then((response) => {
+          // this.$emit("change-user-short-info", response.data);
+          // this.$emit("select-role", role);
+          this.user.shortInfo = response.data;
+          let role = this.getRoleById(roleId);
+          this.user.selectedRole = role;
+          console.log(
+            "Роль пользователя изменена на роль с идентификатором " +
+              role.label +
+              "(id = " +
+              role.id +
+              ")"
+          );
+        });
+    },
+    getRoleById(roleId) {
+      let role = {};
+      this.user.fullInfo.roles.forEach(function (roleItem) {
+        if (roleItem.id === roleId) {
+          role = roleItem;
+        }
+      });
+      return role;
     },
 
     // Получение информации о пользователе

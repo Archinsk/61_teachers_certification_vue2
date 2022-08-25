@@ -59,6 +59,15 @@
                 :theme="authLoader.theme"
               />
               <template v-else>
+                <div
+                  v-if="
+                    authError.type === 'server' || authError.type === 'client'
+                  "
+                  class="alert alert-danger"
+                  role="alert"
+                >
+                  <b>Произошла ошибка!</b> {{ authError.text }}
+                </div>
                 <TheSignInFormBS46
                   v-if="!isAuthUser"
                   :auth-error="authError"
@@ -70,10 +79,36 @@
                     Вы авторизованы как пользователь
                     <b>{{ user.shortInfo.userName }}</b>
                   </p>
-                  <p v-if="user.shortInfo.roleId">
-                    Текущая роль - <b>{{ user.shortInfo.roleId }}</b>
+                  <p v-if="user.fullInfo.roles.length <= 1">
+                    У пользователя отсутствуют роли
                   </p>
-                  <p v-else>У пользователя отсутствуют роли</p>
+                  <p v-else-if="user.fullInfo.roles.length === 1">
+                    Текущая роль - <b>{{ user.fullInfo.roles[0].label }}</b>
+                  </p>
+
+                  <form
+                    v-else-if="user.fullInfo.roles.length >= 2"
+                    @submit.prevent
+                  >
+                    <div class="form-group">
+                      <label for="userRoleSelect">Роль пользователя</label>
+                      <select
+                        v-model="userRoleIdSelected"
+                        class="form-control"
+                        id="userRoleSelect"
+                        @change="$emit('set-role', userRoleIdSelected)"
+                      >
+                        <option
+                          v-for="role of user.fullInfo.roles"
+                          :key="role.id"
+                          :value="role.id"
+                          :selected="role.id === userRoleIdSelected"
+                        >
+                          {{ role.label }}
+                        </option>
+                      </select>
+                    </div>
+                  </form>
                   <button class="btn btn-primary" @click="$emit('sign-out')">
                     Выход
                   </button>
@@ -137,5 +172,13 @@ export default {
     CardBootstrapCustom,
   },
   props: ["url", "user", "isAuthUser", "authLoader", "newsList", "authError"],
+  data() {
+    return {
+      userRoleIdSelected: this.user.selectedRole.id,
+    };
+  },
+  updated() {
+    this.userRoleIdSelected = this.user.selectedRole.id;
+  },
 };
 </script>

@@ -28,7 +28,7 @@
           <button
             id="password-visibility-button"
             type="button"
-            class="btn btn-outline-secondary"
+            class="btn btn-outline-secondary visibility-button"
             @click="passwordVisibility = !passwordVisibility"
           >
             <span class="material-icons">
@@ -79,3 +79,10 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.visibility-button {
+  line-height: 0.75rem;
+  padding: 0.375rem;
+}
+</style>
