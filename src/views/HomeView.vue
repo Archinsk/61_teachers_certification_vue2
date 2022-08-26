@@ -102,7 +102,7 @@
                           v-for="role of user.fullInfo.roles"
                           :key="role.id"
                           :value="role.id"
-                          :selected="role.id === userRoleIdSelected"
+                          :selected="role.id === userSelectedRoleId"
                         >
                           {{ role.label }}
                         </option>
@@ -171,14 +171,25 @@ export default {
     TheSignInFormBS46,
     CardBootstrapCustom,
   },
-  props: ["url", "user", "isAuthUser", "authLoader", "newsList", "authError"],
+  props: [
+    "url",
+    "user",
+    "userSelectedRoleId",
+    "isAuthUser",
+    "authLoader",
+    "newsList",
+    "authError",
+  ],
   data() {
     return {
-      userRoleIdSelected: this.user.selectedRole.id,
+      userRoleIdSelected: "",
     };
   },
-  updated() {
-    this.userRoleIdSelected = this.user.selectedRole.id;
+
+  watch: {
+    userSelectedRoleId: function () {
+      this.userRoleIdSelected = this.userSelectedRoleId;
+    },
   },
 };
 </script>

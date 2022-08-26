@@ -14,6 +14,7 @@
         :news-list="newsList"
         :url="url"
         :user="user"
+        :user-selected-role-id="userSelectedRoleId"
         :is-auth-user="isAuthUser"
         :auth-error="authError"
         :auth-loader="authLoader"
@@ -26,6 +27,17 @@
         :message-form="messageForm"
         :message-form-options="formOptions"
         :messages-loader="messagesLoader"
+        :expertises-table="expertisesTable"
+        :expertise-form="expertiseForm"
+        :expertise-form-options="formOptions"
+        :expertises-loader="expertisesLoader"
+        :analytics-table="analyticsTable"
+        :analytic-form-options="formOptions"
+        :analytics-loader="analyticsLoader"
+        :logs-table="logsTable"
+        :log-form="logForm"
+        :log-form-options="formOptions"
+        :logs-loader="logsLoader"
         @sign-in-local="signInLocal($event)"
         @sign-in-esia="getLogin"
         @sign-out="signOut"
@@ -36,6 +48,10 @@
         @open-existing-app="openExistingApp(appsServiceId, $event)"
         @create-new-message="createNewMessage(messagesServiceId)"
         @open-existing-message="openExistingMessage(messagesServiceId, $event)"
+        @open-existing-expertise="
+          openExistingExpertise(expertisesServiceId, $event)
+        "
+        @open-existing-log="openExistingLog(logsServiceId, $event)"
         @change-message-page-size="
           changePageSize(messagesTable, $event, messagesServiceId)
         "
@@ -83,12 +99,6 @@ export default {
           label: "",
         },
       },
-      isFirstLoad: true,
-      loadersDelay: 1000,
-
-      // Авторизация
-      esiaLink: "",
-      esiaLogoutLink: "",
       userInfoFromResponse: {
         shortInfo: {
           userId: null,
@@ -100,6 +110,13 @@ export default {
         },
         selectedRole: {},
       },
+      userSelectedRoleId: "",
+      isFirstLoad: true,
+      loadersDelay: 1000,
+
+      // Авторизация
+      esiaLink: "",
+      esiaLogoutLink: "",
       authError: {
         type: "",
         text: "",
@@ -173,6 +190,19 @@ export default {
         comment: "",
         theme: "secondary",
       },
+      appForm: {
+        active: false,
+        data: {},
+        form: {
+          actions: [],
+          id: 0,
+          modelId: 0,
+          scheme: {},
+        },
+        id: 0,
+        orderId: "",
+        status: "",
+      },
 
       // Сообщения
       messagesServiceId: 1,
@@ -228,21 +258,6 @@ export default {
         comment: "",
         theme: "secondary",
       },
-
-      // Текущее заявление
-      appForm: {
-        active: false,
-        data: {},
-        form: {
-          actions: [],
-          id: 0,
-          modelId: 0,
-          scheme: {},
-        },
-        id: 0,
-        orderId: "",
-        status: "",
-      },
       messageForm: {
         active: false,
         data: {},
@@ -256,6 +271,173 @@ export default {
         orderId: "",
         status: "",
       },
+
+      // "Экспертизы"
+      expertisesServiceId: 2,
+      expertisesTable: {
+        columnsList: [
+          "№ заявления",
+          "ФИО педагогического работника",
+          "Дата начала экспертизы",
+          "Срок окончания экспертизы",
+          "Дата окончания экспертизы",
+          "Результат экспертизы",
+          "Статус",
+        ],
+        primaryColumn: "№ заявления",
+        rowsList: [
+          [
+            "0001",
+            "Иванов А.П.",
+            "01.08.2022",
+            "01.10.2022",
+            "---",
+            "---",
+            "В работе",
+          ],
+          [
+            "0002",
+            "Попов И.С.",
+            "05.08.2022",
+            "05.10.2022",
+            "12.08.2022",
+            "Положительный",
+            "Завершена",
+          ],
+          [
+            "0003",
+            "Кузнецова Н.Б.",
+            "09.08.2022",
+            "09.10.2022",
+            "---",
+            "---",
+            "Черновик",
+          ],
+        ],
+        sortColumn: "",
+        ascendingSortOrder: false,
+        filters: [],
+        pagination: {
+          itemsTotal: 0,
+          page: 1,
+          pageSize: 10,
+          itemsPerPage: [10, 25, 50],
+        },
+      },
+      expertisesLoader: {
+        isLoading: false,
+        isResponse: false,
+        comment: "",
+        theme: "secondary",
+      },
+      expertiseForm: {
+        active: false,
+        data: {},
+        form: {
+          actions: [],
+          id: 0,
+          modelId: 0,
+          scheme: {},
+        },
+        id: 0,
+        orderId: "",
+        status: "",
+      },
+
+      // "Аналитика"
+      analyticsServiceId: 2,
+      analyticsTable: {
+        columnsList: [
+          "Количество проведенных экспертиз",
+          "Количество положительных результатов",
+          "Количество отрицательных результатов",
+          "Количество совпадений",
+        ],
+        primaryColumn: "Количество проведенных экспертиз",
+        rowsList: [["30", "5", "10", "15"]],
+        sortColumn: "",
+        ascendingSortOrder: false,
+        filters: [],
+        pagination: {
+          itemsTotal: 0,
+          page: 1,
+          pageSize: 10,
+          itemsPerPage: [10, 25, 50],
+        },
+      },
+      analyticsLoader: {
+        isLoading: false,
+        isResponse: false,
+        comment: "",
+        theme: "secondary",
+      },
+
+      // "Журнал действий"
+      logsServiceId: 2,
+      logsTable: {
+        columnsList: [
+          "Id записи",
+          "Дата события",
+          "Описание",
+          "Событие",
+          "Изменения",
+        ],
+        primaryColumn: "Id записи",
+        rowsList: [
+          [
+            "0001",
+            "01.08.2022",
+            "Изменение ошибочной записи",
+            "Изменение записи",
+            "Изменение даты рождения",
+          ],
+          [
+            "0002",
+            "05.08.2022",
+            "Изменение статуса",
+            "Проведение аттестации",
+            "Положительный результат аттестации",
+          ],
+          [
+            "0003",
+            "09.08.2022",
+            "Изменение статуса",
+            "Проведение аттестации",
+            "Отрицательный результат аттестации",
+          ],
+        ],
+        sortColumn: "",
+        ascendingSortOrder: false,
+        filters: [],
+        pagination: {
+          itemsTotal: 0,
+          page: 1,
+          pageSize: 10,
+          itemsPerPage: [10, 25, 50],
+        },
+      },
+      logsLoader: {
+        isLoading: false,
+        isResponse: false,
+        comment: "",
+        theme: "secondary",
+      },
+      logForm: {
+        active: false,
+        data: {},
+        form: {
+          actions: [],
+          id: 0,
+          modelId: 0,
+          scheme: {},
+        },
+        id: 0,
+        orderId: "",
+        status: "",
+      },
+
+      // Текущее заявление
+
       formOptions: {
         i18n: {
           lng: "ru",
@@ -368,6 +550,7 @@ export default {
             browse: "выберите с диска",
           },
         },
+        readOnly: false,
       },
       isLoading: false,
       loadingComment: "Загрузка заявления",
@@ -504,13 +687,6 @@ export default {
                 "Проверка авторизованности пользователя не удалась. Ошибка со стороны открытой части при отправке запроса получения ссылки на вход ЕСИА на закрытую часть"
               );
             }
-          }
-        })
-        .then(() => {
-          if (this.user.fullInfo.roles.length > 0) {
-            this.user.selectedRole = this.getRoleById(
-              this.user.shortInfo.roleId
-            );
           }
         });
     },
@@ -651,34 +827,43 @@ export default {
     getUserInfo() {
       axios(this.url + "core/get-user", {
         withCredentials: true,
-      }).then((response) => {
-        console.groupCollapsed("Данные пользователя");
-        console.log(response.data);
-        console.groupEnd();
-        this.userInfoFromResponse.fullInfo = response.data;
-        this.user = this.userInfoFromResponse;
-        if (this.userInfoFromResponse.fullInfo.roles.length === 0) {
-          // this.$refs["modal-auth"].hide();
-          console.log("У пользователя отсутствуют роли");
-        } else if (this.userInfoFromResponse.fullInfo.roles.length === 1) {
-          // this.$refs["modal-auth"].hide();
-          this.signInWithRole(this.userInfoFromResponse.fullInfo.roles[0]);
-          console.groupCollapsed(
-            "Пользователь авторизован с единственной имеющейся ролью"
-          );
-          console.log(this.userInfoFromResponse.fullInfo.roles[0]);
+      })
+        .then((response) => {
+          console.groupCollapsed("Данные пользователя");
+          console.log(response.data);
           console.groupEnd();
-        } else {
-          let currentRole = this.selectRoleById(
-            response.data.roles,
-            this.userInfoFromResponse.shortInfo.roleId
-          );
-          if (currentRole) {
-            // this.signInWithRole(currentRole, hideModal);
-            this.signInWithRole(currentRole);
+          this.userInfoFromResponse.fullInfo = response.data;
+          this.user = this.userInfoFromResponse;
+          if (this.userInfoFromResponse.fullInfo.roles.length === 0) {
+            // this.$refs["modal-auth"].hide();
+            console.log("У пользователя отсутствуют роли");
+          } else if (this.userInfoFromResponse.fullInfo.roles.length === 1) {
+            // this.$refs["modal-auth"].hide();
+            this.signInWithRole(this.userInfoFromResponse.fullInfo.roles[0]);
+            console.groupCollapsed(
+              "Пользователь авторизован с единственной имеющейся ролью"
+            );
+            console.log(this.userInfoFromResponse.fullInfo.roles[0]);
+            console.groupEnd();
+          } else {
+            let currentRole = this.selectRoleById(
+              response.data.roles,
+              this.userInfoFromResponse.shortInfo.roleId
+            );
+            if (currentRole) {
+              // this.signInWithRole(currentRole, hideModal);
+              this.signInWithRole(currentRole);
+            }
           }
-        }
-      });
+        })
+        .then(() => {
+          if (this.user.fullInfo.roles.length > 0) {
+            this.user.selectedRole = this.getRoleById(
+              this.user.shortInfo.roleId
+            );
+            this.userSelectedRoleId = this.user.shortInfo.roleId;
+          }
+        });
     },
 
     // Выход
@@ -941,6 +1126,7 @@ export default {
           } else if (serviceId === this.messagesServiceId) {
             this.messageForm = newForm;
           }
+          this.formOptions.readOnly = !response.data.applicationDTO.active;
         })
         .then(() => {
           this.isResponse = true;
@@ -988,7 +1174,7 @@ export default {
       }
       const request = {
         actionId: actionId,
-        userId: 13,
+        // userId: this.user.shortInfo.userId,
         appId: formId,
         data: formData,
       };
@@ -1037,6 +1223,7 @@ export default {
       } else if (modelId === this.messagesServiceId) {
         this.messageForm = nextForm;
       }
+      this.formOptions.readOnly = !response.data.applicationDTO.active;
       this.successComment = "Заявление отправлено!";
     },
 
@@ -1132,6 +1319,39 @@ export default {
       this.loaderStart(this.messagesLoader, "Загрузка сообщения");
       setTimeout(this.loaderFinish, this.loadersDelay, this.messagesLoader);
     },
+
+    // "Экспертизы"
+    openExistingExpertise(appsServiceId, appId) {
+      // this.getStartForm(appsServiceId, appId);
+      console.log(appsServiceId + " - " + appId);
+      this.loaderStart(this.expertisesLoader, "Загрузка деталей экспертизы");
+      setTimeout(this.loaderFinish, this.loadersDelay, this.expertisesLoader);
+    },
+
+    // Журнал сообщений
+    openExistingLog(appsServiceId, appId) {
+      // this.getStartForm(appsServiceId, appId);
+      console.log(appsServiceId + " - " + appId);
+      this.loaderStart(this.logsLoader, "Загрузка записи журнала");
+      setTimeout(this.loaderFinish, this.loadersDelay, this.logsLoader);
+    },
+
+    // Получение списка мер
+    getServises() {
+      axios
+        .get(
+          this.url +
+            "serv/get-services?pageNum=0&pageSize=100&sortCol=id&sortDesc=false&active=true"
+        )
+        .then((response) => {
+          // this.measuresCardsList = response.data.content;
+          // this.itemsTotal = response.data.totalElements;
+          console.groupCollapsed("Список мер поддержки");
+          console.log(response.data);
+          console.groupEnd();
+          // window.scrollTo(0, 0);
+        });
+    },
   },
 
   watch: {
@@ -1153,6 +1373,9 @@ export default {
   mounted: function () {
     // Запрос информации о пользователе
     this.getLogin();
+
+    // Получение бизнес-процессов (для справки)
+    this.getServises();
   },
 };
 </script>

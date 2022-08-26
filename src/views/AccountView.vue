@@ -493,13 +493,13 @@
 
       <!--      Вкладки эксперта-->
       <template v-if="user.shortInfo.roleId === 39927">
-        <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <ul class="nav nav-tabs" id="expert-tab" role="tablist">
           <li class="nav-item" role="presentation">
             <button
               class="nav-link active"
               id="profile-expert-tab"
-              data-bs-toggle="tab"
-              data-bs-target="#profile-expert-tab-pane"
+              data-toggle="tab"
+              data-target="#profile-expert-tab-pane"
               type="button"
               role="tab"
               aria-controls="profile-expert-tab-pane"
@@ -512,8 +512,8 @@
             <button
               class="nav-link"
               id="expertises-expert-tab"
-              data-bs-toggle="tab"
-              data-bs-target="#expertises-expert-tab-pane"
+              data-toggle="tab"
+              data-target="#expertises-expert-tab-pane"
               type="button"
               role="tab"
               aria-controls="expertises-expert-tab-pane"
@@ -526,8 +526,8 @@
             <button
               class="nav-link"
               id="analitics-expert-tab"
-              data-bs-toggle="tab"
-              data-bs-target="#analitics-expert-tab-pane"
+              data-toggle="tab"
+              data-target="#analitics-expert-tab-pane"
               type="button"
               role="tab"
               aria-controls="analitics-expert-tab-pane"
@@ -540,8 +540,8 @@
             <button
               class="nav-link"
               id="actions-expert-tab"
-              data-bs-toggle="tab"
-              data-bs-target="#actions-expert-tab-pane"
+              data-toggle="tab"
+              data-target="#actions-expert-tab-pane"
               type="button"
               role="tab"
               aria-controls="actions-expert-tab-pane"
@@ -560,7 +560,7 @@
             tabindex="0"
           >
             <form class="row g-3">
-              <div class="col-6">
+              <div class="col-6 form-group">
                 <label for="ex-lastName" class="form-label from-closed-server"
                   >Фамилия</label
                 >
@@ -572,7 +572,7 @@
                   v-model="expertProfile.lastName"
                 />
               </div>
-              <div class="col-6">
+              <div class="col-6 form-group">
                 <label for="ex-firstName" class="form-label from-closed-server"
                   >Имя</label
                 >
@@ -584,7 +584,7 @@
                   v-model="expertProfile.firstName"
                 />
               </div>
-              <div class="col-6">
+              <div class="col-6 form-group">
                 <label for="ex-middleName" class="form-label from-closed-server"
                   >Отчество</label
                 >
@@ -596,7 +596,7 @@
                   v-model="expertProfile.middleName"
                 />
               </div>
-              <div class="col-6">
+              <div class="col-6 form-group">
                 <label for="ex-snils" class="form-label from-closed-server"
                   >СНИЛС</label
                 >
@@ -608,7 +608,7 @@
                   v-model="expertProfile.snils"
                 />
               </div>
-              <div class="col-6">
+              <div class="col-6 form-group">
                 <label for="ex-email" class="form-label from-closed-server"
                   >Электронная почта</label
                 >
@@ -620,7 +620,7 @@
                   v-model="expertProfile.email"
                 />
               </div>
-              <div class="col-6">
+              <div class="col-6 form-group">
                 <label for="ex-phone" class="form-label">Телефон</label>
                 <input
                   type="tel"
@@ -630,13 +630,13 @@
                   v-model="expertProfile.phone"
                 />
               </div>
-              <div class="col-6">
+              <div class="col-6 form-group">
                 <label for="ex-region" class="form-label"
                   >Муниципальное образование</label
                 >
                 <select
                   id="ex-region"
-                  class="form-select"
+                  class="form-control"
                   :disabled="!editableProfile"
                   v-model="expertProfile.region"
                 >
@@ -646,13 +646,13 @@
                   <option>Забайкальский край</option>
                 </select>
               </div>
-              <div class="col-6">
+              <div class="col-6 form-group">
                 <label for="ex-workPosition" class="form-label"
                   >Должность</label
                 >
                 <select
                   id="ex-workPosition"
-                  class="form-select"
+                  class="form-control"
                   :disabled="!editableProfile"
                   v-model="expertProfile.workPosition"
                 >
@@ -662,13 +662,13 @@
                   <option>Министр</option>
                 </select>
               </div>
-              <div class="col-6">
+              <div class="col-6 form-group">
                 <label for="ex-organization" class="form-label"
                   >Организация</label
                 >
                 <select
                   id="ex-organization"
-                  class="form-select"
+                  class="form-control"
                   :disabled="!editableProfile"
                   v-model="expertProfile.organization"
                 >
@@ -677,13 +677,13 @@
                   <option>Отдел образования Администрации</option>
                 </select>
               </div>
-              <div class="col-6">
+              <div class="col-6 form-group">
                 <label for="ex-educationSubject" class="form-label"
                   >Предметная область</label
                 >
                 <select
                   id="ex-educationSubject"
-                  class="form-select"
+                  class="form-control"
                   :disabled="!editableProfile"
                   v-model="expertProfile.educationSubject"
                 >
@@ -693,7 +693,7 @@
                   <option>Химия и биология</option>
                 </select>
               </div>
-              <div class="col-6">
+              <div class="col-6 form-group">
                 <label for="rating" class="form-label">Рейтинг</label>
                 <input
                   type="number"
@@ -703,13 +703,13 @@
                   v-model="expertProfile.rating"
                 />
               </div>
-              <div class="col-6">
+              <div class="col-6 form-group">
                 <label for="ex-activity" class="form-label">
                   Статус активности</label
                 >
                 <select
                   id="ex-activity"
-                  class="form-select"
+                  class="form-control"
                   :disabled="!editableProfile"
                   v-model="expertProfile.activity"
                 >
@@ -718,7 +718,7 @@
                   <option>Не активен</option>
                 </select>
               </div>
-              <div class="col-12">
+              <div class="col-12 form-group">
                 <div class="form-check">
                   <input
                     class="form-check-input"
@@ -733,7 +733,7 @@
               </div>
             </form>
             <button
-              class="btn btn-primary mt-3"
+              class="btn btn-primary"
               @click="editableProfile = !editableProfile"
             >
               {{
@@ -751,9 +751,9 @@
             <TableBootstrapCustom
               hover
               bordered
-              :table-data="tableExpertises"
-              @row-click="openModal('Детали экспертизы')"
-              @sort-table="sortTable(tableExpertises, $event)"
+              :table-data="expertisesTable"
+              @row-click="openExistingExpertise('Детали экспертизы')"
+              @sort-table="sortTable(expertisesTable, $event, $event)"
             />
           </div>
           <div
@@ -763,7 +763,7 @@
             aria-labelledby="analitics-expert-tab"
             tabindex="0"
           >
-            <TableBootstrapCustom hover bordered :table-data="tableAnalytics" />
+            <TableBootstrapCustom hover bordered :table-data="analyticsTable" />
           </div>
           <div
             class="tab-pane fade pt-3"
@@ -775,9 +775,9 @@
             <TableBootstrapCustom
               hover
               bordered
-              :table-data="tableLogs"
-              @row-click="openModal('Детали действия')"
-              @sort-table="sortTable(tableLogs, $event)"
+              :table-data="logsTable"
+              @row-click="openExistingLog('Детали действия', $event)"
+              @sort-table="sortTable(logsTable, $event)"
             />
           </div>
         </div>
@@ -1023,161 +1023,175 @@
             </form>
           </template>
 
-          <!--          Заполненная форма экспертизы-->
-          <form v-if="modal.modalTitle === 'Детали экспертизы'">
-            <div class="row">
-              <div class="col-6">
-                <label for="exp-form-view-number" class="form-label"
-                  >№ заявления</label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  id="exp-form-view-number"
-                  disabled
-                  value="0001"
-                />
+          <LoaderBootstrapCustomBS46
+            v-if="expertisesLoader.isLoading && !expertisesLoader.isResponse"
+            :comment="expertisesLoader.comment"
+            :theme="expertisesLoader.theme"
+          />
+          <template v-else>
+            <!--          Заполненная форма экспертизы-->
+            <form v-if="modal.modalTitle === 'Детали экспертизы'">
+              <div class="row">
+                <div class="col-6">
+                  <label for="exp-form-view-number" class="form-label"
+                    >№ заявления</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="exp-form-view-number"
+                    disabled
+                    value="0001"
+                  />
+                </div>
+                <div class="col-6">
+                  <label for="exp-form-view-fullName" class="form-label"
+                    >ФИО педагогического работника</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="exp-form-view-fullName"
+                    disabled
+                    value="Иванов А.П."
+                  />
+                </div>
+                <div class="col-6">
+                  <label for="exp-form-view-startDate" class="form-label"
+                    >Дата начала экспертизы</label
+                  >
+                  <input
+                    type="date"
+                    class="form-control"
+                    id="exp-form-view-startDate"
+                    disabled
+                    value="2022-08-01"
+                  />
+                </div>
+                <div class="col-6">
+                  <label for="exp-form-view-deadlineDate" class="form-label"
+                    >Срок окончания экспертизы</label
+                  >
+                  <input
+                    type="date"
+                    class="form-control"
+                    id="exp-form-view-deadlineDate"
+                    disabled
+                    value="2022-10-01"
+                  />
+                </div>
+                <div class="col-6">
+                  <label for="exp-form-view-finishDate" class="form-label"
+                    >Дата окончания экспертизы</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="exp-form-view-finishDate"
+                    disabled
+                    value="---"
+                  />
+                </div>
+                <div class="col-6">
+                  <label for="exp-form-view-result" class="form-label"
+                    >Результат</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="exp-form-view-result"
+                    disabled
+                    value="---"
+                  />
+                </div>
+                <div class="col-6">
+                  <label for="exp-form-view-status" class="form-label"
+                    >Статус</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="exp-form-view-status"
+                    disabled
+                    value="В работе"
+                  />
+                </div>
               </div>
-              <div class="col-6">
-                <label for="exp-form-view-fullName" class="form-label"
-                  >ФИО педагогического работника</label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  id="exp-form-view-fullName"
-                  disabled
-                  value="Иванов А.П."
-                />
-              </div>
-              <div class="col-6">
-                <label for="exp-form-view-startDate" class="form-label"
-                  >Дата начала экспертизы</label
-                >
-                <input
-                  type="date"
-                  class="form-control"
-                  id="exp-form-view-startDate"
-                  disabled
-                  value="2022-08-01"
-                />
-              </div>
-              <div class="col-6">
-                <label for="exp-form-view-deadlineDate" class="form-label"
-                  >Срок окончания экспертизы</label
-                >
-                <input
-                  type="date"
-                  class="form-control"
-                  id="exp-form-view-deadlineDate"
-                  disabled
-                  value="2022-10-01"
-                />
-              </div>
-              <div class="col-6">
-                <label for="exp-form-view-finishDate" class="form-label"
-                  >Дата окончания экспертизы</label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  id="exp-form-view-finishDate"
-                  disabled
-                  value="---"
-                />
-              </div>
-              <div class="col-6">
-                <label for="exp-form-view-result" class="form-label"
-                  >Результат</label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  id="exp-form-view-result"
-                  disabled
-                  value="---"
-                />
-              </div>
-              <div class="col-6">
-                <label for="exp-form-view-status" class="form-label"
-                  >Статус</label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  id="exp-form-view-status"
-                  disabled
-                  value="В работе"
-                />
-              </div>
-            </div>
-          </form>
+            </form>
+          </template>
 
-          <!--          Заполненная форма действия-->
-          <form v-if="modal.modalTitle === 'Детали действия'">
-            <div class="row">
-              <div class="col-6">
-                <label for="logs-form-view-number" class="form-label"
-                  >Id записи</label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  id="logs-form-view-number"
-                  disabled
-                  value="0001"
-                />
+          <LoaderBootstrapCustomBS46
+            v-if="logsLoader.isLoading && !logsLoader.isResponse"
+            :comment="logsLoader.comment"
+            :theme="logsLoader.theme"
+          />
+          <template v-else>
+            <!--          Заполненная форма действия-->
+            <form v-if="modal.modalTitle === 'Детали действия'">
+              <div class="row">
+                <div class="col-6">
+                  <label for="logs-form-view-number" class="form-label"
+                    >Id записи</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="logs-form-view-number"
+                    disabled
+                    value="0001"
+                  />
+                </div>
+                <div class="col-6">
+                  <label for="logs-form-view-date" class="form-label"
+                    >Дата события</label
+                  >
+                  <input
+                    type="date"
+                    class="form-control"
+                    id="logs-form-view-date"
+                    disabled
+                    value="2022-08-01"
+                  />
+                </div>
+                <div class="col-6">
+                  <label for="logs-form-view-description" class="form-label"
+                    >Описание</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="logs-form-view-description"
+                    disabled
+                    value="Изменения ошибочной записи"
+                  />
+                </div>
+                <div class="col-6">
+                  <label for="logs-form-view-event" class="form-label"
+                    >Событие</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="logs-form-view-event"
+                    disabled
+                    value="Изменение записи"
+                  />
+                </div>
+                <div class="col-6">
+                  <label for="logs-form-view-changes" class="form-label"
+                    >Изменения</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="logs-form-view-changes"
+                    disabled
+                    value="Изменение даты рождения"
+                  />
+                </div>
               </div>
-              <div class="col-6">
-                <label for="logs-form-view-date" class="form-label"
-                  >Дата события</label
-                >
-                <input
-                  type="date"
-                  class="form-control"
-                  id="logs-form-view-date"
-                  disabled
-                  value="2022-08-01"
-                />
-              </div>
-              <div class="col-6">
-                <label for="logs-form-view-description" class="form-label"
-                  >Описание</label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  id="logs-form-view-description"
-                  disabled
-                  value="Изменения ошибочной записи"
-                />
-              </div>
-              <div class="col-6">
-                <label for="logs-form-view-event" class="form-label"
-                  >Событие</label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  id="logs-form-view-event"
-                  disabled
-                  value="Изменение записи"
-                />
-              </div>
-              <div class="col-6">
-                <label for="logs-form-view-changes" class="form-label"
-                  >Изменения</label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  id="logs-form-view-changes"
-                  disabled
-                  value="Изменение даты рождения"
-                />
-              </div>
-            </div>
-          </form>
+            </form>
+          </template>
         </template>
       </ModalBootstrapCustom46>
 
@@ -1214,6 +1228,18 @@ export default {
     "messageForm",
     "messageFormOptions",
     "messagesLoader",
+    "expertisesTable",
+    "expertiseForm",
+    "expertiseFormOptions",
+    "expertisesLoader",
+    "analyticsTable",
+    "analyticForm",
+    "analyticFormOptions",
+    "analyticsLoader",
+    "logsTable",
+    "logForm",
+    "logFormOptions",
+    "logsLoader",
   ],
   data() {
     return {
@@ -1266,86 +1292,6 @@ export default {
         rating: 5,
         activity: "Активен",
         mailing: false,
-      },
-      tableApps: {
-        columnsList: [
-          "№ сообщения",
-          "Наименование услуги",
-          "Дата создания",
-          "Номер ЕПГУ",
-          "Статус",
-          "Дата изменения статуса",
-        ],
-        primaryColumn: "№ сообщения",
-        rowsList: [
-          [
-            "0001",
-            "Аттестация педагогических работников",
-            "01.08.2022",
-            "540118",
-            "В работе",
-            "05.08.2022",
-          ],
-          [
-            "0002",
-            "Аттестация педагогических работников",
-            "05.08.2022",
-            "540115",
-            "В работе",
-            "05.08.2022",
-          ],
-          [
-            "0003",
-            "Аттестация педагогических работников",
-            "09.08.2022",
-            "540120",
-            "Черновик",
-            "10.08.2022",
-          ],
-        ],
-        sortColumn: "",
-        ascendingSortOrder: false,
-        filters: [],
-      },
-      tableMessages: {
-        columnsList: [
-          "№ сообщения",
-          "Дата создания сообщения",
-          "Тема",
-          "Дата входа в статус",
-          "Статус",
-          "Срок отправки ответа",
-        ],
-        primaryColumn: "№ сообщения",
-        rowsList: [
-          [
-            "0123",
-            "01.08.2022",
-            "Детали аттестации",
-            "03.08.2022",
-            "В работе",
-            "05.08.2022",
-          ],
-          [
-            "0125",
-            "05.08.2022",
-            "Аттестация педагогических работников",
-            "05.08.2022",
-            "В работе",
-            "07.08.2022",
-          ],
-          [
-            "0128",
-            "09.08.2022",
-            "Аттестация педагогических работников",
-            "07.08.2022",
-            "Черновик",
-            "10.08.2022",
-          ],
-        ],
-        sortColumn: "",
-        ascendingSortOrder: false,
-        filters: [],
       },
       tableExpertises: {
         columnsList: [
@@ -1503,6 +1449,15 @@ export default {
     },
     createNewMessage(modalTitle) {
       this.$emit("create-new-message");
+      this.openModal(modalTitle);
+    },
+    openExistingExpertise(modalTitle, appId) {
+      console.log("openExistingExpertise");
+      this.$emit("open-existing-expertise", appId);
+      this.openModal(modalTitle);
+    },
+    openExistingLog(modalTitle, appId) {
+      this.$emit("open-existing-log", appId);
       this.openModal(modalTitle);
     },
     openModal(modalTitle) {

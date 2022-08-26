@@ -1,0 +1,2 @@
+route add 195.206.43.5 MASK 255.255.255.255 10.8.0.133
+plink.exe -C -N -P 22 195.206.43.5 -l isands -pw ke#b7y67Y4eH38vt -L 80:localhost:80
