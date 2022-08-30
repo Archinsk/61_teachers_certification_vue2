@@ -1,7 +1,7 @@
 <template>
   <form @submit.prevent>
-    <div class="mb-3">
-      <label for="inputLogin" class="form-label">Экранное имя</label>
+    <div class="form-group mb-3">
+      <label for="inputLogin">Экранное имя</label>
       <input
         autocomplete="on"
         v-model.trim="signInData.login"
@@ -9,11 +9,15 @@
         id="inputLogin"
         class="form-control"
       />
-      <div v-if="authError.type === 'login'" id="emailHelp" class="form-text">
+      <small
+        v-if="authError.type === 'login'"
+        id="emailHelp"
+        class="form-text text-muted"
+      >
         {{ authError.text }}
-      </div>
+      </small>
     </div>
-    <div class="mb-3">
+    <div class="form-group mb-3">
       <label for="inputPassword" class="form-label">Пароль</label>
       <div class="input-group">
         <input
@@ -37,9 +41,9 @@
           </button>
         </div>
       </div>
-      <div v-if="authError.type === 'password'" class="form-text">
+      <small v-if="authError.type === 'password'" class="form-text text-muted">
         {{ authError.text }}
-      </div>
+      </small>
     </div>
     <a href="#" class="d-block mt-2 mb-3">Забыли пароль?</a>
     <button
@@ -66,13 +70,13 @@
 <script>
 export default {
   name: "TheSignInFormBS46",
-  props: ["authError"],
+  props: ["signData", "authError"],
 
   data() {
     return {
       signInData: {
-        login: "",
-        password: "",
+        login: this.signData.login,
+        password: this.signData.password,
       },
       passwordVisibility: false,
     };

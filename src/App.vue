@@ -83,6 +83,10 @@ export default {
     return {
       url: "https://teachers.coko38.ru/api/",
       user: {
+        signInData: {
+          login: "testuser01",
+          password: "12345",
+        },
         shortInfo: {
           userId: null,
           userName: "",
@@ -98,17 +102,6 @@ export default {
           key: "",
           label: "",
         },
-      },
-      userInfoFromResponse: {
-        shortInfo: {
-          userId: null,
-          userName: "",
-          typeAuth: "",
-        },
-        fullInfo: {
-          roles: [],
-        },
-        selectedRole: {},
       },
       userSelectedRoleId: "",
       isFirstLoad: true,
@@ -655,7 +648,6 @@ export default {
   },
 
   methods: {
-    // Вход
     // Косвенная проверка авторизованности пользователя, получение ссылки на вход через ЕСИА (переход на страницу авторизации ЕСИА - вынести во внешний метод)
     getLogin() {
       axios(this.url + "auth/get-login", {
@@ -686,6 +678,10 @@ export default {
               console.log(
                 "Проверка авторизованности пользователя не удалась. Ошибка со стороны открытой части при отправке запроса получения ссылки на вход ЕСИА на закрытую часть"
               );
+            } else {
+              console.log(
+                "Непредвиденная ошибка при выполнении запроса auth/get-login"
+              );
             }
           }
         });
@@ -693,21 +689,15 @@ export default {
     // Вход по логину и паролю
     signInLocal(signInData) {
       this.loaderStart(this.authLoader, "Проверка данных пользователя");
-      const request = {
-        login: signInData.login,
-        password: signInData.password,
-      };
+      this.user.signInData = signInData;
       axios
-        .post(this.url + "auth/local-login", request, {
+        .post(this.url + "auth/local-login", signInData, {
           withCredentials: true,
         })
         .then(() => {
           this.getUserId();
           this.getUserInfo();
-        })
-        .then(() => {
-          this.user = this.userInfoFromResponse;
-          this.authErrorReset();
+          this.signInDataReset();
           // this.$refs["nav-sidebar"].hide();
         })
         .catch((error) => {
@@ -742,6 +732,14 @@ export default {
               "server",
               "Произошла ошибка при выполнении запроса авторизации. Пожалуйста обратитесь к администратору системы. Код ошибки - 501"
             );
+          } else {
+            console.log(
+              "Непредвиденная ошибка при выполнении запроса локальной авторизации"
+            );
+            this.authErrorLog(
+              "server",
+              "Произошла непредвиденная ошибка при выполнении запроса авторизации. Пожалуйста обратитесь к администратору системы"
+            );
           }
         })
         .then(() => {
@@ -753,7 +751,12 @@ export default {
       this.authError.type = errorType;
       this.authError.text = errorComment;
     },
-    authErrorReset() {
+    // Сброс данных авторизации и ошибок авторизации
+    signInDataReset() {
+      this.user.signInData = {
+        login: "",
+        password: "",
+      };
       this.authErrorLog("", "");
     },
 
@@ -765,22 +768,84 @@ export default {
           withCredentials: true,
         })
         .then((response) => {
-          this.userInfoFromResponse.shortInfo = response.data;
-          this.userInfoFromResponse.selectedRole = role;
+          this.user.shortInfo = response.data;
+          this.user.selectedRole = role;
           this.cleanSignInForm();
-          console.log('Пользователь авторизован с ролью "' + role.label + '"');
+          console.groupCollapsed("Пользователь авторизован с ролью");
+          console.log(role);
+          console.groupEnd();
         });
     },
-    selectRoleById(roles, roleId) {
-      for (let i = 0; i < roles.length; i++) {
-        if (roleId === roles[i].id) {
-          console.groupCollapsed("Пользователь уже авторизован с ролью");
-          console.log(roles[i]);
+
+    // Получение информации о пользователе
+    getUserId() {
+      axios(this.url + "auth/get-user", {
+        withCredentials: true,
+      })
+        .then((response) => {
+          console.groupCollapsed("Идентификатор пользователя");
+          console.log(response.data);
           console.groupEnd();
-          return roles[i];
-        }
-      }
+          this.user.shortInfo = response.data;
+        })
+        .catch((error) => {
+          if (error.response) {
+            if (error.response.status === 404) {
+              console.log("Данные текущего пользователя не найдены");
+            } else {
+              console.log(
+                "Непредвиденная ошибка при выполнении запроса auth/get-user"
+              );
+            }
+          }
+        });
     },
+    getUserInfo() {
+      axios(this.url + "core/get-user", {
+        withCredentials: true,
+      })
+        .then((response) => {
+          console.groupCollapsed("Данные пользователя");
+          console.log(response.data);
+          console.groupEnd();
+          this.user.fullInfo = response.data;
+          if (this.user.fullInfo.roles.length === 0) {
+            // this.$refs["modal-auth"].hide();
+            console.log("У пользователя отсутствуют роли");
+          } else {
+            let currentRole = this.getRoleById(this.user.shortInfo.roleId);
+            if (currentRole) {
+              this.initUserRole(currentRole);
+            }
+          }
+        })
+        .catch((error) => {
+          if (error.response) {
+            if (error.response.status === 404) {
+              console.log(
+                "Ошибка запроса данных текущего пользователя неавторизованным пользователем"
+              );
+            } else if (error.response.status === 401) {
+              console.log(
+                "Ошибка получения данных при выполнении запроса данных текущего пользователя"
+              );
+            } else {
+              console.log(
+                "Непредвиденная ошибка при выполнении запроса core/get-user"
+              );
+            }
+          }
+        });
+    },
+    // Присвоение текущей роли пользователю
+    initUserRole(role) {
+      this.user.selectedRole = role;
+      this.userSelectedRoleId = this.user.shortInfo.roleId;
+      console.groupCollapsed("Пользователь проинициализирован с ролью");
+      console.log(role);
+      console.groupEnd();
+    },
+
     // Смена роли пользователя
     setRole(roleId) {
       axios
@@ -803,67 +868,17 @@ export default {
         });
     },
     getRoleById(roleId) {
-      let role = {};
-      this.user.fullInfo.roles.forEach(function (roleItem) {
+      let role;
+      this.user.fullInfo.roles.some(function (roleItem) {
         if (roleItem.id === roleId) {
           role = roleItem;
+          return roleItem;
         }
       });
+      if (!role) {
+        console.log(`Роль по идентификатору ${roleId} не найдена `);
+      }
       return role;
-    },
-
-    // Получение информации о пользователе
-    getUserId() {
-      axios(this.url + "auth/get-user", {
-        withCredentials: true,
-      }).then((response) => {
-        console.groupCollapsed("Идентификатор пользователя");
-        console.log(response.data);
-        console.groupEnd();
-        this.userInfoFromResponse.shortInfo = response.data;
-      });
-    },
-    // getUserInfo(hideModal = true) {
-    getUserInfo() {
-      axios(this.url + "core/get-user", {
-        withCredentials: true,
-      })
-        .then((response) => {
-          console.groupCollapsed("Данные пользователя");
-          console.log(response.data);
-          console.groupEnd();
-          this.userInfoFromResponse.fullInfo = response.data;
-          this.user = this.userInfoFromResponse;
-          if (this.userInfoFromResponse.fullInfo.roles.length === 0) {
-            // this.$refs["modal-auth"].hide();
-            console.log("У пользователя отсутствуют роли");
-          } else if (this.userInfoFromResponse.fullInfo.roles.length === 1) {
-            // this.$refs["modal-auth"].hide();
-            this.signInWithRole(this.userInfoFromResponse.fullInfo.roles[0]);
-            console.groupCollapsed(
-              "Пользователь авторизован с единственной имеющейся ролью"
-            );
-            console.log(this.userInfoFromResponse.fullInfo.roles[0]);
-            console.groupEnd();
-          } else {
-            let currentRole = this.selectRoleById(
-              response.data.roles,
-              this.userInfoFromResponse.shortInfo.roleId
-            );
-            if (currentRole) {
-              // this.signInWithRole(currentRole, hideModal);
-              this.signInWithRole(currentRole);
-            }
-          }
-        })
-        .then(() => {
-          if (this.user.fullInfo.roles.length > 0) {
-            this.user.selectedRole = this.getRoleById(
-              this.user.shortInfo.roleId
-            );
-            this.userSelectedRoleId = this.user.shortInfo.roleId;
-          }
-        });
     },
 
     // Выход
@@ -874,6 +889,63 @@ export default {
       if (this.user.shortInfo.typeAuth === "esia") {
         this.getLogout();
       }
+    },
+    // Локальный выход
+    signOutLocal() {
+      this.loaderStart(this.authLoader, "Выход из системы");
+      axios(this.url + "auth/local-logout", {
+        withCredentials: true,
+      })
+        .then(() => {
+          this.user = {
+            signInData: {
+              login: "",
+              password: "",
+            },
+            shortInfo: {
+              userId: null,
+              userName: "",
+              roleId: null,
+              orgId: null,
+              typeAuth: "",
+            },
+            fullInfo: {
+              roles: [],
+              userData: {
+                lastName: "",
+                firstName: "",
+                middleName: "",
+                birthDate: "",
+                citizenship: "",
+                gender: "",
+                snils: "",
+              },
+              contacts: [{ value: "" }],
+            },
+            selectedRole: {
+              id: null,
+              key: "",
+              label: "",
+            },
+          };
+          console.log("Выход пользователя из системы");
+        })
+        .catch((error) => {
+          if (error.response && error.response.status === 401) {
+            console.log(
+              "Попытка неавторизованного пользователя осуществить локальный выход из системы"
+            );
+          } else {
+            console.log("Непредвиденная ошибка локального выхода из системы");
+          }
+        })
+        .then(() => {
+          setTimeout(this.loaderFinish, this.loadersDelay, this.authLoader);
+          // this.$refs["nav-sidebar"].hide();
+          if (this.$route.path !== "/") {
+            this.$router.push("/");
+          }
+        });
     },
     // Выход через ЕСИА
     getLogout() {
@@ -912,61 +984,7 @@ export default {
         console.log(response);
       });
     },
-    // Локальный выход
-    signOutLocal() {
-      this.loaderStart(this.authLoader, "Выход из системы");
-      axios(this.url + "auth/local-logout", {
-        withCredentials: true,
-      })
-        .then((response) => {
-          if (response.status === 200) {
-            this.user = {
-              shortInfo: {
-                userId: null,
-                userName: "",
-                roleId: null,
-                orgId: null,
-                typeAuth: "",
-              },
-              fullInfo: {
-                roles: [],
-                userData: {
-                  lastName: "",
-                  firstName: "",
-                  middleName: "",
-                  birthDate: "",
-                  citizenship: "",
-                  gender: "",
-                  snils: "",
-                },
-                contacts: [{ value: "" }],
-              },
-              selectedRole: {
-                id: null,
-                key: "",
-                label: "",
-              },
-            };
-            console.log("Выход пользователя из системы");
-          }
-        })
-        .then(() => {
-          setTimeout(this.loaderFinish, this.loadersDelay, this.authLoader);
-        })
-        .then(() => {
-          // this.$refs["nav-sidebar"].hide();
-          if (this.$route.path !== "/") {
-            this.$router.push("/");
-          }
-        })
-        .catch((error) => {
-          if (error.response && error.response.status === 401) {
-            console.log(
-              "Попытка неавторизованного пользователя осуществить выход из системы"
-            );
-          }
-        });
-    },
+
     // Очистка ошибок
     cleanSignInForm() {
       // this.login = "";

@@ -807,6 +807,7 @@
                     ref="vueForm"
                   />
                 </div>
+
                 <div
                   v-if="appForm.form.actions && appForm.form.actions.length > 0"
                   class="col-2"

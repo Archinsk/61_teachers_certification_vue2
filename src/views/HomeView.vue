@@ -70,6 +70,7 @@
                 </div>
                 <TheSignInFormBS46
                   v-if="!isAuthUser"
+                  :sign-data="user.signInData"
                   :auth-error="authError"
                   @sign-in-local="$emit('sign-in-local', $event)"
                   @sign-in-esia="$emit('sign-in-esia', $event)"
@@ -79,17 +80,18 @@
                     Вы авторизованы как пользователь
                     <b>{{ user.shortInfo.userName }}</b>
                   </p>
-                  <p v-if="user.fullInfo.roles.length <= 1">
+                  <p v-if="user.fullInfo.roles.length === 0">
                     У пользователя отсутствуют роли
                   </p>
-                  <p v-else-if="user.fullInfo.roles.length === 1">
+                  <p
+                    v-else-if="
+                      user.fullInfo.roles.length === 1 &&
+                      user.shortInfo.roleId === user.fullInfo.roles[0].label
+                    "
+                  >
                     Текущая роль - <b>{{ user.fullInfo.roles[0].label }}</b>
                   </p>
-
-                  <form
-                    v-else-if="user.fullInfo.roles.length >= 2"
-                    @submit.prevent
-                  >
+                  <form v-else @submit.prevent>
                     <div class="form-group">
                       <label for="userRoleSelect">Роль пользователя</label>
                       <select
@@ -98,6 +100,19 @@
                         id="userRoleSelect"
                         @change="$emit('set-role', userRoleIdSelected)"
                       >
+                        <option
+                          v-if="
+                            !userRoleIdSelected ||
+                            (user.fullInfo.roles.length === 1 &&
+                              user.shortInfo.roleId !==
+                                user.fullInfo.roles[0].id)
+                          "
+                          value=""
+                          selected
+                          disabled
+                        >
+                          Выберите роль
+                        </option>
                         <option
                           v-for="role of user.fullInfo.roles"
                           :key="role.id"
@@ -190,6 +205,10 @@ export default {
     userSelectedRoleId: function () {
       this.userRoleIdSelected = this.userSelectedRoleId;
     },
+  },
+
+  mounted: function () {
+    this.userRoleIdSelected = this.userSelectedRoleId;
   },
 };
 </script>
