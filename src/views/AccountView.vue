@@ -475,6 +475,7 @@
               Отправить сообщение
             </button>
             <TableBootstrapCustom
+              pagination
               hover
               bordered
               :table-data="messagesTable"

@@ -12,7 +12,7 @@
       <small
         v-if="authError.type === 'login'"
         id="emailHelp"
-        class="form-text text-muted"
+        class="form-text text-danger"
       >
         {{ authError.text }}
       </small>
@@ -41,7 +41,7 @@
           </button>
         </div>
       </div>
-      <small v-if="authError.type === 'password'" class="form-text text-muted">
+      <small v-if="authError.type === 'password'" class="form-text text-danger">
         {{ authError.text }}
       </small>
     </div>

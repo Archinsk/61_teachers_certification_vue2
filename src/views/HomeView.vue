@@ -26,20 +26,24 @@
                 <div class="col-12 mt-2">
                   <CardBootstrapCustom class="shadow-sm">
                     <template v-slot:card-body>
-                      <a href="/">
-                        <span class="material-icons">description</span>
-                        Руководство администратора.doc
-                      </a>
+                      <div class="d-flex align-items-center">
+                        <span class="material-icons text-primary mr-3"
+                          >description</span
+                        >
+                        <a href="/"> Руководство администратора.doc </a>
+                      </div>
                     </template>
                   </CardBootstrapCustom>
                 </div>
                 <div class="col-12 mt-2">
                   <CardBootstrapCustom class="shadow-sm">
                     <template v-slot:card-body>
-                      <a href="/">
-                        <span class="material-icons">description</span>
-                        Руководство пользователя.doc
-                      </a>
+                      <div class="d-flex align-items-center">
+                        <span class="material-icons text-primary mr-3"
+                          >description</span
+                        >
+                        <a href="/"> Руководство пользователя.doc </a>
+                      </div>
                     </template>
                   </CardBootstrapCustom>
                 </div>
@@ -129,26 +133,6 @@
                   </button>
                 </template>
               </template>
-            </template>
-          </CardBootstrapCustom>
-        </div>
-        <div class="col-12 mt-4">
-          <CardBootstrapCustom header class="h-100 shadow">
-            <template v-slot:card-header>
-              <h5 class="text-uppercase mb-0">Новости</h5>
-            </template>
-            <template v-slot:card-body>
-              <div class="row">
-                <div
-                  class="news col"
-                  v-for="listItem of newsList"
-                  :key="listItem.id"
-                >
-                  <h5>{{ listItem.title }}</h5>
-                  <p>{{ listItem.text }}</p>
-                  <p>{{ listItem.datePublication }}</p>
-                </div>
-              </div>
             </template>
           </CardBootstrapCustom>
         </div>

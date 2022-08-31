@@ -16,22 +16,39 @@
       >
         <SiteLogoBS46 class="navbar-brand" />
 
-        <button
-          class="navbar-toggler btn-icon-square"
-          type="button"
-          data-toggle="collapse"
-          data-target="#navbarCollapse"
-          aria-controls="navbarCollapse"
-        >
-          <span class="material-icons">menu</span>
-        </button>
-
         <div class="collapse navbar-collapse" id="navbarCollapse">
           <NavBootstrapCustomBS46
             :nav-list="navbarItems"
             :is-auth-user="isAuthUser"
             class="navbar-nav"
           />
+        </div>
+
+        <div class="d-flex">
+          <button
+            v-if="isAuthUser && messages"
+            type="button"
+            class="btn btn-outline-secondary position-relative btn-icon-only_square mr-4"
+            data-toggle="modal"
+            data-target="#messages"
+          >
+            <!--            @click="$emit('show-messages-list')"-->
+            <span class="material-icons">mail</span
+            ><span
+              v-if="unreadMessages"
+              class="badge badge-pill badge-danger position-absolute"
+              >{{ unreadMessages }}</span
+            >
+          </button>
+          <button
+            class="navbar-toggler btn-icon-square"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbarCollapse"
+            aria-controls="navbarCollapse"
+          >
+            <span class="material-icons">menu</span>
+          </button>
         </div>
       </nav>
     </div>
@@ -56,6 +73,8 @@ export default {
     expand: Boolean,
     expandWidthPoint: String,
     isAuthUser: Boolean,
+    messages: Boolean,
+    unreadMessages: Number,
   },
 
   computed: {

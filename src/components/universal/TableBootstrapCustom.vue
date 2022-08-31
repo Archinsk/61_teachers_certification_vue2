@@ -13,15 +13,17 @@
         @row-click="$emit('row-click', $event)"
       />
     </table>
-    <PaginationBS46
-      v-show="itemsTotal > pageSize"
-      :items-total="itemsTotal"
-      :page="page"
-      :page-size="pageSize"
-      :items-per-page="itemsPerPage"
-      @change-page-size="$emit('change-page-size', $event)"
-      @change-page="$emit('change-page', $event)"
-    ></PaginationBS46>
+    <template v-if="pagination">
+      <PaginationBS46
+        v-show="itemsTotal > pageSize"
+        :items-total="itemsTotal"
+        :page="page"
+        :page-size="pageSize"
+        :items-per-page="itemsPerPage"
+        @change-page-size="$emit('change-page-size', $event)"
+        @change-page="$emit('change-page', $event)"
+      ></PaginationBS46>
+    </template>
   </div>
 </template>
 
@@ -38,6 +40,7 @@ export default {
   },
   props: {
     tableData: Object,
+    pagination: Boolean,
     itemsTotal: Number,
     page: Number,
     pageSize: Number,
@@ -79,16 +82,21 @@ export default {
     },
     sortedRows: function () {
       let rowsListCopy = JSON.parse(JSON.stringify(this.tableData.rowsList));
-      const columnIndex = this.sortedColumnIndex;
+      let columnIndex;
       function sortByColumn(a, b) {
         if (a[columnIndex] > b[columnIndex]) return 1;
         if (a[columnIndex] === b[columnIndex]) return 0;
         if (a[columnIndex] < b[columnIndex]) return -1;
       }
-      if (this.tableData.ascendingSortOrder) {
-        return rowsListCopy.sort(sortByColumn);
+      if (this.sortedColumnIndex !== -1) {
+        columnIndex = this.sortedColumnIndex;
+        if (this.tableData.ascendingSortOrder) {
+          return rowsListCopy.sort(sortByColumn);
+        } else {
+          return rowsListCopy.sort(sortByColumn).reverse();
+        }
       } else {
-        return rowsListCopy.sort(sortByColumn).reverse();
+        return rowsListCopy;
       }
     },
   },

@@ -3,11 +3,14 @@
     <TheHeaderBS46
       :navbar-items="headerNavbarList"
       :is-auth-user="isAuthUser"
+      messages
+      :unread-messages="unreadMessages"
       variant="light"
       expand
       expand-width-point="lg"
       sticky
       shadow
+      @show-messages-list="showMessagesList"
     />
     <main>
       <router-view
@@ -60,6 +63,32 @@
         "
         @invoke-action="invokeAction($event)"
       />
+      <ModalBootstrapCustomBS46 modal-id="messages" header>
+        <template v-slot:modal-title> Уведомления </template>
+        <template v-slot:modal-body>
+          <transition-group
+            name="fade-out-group"
+            tag="div"
+            class="accordion"
+            id="accordionMessages"
+          >
+            <MessagesAccordionItemBS46
+              v-for="message of sortedMessagesList"
+              :key="message.id"
+              :message="message"
+              @read-message="readMessage(message.id)"
+              @delete-message="deleteMessage(message.id)"
+            />
+          </transition-group>
+          <div
+            v-if="messagesList.length === 0"
+            class="alert alert-secondary"
+            role="alert"
+          >
+            У вас отсутствуют уведомления!
+          </div>
+        </template>
+      </ModalBootstrapCustomBS46>
     </main>
     <TheFooterBS46 :footer-contacts="footerContacts" />
   </div>
@@ -70,32 +99,67 @@ import axios from "axios";
 import TheHeaderBS46 from "./components/TheHeaderBS46";
 import TheFooterBS46 from "./components/TheFooterBS46";
 import { Modal } from "bootstrap";
+import ModalBootstrapCustomBS46 from "./components/universal/ModalBootstrapCustomBS46";
+import MessagesAccordionItemBS46 from "./components/MessagesAccordionItemBS46";
 
 export default {
   name: "TheApp",
   components: {
+    MessagesAccordionItemBS46,
+    ModalBootstrapCustomBS46,
     TheFooterBS46,
     TheHeaderBS46,
   },
-  props: ["unreadMessages"],
 
   data() {
     return {
       url: "https://teachers.coko38.ru/api/",
       user: {
         signInData: {
-          login: "testuser01",
-          password: "12345",
+          login: "",
+          password: "",
         },
         shortInfo: {
+          orgId: null,
+          roleId: null,
+          typeAuth: "",
           userId: null,
           userName: "",
-          roleId: null,
-          orgId: null,
-          typeAuth: "",
         },
         fullInfo: {
+          userId: null,
+          shortUserName: "",
           roles: [],
+          userOrganizations: [],
+          userData: {
+            oid: null,
+            lastName: "",
+            firstName: "",
+            middleName: "",
+            birthDate: "",
+            birthPlace: null,
+            gender: "",
+            snils: "",
+            inn: "",
+            updatedOn: null,
+            citizenship: null,
+            status: null,
+            trusted: false,
+            verifying: false,
+            avatar: null,
+          },
+          contacts: [
+            {
+              type: "",
+              value: "",
+              verifyingValue: null,
+              vrfStu: null,
+              vrfValStu: null,
+            },
+          ],
+          addresses: null,
+          esiaDocuments: null,
+          other: {},
         },
         selectedRole: {
           id: null,
@@ -605,6 +669,188 @@ export default {
           datePublication: "27.05.2022",
         },
       ],
+      messagesList: [
+        {
+          id: 1,
+          messageTitle: "Заголовок уведомления #",
+          messageText:
+            "Статус заявления обновлен. Подробная информация направлена на вашу электронную почту.",
+          receiptDate: "2022-07-11T10:31:33.750+00:00",
+          wasRead: false,
+          deleted: false,
+        },
+        {
+          id: 2,
+          messageTitle: "Заголовок уведомления #",
+          messageText:
+            "Статус заявления обновлен. Подробная информация направлена на вашу электронную почту.",
+          receiptDate: "2022-07-18T10:31:33.750+00:00",
+          wasRead: true,
+          deleted: false,
+        },
+        {
+          id: 3,
+          messageTitle: "Заголовок уведомления #",
+          messageText:
+            "Статус заявления обновлен. Подробная информация направлена на вашу электронную почту.",
+          receiptDate: "2022-07-04T10:31:33.750+00:00",
+          wasRead: false,
+          deleted: false,
+        },
+        {
+          id: 4,
+          messageTitle: "Заголовок уведомления #",
+          messageText:
+            "Статус заявления обновлен. Подробная информация направлена на вашу электронную почту.",
+          receiptDate: "2022-07-10T10:31:33.750+00:00",
+          wasRead: false,
+          deleted: false,
+        },
+        {
+          id: 5,
+          messageTitle: "Заголовок уведомления #",
+          messageText:
+            "Статус заявления обновлен. Подробная информация направлена на вашу электронную почту.",
+          receiptDate: "2022-07-17T10:31:33.750+00:00",
+          wasRead: true,
+          deleted: false,
+        },
+        {
+          id: 6,
+          messageTitle: "Заголовок уведомления #",
+          messageText:
+            "Статус заявления обновлен. Подробная информация направлена на вашу электронную почту.",
+          receiptDate: "2022-07-03T10:31:33.750+00:00",
+          wasRead: false,
+          deleted: false,
+        },
+        {
+          id: 7,
+          messageTitle: "Заголовок уведомления #",
+          messageText:
+            "Статус заявления обновлен. Подробная информация направлена на вашу электронную почту.",
+          receiptDate: "2022-07-09T10:31:33.750+00:00",
+          wasRead: false,
+          deleted: false,
+        },
+        {
+          id: 8,
+          messageTitle: "Заголовок уведомления #",
+          messageText:
+            "Статус заявления обновлен. Подробная информация направлена на вашу электронную почту.",
+          receiptDate: "2022-07-12T10:31:33.750+00:00",
+          wasRead: false,
+          deleted: false,
+        },
+        {
+          id: 9,
+          messageTitle: "Заголовок уведомления #",
+          messageText:
+            "Статус заявления обновлен. Подробная информация направлена на вашу электронную почту.",
+          receiptDate: "2022-07-16T10:31:33.750+00:00",
+          wasRead: false,
+          deleted: false,
+        },
+        {
+          id: 10,
+          messageTitle: "Заголовок уведомления #",
+          messageText:
+            "Статус заявления обновлен. Подробная информация направлена на вашу электронную почту.",
+          receiptDate: "2022-07-11T19:31:33.750+00:00",
+          wasRead: false,
+          deleted: false,
+        },
+        {
+          id: 11,
+          messageTitle: "Заголовок уведомления #",
+          messageText:
+            "Статус заявления обновлен. Подробная информация направлена на вашу электронную почту.",
+          receiptDate: "2022-07-11T18:31:33.750+00:00",
+          wasRead: false,
+          deleted: false,
+        },
+        {
+          id: 12,
+          messageTitle: "Заголовок уведомления #",
+          messageText:
+            "Статус заявления обновлен. Подробная информация направлена на вашу электронную почту.",
+          receiptDate: "2022-07-11T13:31:33.750+00:00",
+          wasRead: false,
+          deleted: false,
+        },
+        {
+          id: 13,
+          messageTitle: "Заголовок уведомления #",
+          messageText:
+            "Статус заявления обновлен. Подробная информация направлена на вашу электронную почту.",
+          receiptDate: "2022-07-11T15:31:33.750+00:00",
+          wasRead: false,
+          deleted: false,
+        },
+        {
+          id: 14,
+          messageTitle: "Заголовок уведомления #",
+          messageText:
+            "Статус заявления обновлен. Подробная информация направлена на вашу электронную почту.",
+          receiptDate: "2022-07-11T14:31:33.750+00:00",
+          wasRead: false,
+          deleted: false,
+        },
+        {
+          id: 15,
+          messageTitle: "Заголовок уведомления #",
+          messageText:
+            "Статус заявления обновлен. Подробная информация направлена на вашу электронную почту.",
+          receiptDate: "2022-07-11T21:00:25.750+00:00",
+          wasRead: false,
+          deleted: false,
+        },
+        {
+          id: 16,
+          messageTitle: "Заголовок уведомления #",
+          messageText:
+            "Статус заявления обновлен. Подробная информация направлена на вашу электронную почту.",
+          receiptDate: "2022-07-11T21:45:45.750+00:00",
+          wasRead: false,
+          deleted: false,
+        },
+        {
+          id: 17,
+          messageTitle: "Заголовок уведомления #",
+          messageText:
+            "Статус заявления обновлен. Подробная информация направлена на вашу электронную почту.",
+          receiptDate: "2022-07-11T22:05:15.750+00:00",
+          wasRead: false,
+          deleted: false,
+        },
+        {
+          id: 18,
+          messageTitle: "Заголовок уведомления #",
+          messageText:
+            "Статус заявления обновлен. Подробная информация направлена на вашу электронную почту.",
+          receiptDate: "2022-07-11T07:35:25.750+00:00",
+          wasRead: true,
+          deleted: false,
+        },
+        {
+          id: 19,
+          messageTitle: "Заголовок уведомления #",
+          messageText:
+            "Статус заявления обновлен. Подробная информация направлена на вашу электронную почту.",
+          receiptDate: "2022-07-11T20:05:50.750+00:00",
+          wasRead: true,
+          deleted: false,
+        },
+        {
+          id: 20,
+          messageTitle: "Заголовок уведомления #",
+          messageText:
+            "Статус заявления обновлен. Подробная информация направлена на вашу электронную почту.",
+          receiptDate: "2022-07-11T14:33:55.750+00:00",
+          wasRead: true,
+          deleted: false,
+        },
+      ],
       organization: {
         addresses: [],
         contacts: [],
@@ -644,6 +890,21 @@ export default {
   computed: {
     isAuthUser: function () {
       return !!this.user.shortInfo.userId;
+    },
+    unreadMessages: function () {
+      return this.messagesList.filter((item) => !item.wasRead).length;
+    },
+    sortedMessagesList: function () {
+      let sortedMessages = [];
+      this.messagesList.forEach(function (item) {
+        sortedMessages.push(item);
+      });
+      sortedMessages.sort(function (a, b) {
+        if (a.receiptDate > b.receiptDate) return 1; // если первое значение больше второго
+        if (a.receiptDate == b.receiptDate) return 0; // если равны
+        if (a.receiptDate < b.receiptDate) return -1; // если первое значение меньше второго
+      });
+      return sortedMessages.reverse();
     },
   },
 
@@ -858,6 +1119,7 @@ export default {
           this.user.shortInfo = response.data;
           let role = this.getRoleById(roleId);
           this.user.selectedRole = role;
+          this.userSelectedRoleId = role.id;
           console.log(
             "Роль пользователя изменена на роль с идентификатором " +
               role.label +
@@ -1369,6 +1631,23 @@ export default {
           console.groupEnd();
           // window.scrollTo(0, 0);
         });
+    },
+
+    // Уведомления
+    readMessage(messageId) {
+      console.log(messageId);
+      let message = this.messagesList.find((item) => item.id === messageId);
+      if (!message.wasRead) {
+        message.wasRead = true;
+      }
+      message.wasRead = true;
+    },
+    deleteMessage(messageId) {
+      console.log(messageId);
+      let messageIndex = this.messagesList.findIndex(
+        (item) => item.id === messageId
+      );
+      this.messagesList.splice(messageIndex, 1);
     },
   },
 
