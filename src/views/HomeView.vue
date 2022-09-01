@@ -178,6 +178,7 @@ export default {
     "authLoader",
     "newsList",
     "authError",
+    "messagesTable",
   ],
   data() {
     return {

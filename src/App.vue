@@ -196,15 +196,16 @@ export default {
       // Заявления
       appsServiceId: 2,
       appsTable: {
+        id: "appsTable",
         columnsList: [
-          "№ сообщения",
+          "№ заявления",
           "Наименование услуги",
           "Дата создания",
           "Номер ЕПГУ",
           "Статус",
           "Дата изменения статуса",
         ],
-        primaryColumn: "№ сообщения",
+        primaryColumn: "№ заявления",
         rowsList: [
           [
             "0001",
@@ -233,7 +234,68 @@ export default {
         ],
         sortColumn: "",
         ascendingSortOrder: false,
-        filters: [],
+        filters: [
+          {
+            id: 1,
+            label: "№ заявления",
+            type: "input",
+            subtype: "number",
+            width: 4,
+          },
+          {
+            id: 2,
+            label: "Наименование услуги",
+            type: "select",
+            itemsList: [
+              { id: 1, text: "Аттестация педагогических работников" },
+              { id: 2, text: "Второе" },
+              { id: 3, text: "Третье" },
+              { id: 4, text: "Четвертое" },
+            ],
+            width: 8,
+          },
+          {
+            id: 3,
+            label: "Дата создания",
+            type: "range",
+            subtype: "date",
+            itemsList: [{ label: "Начало" }, { label: "Окончание" }],
+            width: 8,
+          },
+          {
+            id: 4,
+            label: "№ ЕПГУ",
+            type: "input",
+            subtype: "number",
+            width: 4,
+          },
+          {
+            id: 5,
+            label: "Статус",
+            type: "select",
+            itemsList: [
+              { id: 1, text: "Черновик" },
+              { id: 2, text: "В работе" },
+              { id: 3, text: "Обработано" },
+              { id: 4, text: "Архивная" },
+            ],
+            width: 4,
+          },
+          {
+            id: 6,
+            label: "Дата изменения статуса",
+            type: "range",
+            subtype: "date",
+            itemsList: [{ label: "Начало" }, { label: "Окончание" }],
+            width: 8,
+          },
+          {
+            id: 7,
+            label: "Показать только архивные",
+            type: "checkbox",
+            width: 12,
+          },
+        ],
         pagination: {
           itemsTotal: 0,
           page: 1,
@@ -264,6 +326,7 @@ export default {
       // Сообщения
       messagesServiceId: 1,
       messagesTable: {
+        id: "messagesTable",
         columnsList: [
           "№ сообщения",
           "Дата создания сообщения",
@@ -301,7 +364,64 @@ export default {
         ],
         sortColumn: "",
         ascendingSortOrder: false,
-        filters: [],
+        filters: [
+          {
+            id: 1,
+            label: "№ сообщения",
+            type: "input",
+            subtype: "number",
+            width: 4,
+          },
+          {
+            id: 2,
+            label: "Дата создания сообщения",
+            type: "range",
+            subtype: "date",
+            itemsList: [{ label: "Начало" }, { label: "Окончание" }],
+            width: 8,
+          },
+          {
+            id: 3,
+            label: "Тема",
+            type: "input",
+            subtype: "Тема",
+            width: 4,
+          },
+          {
+            id: 4,
+            label: "Дата входа в статус",
+            type: "range",
+            subtype: "date",
+            itemsList: [{ label: "Начало" }, { label: "Окончание" }],
+            width: 8,
+          },
+          {
+            id: 5,
+            label: "Статус",
+            type: "select",
+            itemsList: [
+              { id: 1, text: "Черновик" },
+              { id: 2, text: "В работе" },
+              { id: 3, text: "Обработано" },
+              { id: 4, text: "Архивная" },
+            ],
+            width: 4,
+          },
+          {
+            id: 6,
+            label: "Срок отправки ответа",
+            type: "range",
+            subtype: "date",
+            itemsList: [{ label: "Начало" }, { label: "Окончание" }],
+            width: 8,
+          },
+          {
+            id: 7,
+            label: "Показать только архивные",
+            type: "checkbox",
+            width: 12,
+          },
+        ],
         pagination: {
           itemsTotal: 0,
           page: 1,
@@ -332,6 +452,7 @@ export default {
       // "Экспертизы"
       expertisesServiceId: 2,
       expertisesTable: {
+        id: "expertisesTable",
         columnsList: [
           "№ заявления",
           "ФИО педагогического работника",
@@ -404,6 +525,7 @@ export default {
       // "Аналитика"
       analyticsServiceId: 2,
       analyticsTable: {
+        id: "analyticsTable",
         columnsList: [
           "Количество проведенных экспертиз",
           "Количество положительных результатов",
@@ -414,7 +536,42 @@ export default {
         rowsList: [["30", "5", "10", "15"]],
         sortColumn: "",
         ascendingSortOrder: false,
-        filters: [],
+        filters: [
+          {
+            id: 1,
+            label: "№ заявления",
+            type: "input",
+            subtype: "number",
+            width: 4,
+            value: "245",
+            required: true,
+            disabled: true,
+          },
+          {
+            id: 2,
+            label: "Квалификация",
+            type: "select",
+            itemsList: [
+              { id: 1, text: "Вторая" },
+              { id: 2, text: "Первая" },
+              { id: 3, text: "Высшая" },
+            ],
+          },
+          {
+            id: 3,
+            label: "Показать только архивные",
+            type: "checkbox",
+            width: 12,
+          },
+          {
+            id: 4,
+            label: "",
+            type: "range",
+            subtype: "date",
+            itemsList: [{ label: "Дата начала" }, { label: "Дата окончания" }],
+            width: 6,
+          },
+        ],
         pagination: {
           itemsTotal: 0,
           page: 1,
@@ -432,6 +589,7 @@ export default {
       // "Журнал действий"
       logsServiceId: 2,
       logsTable: {
+        id: "logsTable",
         columnsList: [
           "Id записи",
           "Дата события",

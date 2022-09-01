@@ -456,6 +456,8 @@
             <TableBootstrapCustom
               hover
               bordered
+              filter
+              pagination
               :table-data="appsTable"
               @row-click="openExistingApp('Детали заявления', $event)"
               @sort-table="sortTable(appsTable, $event)"
@@ -476,6 +478,7 @@
             </button>
             <TableBootstrapCustom
               pagination
+              filter
               hover
               bordered
               :table-data="messagesTable"

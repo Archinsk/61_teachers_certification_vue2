@@ -1,5 +1,13 @@
 <template>
   <div>
+    <template v-if="filter">
+      <CollapseButtonBootstrapCustomBS46 :target-id="tableData.id + 'Collapse'">
+        Фильтр
+      </CollapseButtonBootstrapCustomBS46>
+      <CollapseBootstrapCustomBS46 :id="tableData.id + 'Collapse'">
+        <FilterBootstrapCustomBS46 :filter-data="tableData.filters" />
+      </CollapseBootstrapCustomBS46>
+    </template>
     <table :class="tableClass">
       <TableHeadBootstrapCustom
         :columns-list="tableData.columnsList"
@@ -31,9 +39,15 @@
 import TableHeadBootstrapCustom from "./TableHeadBootstrapCustom";
 import TableBodyBootstrapCustom from "./TableBodyBootstrapCustom";
 import PaginationBS46 from "./PaginationBS46";
+import CollapseBootstrapCustomBS46 from "./CollapseBootstrapCustomBS46";
+import CollapseButtonBootstrapCustomBS46 from "./CollapseButtonBootstrapCustomBS46";
+import FilterBootstrapCustomBS46 from "./FilterBootstrapCustomBS46";
 export default {
   name: "TableBootstrapCustom",
   components: {
+    FilterBootstrapCustomBS46,
+    CollapseBootstrapCustomBS46,
+    CollapseButtonBootstrapCustomBS46,
     PaginationBS46,
     TableBodyBootstrapCustom,
     TableHeadBootstrapCustom,
@@ -41,6 +55,7 @@ export default {
   props: {
     tableData: Object,
     pagination: Boolean,
+    filter: Boolean,
     itemsTotal: Number,
     page: Number,
     pageSize: Number,
