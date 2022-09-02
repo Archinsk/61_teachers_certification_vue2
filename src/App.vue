@@ -63,7 +63,7 @@
         "
         @invoke-action="invokeAction($event)"
       />
-      <ModalBootstrapCustomBS46 modal-id="messages" header>
+      <ModalBootstrapCustomBS46 modal-id="messages" header scrollable>
         <template v-slot:modal-title> Уведомления </template>
         <template v-slot:modal-body>
           <transition-group
@@ -240,19 +240,27 @@ export default {
             label: "№ заявления",
             type: "input",
             subtype: "number",
-            width: 4,
+            width: 12,
+            responsive: "col-sm-6 col-md-4",
+            readonly: true,
           },
           {
             id: 2,
             label: "Наименование услуги",
             type: "select",
             itemsList: [
-              { id: 1, text: "Аттестация педагогических работников" },
+              {
+                id: 1,
+                text: "Аттестация педагогических работников",
+                selected: true,
+              },
               { id: 2, text: "Второе" },
               { id: 3, text: "Третье" },
               { id: 4, text: "Четвертое" },
             ],
-            width: 8,
+            width: 12,
+            responsive: "col-sm-6 col-md-8",
+            disabled: true,
           },
           {
             id: 3,
@@ -260,7 +268,9 @@ export default {
             type: "range",
             subtype: "date",
             itemsList: [{ label: "Начало" }, { label: "Окончание" }],
+            readonly: true,
             width: 8,
+            responsive: "col-sm-6",
           },
           {
             id: 4,
@@ -286,14 +296,19 @@ export default {
             label: "Дата изменения статуса",
             type: "range",
             subtype: "date",
-            itemsList: [{ label: "Начало" }, { label: "Окончание" }],
+            itemsList: [
+              { label: "Начало" },
+              { label: "Окончание", disabled: true },
+            ],
             width: 8,
           },
           {
             id: 7,
-            label: "Показать только архивные",
+            label: "Показать архивные",
             type: "checkbox",
             width: 12,
+            value: true,
+            disabled: true,
           },
         ],
         pagination: {
@@ -494,7 +509,69 @@ export default {
         ],
         sortColumn: "",
         ascendingSortOrder: false,
-        filters: [],
+        filters: [
+          {
+            id: 1,
+            label: "№ заявления",
+            type: "input",
+            subtype: "number",
+            width: 4,
+          },
+          {
+            id: 2,
+            label: "ФИО пед.работника",
+            type: "input",
+            subtype: "text",
+            width: 8,
+          },
+          {
+            id: 3,
+            label: "Дата начала экспертизы",
+            type: "range",
+            subtype: "date",
+            itemsList: [{ label: "Начало" }, { label: "Окончание" }],
+            width: 12,
+          },
+          {
+            id: 4,
+            label: "Срок окончания экспертизы",
+            type: "range",
+            subtype: "date",
+            itemsList: [{ label: "Начало" }, { label: "Окончание" }],
+            width: 12,
+          },
+          {
+            id: 5,
+            label: "Дата окончания экспертизы",
+            type: "range",
+            subtype: "date",
+            itemsList: [{ label: "Начало" }, { label: "Окончание" }],
+            width: 12,
+          },
+          {
+            id: 6,
+            label: "Результат окончания экспертизы",
+            type: "select",
+            itemsList: [
+              { id: 1, text: "Положительный" },
+              { id: 2, text: "Отрицательный" },
+              { id: 3, text: "Прекращена" },
+            ],
+            width: 4,
+          },
+          {
+            id: 7,
+            label: "Статус",
+            type: "select",
+            itemsList: [
+              { id: 1, text: "Черновик" },
+              { id: 2, text: "В работе" },
+              { id: 3, text: "Обработано" },
+              { id: 4, text: "Архивная" },
+            ],
+            width: 4,
+          },
+        ],
         pagination: {
           itemsTotal: 0,
           page: 1,
@@ -623,7 +700,49 @@ export default {
         ],
         sortColumn: "",
         ascendingSortOrder: false,
-        filters: [],
+        filters: [
+          {
+            id: 1,
+            label: "Id записи",
+            type: "input",
+            subtype: "number",
+            width: 4,
+          },
+          {
+            id: 2,
+            label: "Дата события",
+            type: "range",
+            subtype: "date",
+            itemsList: [{ label: "Начало" }, { label: "Окончание" }],
+            width: 12,
+          },
+          {
+            id: 3,
+            label: "Описание",
+            type: "input",
+            subtype: "text",
+            width: 6,
+          },
+          {
+            id: 4,
+            label: "Событие",
+            type: "select",
+            itemsList: [
+              { id: 1, text: "Изменение записи" },
+              { id: 2, text: "Проведение аттестации" },
+              { id: 3, text: "Удаление записи" },
+              { id: 4, text: "Создание записи" },
+            ],
+            width: 6,
+          },
+          {
+            id: 5,
+            label: "Изменения",
+            type: "input",
+            subtype: "text",
+            width: 6,
+          },
+        ],
         pagination: {
           itemsTotal: 0,
           page: 1,

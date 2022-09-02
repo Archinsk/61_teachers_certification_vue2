@@ -1,5 +1,5 @@
 <template>
-  <div :class="groupClass"><slot></slot></div>
+  <div :class="groupClass + ' ' + responsive"><slot></slot></div>
 </template>
 
 <script>
@@ -7,6 +7,7 @@ export default {
   name: "FormGroupBootstrapCustomBS46",
   props: {
     widthGroup: Number,
+    responsive: String,
   },
   computed: {
     groupClass: function () {

@@ -1,13 +1,23 @@
 <template>
-  <FormGroupBootstrapCustomBS46 :width-group="widthGroup">
+  <FormGroupBootstrapCustomBS46
+    :width-group="widthGroup"
+    :responsive="responsive"
+  >
     <label :for="id">{{ label }}</label>
-    <select :id="id" class="form-control">
-      <option selected disabled>Выберите...</option>
+    <select
+      :id="id"
+      class="form-control"
+      :required="required"
+      :readonly="readonly"
+      :disabled="disabled"
+    >
+      <option disabled>Выберите...</option>
       <template v-if="itemsList.length > 0">
         <option
           v-for="(option, index) of itemsList"
           :value="option.id + '-' + index"
           :key="option.id + '-' + index"
+          :selected="option.selected"
         >
           {{ option.text }}
         </option>
@@ -25,8 +35,9 @@ export default {
     label: String,
     id: Number,
     widthGroup: Number,
+    responsive: String,
     itemsList: Array,
-    readonly: Boolean,
+    required: Boolean,
     disabled: Boolean,
   },
 };

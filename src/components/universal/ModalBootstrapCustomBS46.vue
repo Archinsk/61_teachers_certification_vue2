@@ -6,7 +6,7 @@
     :aria-labelledby="modalId + 'Label'"
     aria-hidden="true"
   >
-    <div class="modal-dialog modal-xl">
+    <div :class="modalDialogClass">
       <div class="modal-content">
         <div v-if="header" class="modal-header">
           <h5 class="modal-title" :id="modalId + 'Label'">
@@ -43,6 +43,24 @@ export default {
     header: Boolean,
     noBody: Boolean,
     footer: Boolean,
+    scrollable: Boolean,
+    verticalCenter: Boolean,
+    size: String,
+  },
+  computed: {
+    modalDialogClass: function () {
+      let modalDialogClass = "modal-dialog";
+      if (this.scrollable) {
+        modalDialogClass += " modal-dialog-scrollable";
+      }
+      if (this.verticalCenter) {
+        modalDialogClass += " modal-dialog-centered";
+      }
+      if (this.size && this.size !== "md") {
+        modalDialogClass += " modal-" + this.size;
+      }
+      return modalDialogClass;
+    },
   },
 };
 </script>

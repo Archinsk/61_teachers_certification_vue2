@@ -12,6 +12,7 @@
         :readonly="filterItem.readonly"
         :disabled="filterItem.disabled"
         :width-group="filterItem.width"
+        :responsive="filterItem.responsive"
       />
       <SelectBootstrapCustomBS46
         v-if="filterItem.type === 'select'"
@@ -19,14 +20,21 @@
         :id="filterItem.id"
         :label="filterItem.label"
         :items-list="filterItem.itemsList"
+        :required="filterItem.required"
+        :disabled="filterItem.disabled"
         :width-group="filterItem.width"
+        :responsive="filterItem.responsive"
       />
       <CheckboxBootstrapCustomBS46
         v-if="filterItem.type === 'checkbox'"
         :key="filterItem.id"
         :id="filterItem.id"
         :label="filterItem.label"
+        :value="filterItem.value"
+        :required="filterItem.required"
+        :disabled="filterItem.disabled"
         :width-group="filterItem.width"
+        :responsive="filterItem.responsive"
       />
       <FilterRangeBootstrapCustomBS46
         v-if="filterItem.type === 'range'"
@@ -34,11 +42,13 @@
         :filter-data="filterItem"
       />
     </template>
-    <div class="col">
-      <div class="btn btn-primary">Применить</div>
-    </div>
-    <div class="col">
-      <div class="btn btn-outline-secondary">Очистить</div>
+    <div class="col-12">
+      <div class="row form-group">
+        <div class="col">
+          <div class="btn btn-primary mr-2">Применить</div>
+          <div class="btn btn-outline-secondary">Очистить</div>
+        </div>
+      </div>
     </div>
   </form>
 </template>

@@ -70,7 +70,7 @@
                   class="alert alert-danger"
                   role="alert"
                 >
-                  <b>Произошла ошибка!</b> {{ authError.text }}
+                  <b>Ошибка!</b> {{ authError.text }}
                 </div>
                 <TheSignInFormBS46
                   v-if="!isAuthUser"

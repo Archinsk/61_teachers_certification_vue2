@@ -1,5 +1,8 @@
 <template>
-  <FormGroupBootstrapCustomBS46 :width-group="widthGroup">
+  <FormGroupBootstrapCustomBS46
+    :width-group="widthGroup"
+    :responsive="responsive"
+  >
     <label :for="id" class="form-label">{{ label }}</label>
     <input
       :type="type"
@@ -25,6 +28,7 @@ export default {
     idPostfix: String,
     value: String,
     widthGroup: Number,
+    responsive: String,
     required: Boolean,
     readonly: Boolean,
     disabled: Boolean,

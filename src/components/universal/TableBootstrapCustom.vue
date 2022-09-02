@@ -1,7 +1,10 @@
 <template>
   <div>
     <template v-if="filter">
-      <CollapseButtonBootstrapCustomBS46 :target-id="tableData.id + 'Collapse'">
+      <CollapseButtonBootstrapCustomBS46
+        :target-id="tableData.id + 'Collapse'"
+        class="mb-3"
+      >
         Фильтр
       </CollapseButtonBootstrapCustomBS46>
       <CollapseBootstrapCustomBS46 :id="tableData.id + 'Collapse'">

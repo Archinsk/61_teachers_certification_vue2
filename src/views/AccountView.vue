@@ -755,6 +755,7 @@
             <TableBootstrapCustom
               hover
               bordered
+              filter
               :table-data="expertisesTable"
               @row-click="openExistingExpertise('Детали экспертизы')"
               @sort-table="sortTable(expertisesTable, $event, $event)"
@@ -779,6 +780,7 @@
             <TableBootstrapCustom
               hover
               bordered
+              filter
               :table-data="logsTable"
               @row-click="openExistingLog('Детали действия', $event)"
               @sort-table="sortTable(logsTable, $event)"
@@ -787,7 +789,7 @@
         </div>
       </template>
 
-      <ModalBootstrapCustom46 :modal-id="modal.modalId" header>
+      <ModalBootstrapCustom46 :modal-id="modal.modalId" header size="xl">
         <template v-slot:modal-title>
           {{ modal.modalTitle }}
         </template>
