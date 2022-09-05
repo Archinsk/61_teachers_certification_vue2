@@ -8,7 +8,6 @@
       :id="id"
       class="form-control"
       :required="required"
-      :readonly="readonly"
       :disabled="disabled"
     >
       <option disabled>Выберите...</option>

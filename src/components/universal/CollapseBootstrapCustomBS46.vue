@@ -4,7 +4,7 @@
 
 <script>
 export default {
-  name: "СollapseBootstrapCustomBS46",
+  name: "CollapseBootstrapCustomBS46",
   props: ["id"],
 };
 </script>

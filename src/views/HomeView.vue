@@ -15,7 +15,7 @@
     <div class="container">
       <div class="row my-0 mb-4">
         <div class="col-12 col-sm-6 mt-4">
-          <CardBootstrapCustom header class="h-100 shadow">
+          <CardBootstrapCustomBS46 header class="h-100 shadow">
             <template v-slot:card-header>
               <h5 class="text-uppercase mb-0">
                 Материалы для работы с системой
@@ -24,7 +24,7 @@
             <template v-slot:card-body>
               <div class="row">
                 <div class="col-12 mt-2">
-                  <CardBootstrapCustom class="shadow-sm">
+                  <CardBootstrapCustomBS46 class="shadow-sm">
                     <template v-slot:card-body>
                       <div class="d-flex align-items-center">
                         <span class="material-icons text-primary mr-3"
@@ -33,10 +33,10 @@
                         <a href="/"> Руководство администратора.doc </a>
                       </div>
                     </template>
-                  </CardBootstrapCustom>
+                  </CardBootstrapCustomBS46>
                 </div>
                 <div class="col-12 mt-2">
-                  <CardBootstrapCustom class="shadow-sm">
+                  <CardBootstrapCustomBS46 class="shadow-sm">
                     <template v-slot:card-body>
                       <div class="d-flex align-items-center">
                         <span class="material-icons text-primary mr-3"
@@ -45,14 +45,14 @@
                         <a href="/"> Руководство пользователя.doc </a>
                       </div>
                     </template>
-                  </CardBootstrapCustom>
+                  </CardBootstrapCustomBS46>
                 </div>
               </div>
             </template>
-          </CardBootstrapCustom>
+          </CardBootstrapCustomBS46>
         </div>
         <div class="col-12 col-sm-6 mt-4">
-          <CardBootstrapCustom header class="h-100 shadow">
+          <CardBootstrapCustomBS46 header class="h-100 shadow">
             <template v-slot:card-header>
               <h5 class="text-uppercase mb-0">Авторизация</h5>
             </template>
@@ -134,10 +134,10 @@
                 </template>
               </template>
             </template>
-          </CardBootstrapCustom>
+          </CardBootstrapCustomBS46>
         </div>
         <div class="col-12 mt-4">
-          <CardBootstrapCustom header class="h-100 shadow">
+          <CardBootstrapCustomBS46 header class="h-100 shadow">
             <template v-slot:card-header>
               <h5 class="text-uppercase mb-0">График проведения аттестации</h5>
             </template>
@@ -151,7 +151,7 @@
               <p>СБ: 09:00 - 12:00</p>
               <p>ВС: Выходной</p>
             </template>
-          </CardBootstrapCustom>
+          </CardBootstrapCustomBS46>
         </div>
       </div>
     </div>
@@ -159,7 +159,7 @@
 </template>
 
 <script>
-import CardBootstrapCustom from "../components/universal/CardBootstrapCustom";
+import CardBootstrapCustomBS46 from "../components/universal/CardBootstrapCustomBS46";
 import TheSignInFormBS46 from "../components/TheSignInFormBS46";
 import LoaderBootstrapCustomBS46 from "../components/universal/LoaderBootstrapCustomBS46";
 
@@ -168,7 +168,7 @@ export default {
   components: {
     LoaderBootstrapCustomBS46,
     TheSignInFormBS46,
-    CardBootstrapCustom,
+    CardBootstrapCustomBS46,
   },
   props: [
     "url",

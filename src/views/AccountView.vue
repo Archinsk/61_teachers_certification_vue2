@@ -453,11 +453,11 @@
             >
               Подать заявление
             </button>
-            <TableBootstrapCustom
+            <TableBootstrapCustomBS46
               hover
               bordered
-              filter
               pagination
+              filter
               :table-data="appsTable"
               @row-click="openExistingApp('Детали заявления', $event)"
               @sort-table="sortTable(appsTable, $event)"
@@ -476,7 +476,7 @@
             >
               Отправить сообщение
             </button>
-            <TableBootstrapCustom
+            <TableBootstrapCustomBS46
               pagination
               filter
               hover
@@ -752,7 +752,7 @@
             aria-labelledby="expertises-expert-tab"
             tabindex="0"
           >
-            <TableBootstrapCustom
+            <TableBootstrapCustomBS46
               hover
               bordered
               filter
@@ -768,7 +768,11 @@
             aria-labelledby="analitics-expert-tab"
             tabindex="0"
           >
-            <TableBootstrapCustom hover bordered :table-data="analyticsTable" />
+            <TableBootstrapCustomBS46
+              hover
+              bordered
+              :table-data="analyticsTable"
+            />
           </div>
           <div
             class="tab-pane fade pt-3"
@@ -777,7 +781,7 @@
             aria-labelledby="actions-expert-tab"
             tabindex="0"
           >
-            <TableBootstrapCustom
+            <TableBootstrapCustomBS46
               hover
               bordered
               filter
@@ -809,7 +813,10 @@
                     :form="appForm.form.scheme"
                     :submission="appForm"
                     language="ru"
-                    :options="appFormOptions"
+                    :options="{
+                      i18n: appFormOptions,
+                      readOnly: !appForm.active,
+                    }"
                     ref="vueForm"
                   />
                 </div>
@@ -863,7 +870,10 @@
                     :form="appForm.form.scheme"
                     :submission="appForm"
                     language="ru"
-                    :options="appFormOptions"
+                    :options="{
+                      i18n: appFormOptions,
+                      readOnly: !appForm.active,
+                    }"
                     ref="vueForm"
                   />
                 </div>
@@ -924,7 +934,10 @@
                     :form="messageForm.form.scheme"
                     :submission="messageForm"
                     language="ru"
-                    :options="messageFormOptions"
+                    :options="{
+                      i18n: messageFormOptions,
+                      readOnly: !messageForm.active,
+                    }"
                     ref="vueForm"
                   />
                 </div>
@@ -980,7 +993,10 @@
                     :form="messageForm.form.scheme"
                     :submission="messageForm"
                     language="ru"
-                    :options="messageFormOptions"
+                    :options="{
+                      i18n: messageFormOptions,
+                      readOnly: !messageForm.active,
+                    }"
                     ref="vueForm"
                   />
                 </div>
@@ -1201,8 +1217,6 @@
           </template>
         </template>
       </ModalBootstrapCustom46>
-
-      <!--      <FilterBootstrapCustom :filter-data="filterData" />-->
     </div>
   </div>
 </template>
@@ -1210,17 +1224,15 @@
 <script>
 import { Modal } from "bootstrap";
 import ModalBootstrapCustom46 from "../components/universal/ModalBootstrapCustomBS46";
-import TableBootstrapCustom from "../components/universal/TableBootstrapCustom";
+import TableBootstrapCustomBS46 from "../components/universal/TableBootstrapCustomBS46";
 import { Form } from "vue-formio";
 import LoaderBootstrapCustomBS46 from "../components/universal/LoaderBootstrapCustomBS46";
-// import FilterBootstrapCustom from "../components/universal/FilterBootstrapCustom";
 
 export default {
   name: "AccountView",
   components: {
     LoaderBootstrapCustomBS46,
-    // FilterBootstrapCustom,
-    TableBootstrapCustom,
+    TableBootstrapCustomBS46,
     ModalBootstrapCustom46,
     Form,
   },

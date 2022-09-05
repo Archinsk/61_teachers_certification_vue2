@@ -14,7 +14,7 @@
 
 <script>
 export default {
-  name: "CardBootstrapCustom",
+  name: "CardBootstrapCustomBS46",
   props: {
     cardData: Object,
     header: Boolean,

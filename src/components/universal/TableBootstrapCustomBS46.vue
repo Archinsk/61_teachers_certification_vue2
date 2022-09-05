@@ -12,13 +12,13 @@
       </CollapseBootstrapCustomBS46>
     </template>
     <table :class="tableClass">
-      <TableHeadBootstrapCustom
+      <TableHeadBootstrapCustomBS46
         :columns-list="tableData.columnsList"
         :sort-column="tableData.sortColumn"
         :ascending-sort-order="tableData.ascendingSortOrder"
         @sort-table="$emit('sort-table', $event)"
       />
-      <TableBodyBootstrapCustom
+      <TableBodyBootstrapCustomBS46
         :rows-list="sortedRows"
         :primary-column-index="primaryColumnIndex"
         @row-click="$emit('row-click', $event)"
@@ -39,21 +39,21 @@
 </template>
 
 <script>
-import TableHeadBootstrapCustom from "./TableHeadBootstrapCustom";
-import TableBodyBootstrapCustom from "./TableBodyBootstrapCustom";
+import TableHeadBootstrapCustomBS46 from "./TableHeadBootstrapCustomBS46";
+import TableBodyBootstrapCustomBS46 from "./TableBodyBootstrapCustomBS46";
 import PaginationBS46 from "./PaginationBS46";
 import CollapseBootstrapCustomBS46 from "./CollapseBootstrapCustomBS46";
 import CollapseButtonBootstrapCustomBS46 from "./CollapseButtonBootstrapCustomBS46";
 import FilterBootstrapCustomBS46 from "./FilterBootstrapCustomBS46";
 export default {
-  name: "TableBootstrapCustom",
+  name: "TableBootstrapCustomBS46",
   components: {
     FilterBootstrapCustomBS46,
     CollapseBootstrapCustomBS46,
     CollapseButtonBootstrapCustomBS46,
     PaginationBS46,
-    TableBodyBootstrapCustom,
-    TableHeadBootstrapCustom,
+    TableBodyBootstrapCustomBS46,
+    TableHeadBootstrapCustomBS46,
   },
   props: {
     tableData: Object,

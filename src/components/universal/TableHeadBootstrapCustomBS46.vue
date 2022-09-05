@@ -22,7 +22,7 @@
 
 <script>
 export default {
-  name: "TableHeadBootstrapCustom",
+  name: "TableHeadBootstrapCustomBS46",
   props: {
     columnsList: Array,
     sortColumn: String,

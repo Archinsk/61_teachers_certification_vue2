@@ -12,7 +12,7 @@
 
 <script>
 export default {
-  name: "TableBodyBootstrapCustom",
+  name: "TableBodyBootstrapCustomBS46",
   props: ["rowsList", "primaryColumnIndex"],
 };
 </script>

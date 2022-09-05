@@ -10,7 +10,6 @@
       expand-width-point="lg"
       sticky
       shadow
-      @show-messages-list="showMessagesList"
     />
     <main>
       <router-view
@@ -24,22 +23,22 @@
         :profile-loader="profileLoader"
         :apps-table="appsTable"
         :app-form="appForm"
-        :app-form-options="formOptions"
+        :app-form-options="i18n"
         :apps-loader="appsLoader"
         :messages-table="messagesTable"
         :message-form="messageForm"
-        :message-form-options="formOptions"
+        :message-form-options="i18n"
         :messages-loader="messagesLoader"
         :expertises-table="expertisesTable"
         :expertise-form="expertiseForm"
-        :expertise-form-options="formOptions"
+        :expertise-form-options="i18n"
         :expertises-loader="expertisesLoader"
         :analytics-table="analyticsTable"
-        :analytic-form-options="formOptions"
+        :analytic-form-options="i18n"
         :analytics-loader="analyticsLoader"
         :logs-table="logsTable"
         :log-form="logForm"
-        :log-form-options="formOptions"
+        :log-form-options="i18n"
         :logs-loader="logsLoader"
         @sign-in-local="signInLocal($event)"
         @sign-in-esia="getLogin"
@@ -771,120 +770,115 @@ export default {
       },
 
       // Текущее заявление
-
-      formOptions: {
-        i18n: {
-          lng: "ru",
-          ru: {
-            Name: "Имя",
-            "Last name": "Фамилия",
-            dict: "Тип заявителя",
-            "Type to search": "Поиск...",
-            "Last name is required": "Фамилия - это обязательное поле",
-            "No results found": "Поиск не дал результатов",
-            "is required": "обязательное поле",
-            Number: "Число",
-            Submit: "Подтвердить",
-            Layout: "Расположение",
-            "Drag and Drop a form component": "Переместите компонент сюда",
-            "No Matches Found": "Ничего не найдено",
-            "Text Field": "Текстовое поле",
-            Email: "Электронная почта",
-            "Text Area": "Текстовая область",
-            "Phone Number": "Номер телефона",
-            Checkbox: "Флажок",
-            Select: "Выпадающий список",
-            Radio: "Радио кнопка",
-            Url: "Ссылка",
-            "Data Map": "Ключ - Значение",
-            "Data Grid": "Динамический список",
-            "Edit Grid": "Сетка данных",
-            Table: "Таблица",
-            "Date / Time": "Дата / Время",
-            Day: "День",
-            Time: "Время",
-            File: "Файл",
-            Signature: "Подпись",
-            Content: "Контент",
-            Columns: "Столбцы",
-            "Field Set": "Набор полей",
-            Panel: "Панель",
-            Tabs: "Вкладки",
-            Well: "Лист",
-            Label: "Название",
-            "Please fix the following errors before submitting":
-              "Пожалуйста исправьте ошибки перед теп как продолжить",
-            "Email: Email must be a valid email.": "Не правильный e-mail",
-            Placeholder: "Заполнитель",
-            Description: "Описание",
-            Tooltip: "Подсказка",
-            "To add a tooltip to this field,enter text here.":
-              "Введите подсказку здесь",
-            "Input Mask": "Маска ввода",
-            Hidden: "Скрытый",
-            "Hide Label": "Скрыть название",
-            Save: "Сохранить",
-            Cancel: "Отмена",
-            Remove: "Удалить",
-            Preview: "Предварительный просмотр",
-            Disabled: "Отключен",
-            Validation: "Проверка",
-            Data: "Данные",
-            "Property Name": "Имя переменной",
-            Display: "Отображение",
-            Widget: "Тип компонента",
-            required: "обязательно для заполнения",
-            pattern: "не соответствует маске!",
-            error: "Пожалуйста исправьте ошибки прежде чем продолжить.",
-            submitError:
-              "Пожалуйста исправьте все ошибки прежде чем продолжить.",
-            invalid_regex: "не соответствует маске!",
-            mask: "{{field}} не соответствует маске.",
-            valueIsNotAvailable: "неправильное значение.",
-            Edit: "Редактировать",
-            "Label Position": "Расположение",
-            "Label Width": "Ширина",
-            "Label Margin": "Отступ",
-            Prefix: "Прификс",
-            Suffix: "Суффикс",
-            "Custom CSS Class": "CSS класс",
-            "Show Word Counter": "Показать счетчик слов",
-            "Show Character Counter": "Показать счетчик символов",
-            "Hide Input": "Скрыть ввод",
-            "Initial Focus": "Начальный фокус",
-            "Allow Spellcheck": "Проверка орфографии",
-            "Modal Edit": "Показать во всплывающем окне",
-            "Tab Index": "Индекс вкладки",
-            Autocomplete: "Автозавершение",
-            month: "Месяц",
-            day: "День",
-            year: "Год",
-            january: "Январь",
-            february: "Февраль",
-            march: "Март",
-            april: "Апрель",
-            may: "Май",
-            june: "Июнь",
-            july: "Июль",
-            July: "Июль",
-            august: "Август",
-            september: "Сентябрь",
-            october: "Октябрь",
-            november: "Ноябрь",
-            december: "Декабрь",
-            next: "Далее",
-            previous: "Назад",
-            cancel: "Отмена",
-            submit: "Отправить",
-            "File Name": "Имя файла",
-            Size: "Размер",
-            "Add Another": "Добавить",
-            "Drop files to attach,": "Перетащите файл сюда,",
-            or: "или",
-            browse: "выберите с диска",
-          },
+      i18n: {
+        lng: "ru",
+        ru: {
+          Name: "Имя",
+          "Last name": "Фамилия",
+          dict: "Тип заявителя",
+          "Type to search": "Поиск...",
+          "Last name is required": "Фамилия - это обязательное поле",
+          "No results found": "Поиск не дал результатов",
+          "is required": "обязательное поле",
+          Number: "Число",
+          Submit: "Подтвердить",
+          Layout: "Расположение",
+          "Drag and Drop a form component": "Переместите компонент сюда",
+          "No Matches Found": "Ничего не найдено",
+          "Text Field": "Текстовое поле",
+          Email: "Электронная почта",
+          "Text Area": "Текстовая область",
+          "Phone Number": "Номер телефона",
+          Checkbox: "Флажок",
+          Select: "Выпадающий список",
+          Radio: "Радио кнопка",
+          Url: "Ссылка",
+          "Data Map": "Ключ - Значение",
+          "Data Grid": "Динамический список",
+          "Edit Grid": "Сетка данных",
+          Table: "Таблица",
+          "Date / Time": "Дата / Время",
+          Day: "День",
+          Time: "Время",
+          File: "Файл",
+          Signature: "Подпись",
+          Content: "Контент",
+          Columns: "Столбцы",
+          "Field Set": "Набор полей",
+          Panel: "Панель",
+          Tabs: "Вкладки",
+          Well: "Лист",
+          Label: "Название",
+          "Please fix the following errors before submitting":
+            "Пожалуйста исправьте ошибки перед теп как продолжить",
+          "Email: Email must be a valid email.": "Не правильный e-mail",
+          Placeholder: "Заполнитель",
+          Description: "Описание",
+          Tooltip: "Подсказка",
+          "To add a tooltip to this field,enter text here.":
+            "Введите подсказку здесь",
+          "Input Mask": "Маска ввода",
+          Hidden: "Скрытый",
+          "Hide Label": "Скрыть название",
+          Save: "Сохранить",
+          Cancel: "Отмена",
+          Remove: "Удалить",
+          Preview: "Предварительный просмотр",
+          Disabled: "Отключен",
+          Validation: "Проверка",
+          Data: "Данные",
+          "Property Name": "Имя переменной",
+          Display: "Отображение",
+          Widget: "Тип компонента",
+          required: "обязательно для заполнения",
+          pattern: "не соответствует маске!",
+          error: "Пожалуйста исправьте ошибки прежде чем продолжить.",
+          submitError: "Пожалуйста исправьте все ошибки прежде чем продолжить.",
+          invalid_regex: "не соответствует маске!",
+          mask: "{{field}} не соответствует маске.",
+          valueIsNotAvailable: "неправильное значение.",
+          Edit: "Редактировать",
+          "Label Position": "Расположение",
+          "Label Width": "Ширина",
+          "Label Margin": "Отступ",
+          Prefix: "Прификс",
+          Suffix: "Суффикс",
+          "Custom CSS Class": "CSS класс",
+          "Show Word Counter": "Показать счетчик слов",
+          "Show Character Counter": "Показать счетчик символов",
+          "Hide Input": "Скрыть ввод",
+          "Initial Focus": "Начальный фокус",
+          "Allow Spellcheck": "Проверка орфографии",
+          "Modal Edit": "Показать во всплывающем окне",
+          "Tab Index": "Индекс вкладки",
+          Autocomplete: "Автозавершение",
+          month: "Месяц",
+          day: "День",
+          year: "Год",
+          january: "Январь",
+          february: "Февраль",
+          march: "Март",
+          april: "Апрель",
+          may: "Май",
+          june: "Июнь",
+          july: "Июль",
+          July: "Июль",
+          august: "Август",
+          september: "Сентябрь",
+          october: "Октябрь",
+          november: "Ноябрь",
+          december: "Декабрь",
+          next: "Далее",
+          previous: "Назад",
+          cancel: "Отмена",
+          submit: "Отправить",
+          "File Name": "Имя файла",
+          Size: "Размер",
+          "Add Another": "Добавить",
+          "Drop files to attach,": "Перетащите файл сюда,",
+          or: "или",
+          browse: "выберите с диска",
         },
-        readOnly: false,
       },
       isLoading: false,
       loadingComment: "Загрузка заявления",
@@ -1161,6 +1155,7 @@ export default {
       ],
 
       modal: null,
+      vueForm: null,
     };
   },
 
@@ -1648,10 +1643,11 @@ export default {
 
     // Стартовая форма заявления
     getStartForm(serviceId, id) {
-      console.log("Внутри диспетчера форм");
-      console.log(id);
-      this.isResponse = false;
-      this.isLoading = true;
+      if (serviceId === this.appsServiceId) {
+        this.loaderStart(this.appsLoader, "Загрузка формы заявления");
+      } else if (serviceId === this.messagesServiceId) {
+        this.loaderStart(this.messagesLoader, "Загрузка формы сообщения");
+      }
       if (id) {
         setTimeout(this.getForm, 500, serviceId, id);
       } else {
@@ -1662,10 +1658,20 @@ export default {
       let requestUrl;
       if (appId) {
         requestUrl = this.url + "app/get-appData?id=" + appId;
+        if (serviceId === this.appsServiceId) {
+          console.log("Запрос формы существующего заявления");
+        } else if (serviceId === this.messagesServiceId) {
+          console.log("Запрос формы существующего сообщения");
+        }
       } else {
         requestUrl =
           // this.url + "serv/get-appData?id=" + this.$route.params.modelId;
           this.url + "serv/get-appData?id=" + serviceId;
+        if (serviceId === this.appsServiceId) {
+          console.log("Запрос стартовой формы заявления");
+        } else if (serviceId === this.messagesServiceId) {
+          console.log("Запрос стартовой формы сообщения");
+        }
       }
       axios
         .get(requestUrl, {
@@ -1683,31 +1689,40 @@ export default {
           } else if (serviceId === this.messagesServiceId) {
             this.messageForm = newForm;
           }
-          this.formOptions.readOnly = !response.data.applicationDTO.active;
         })
         .then(() => {
-          this.isResponse = true;
-          this.isLoading = false;
+          if (serviceId === this.appsServiceId) {
+            this.loaderFinish(this.appsLoader);
+          } else if (serviceId === this.messagesServiceId) {
+            this.loaderFinish(this.messagesLoader);
+          }
+          console.log("Опции стартовой формы");
+          console.log(this);
         });
     },
 
     validateForm() {
-      // console.log("Проверка валидности формы");
-      return this.$children[2].$refs.vueForm.formio.checkValidity(
-        this.$children[2].$refs.vueForm.formio.submission.data
+      console.log("Проверка валидности формы");
+      console.log(this);
+      return this.$children[3].$refs.vueForm.formio.checkValidity(
+        this.$children[3].$refs.vueForm.formio.submission.data
       );
     },
 
     invokeAction(action) {
-      console.log("Выполнение действия");
-      console.log(action);
+      console.log("Выполнение действия с id=" + action.actionId);
       this.isFirstLoad = false;
       this.isValidFormData = this.validateForm();
       console.log("Валидность формы:" + this.isValidFormData);
       if (this.isValidFormData) {
-        this.loadingComment = "Отправка данных заявления";
-        this.isResponse = false;
-        this.isLoading = true;
+        if (action.modelId === this.appsServiceId) {
+          this.loaderStart(this.appsLoader, "Выполнение действия по заявлению");
+        } else if (action.modelId === this.messagesServiceId) {
+          this.loaderStart(
+            this.messagesLoader,
+            "Выполнение действия по сообщению"
+          );
+        }
         setTimeout(
           this.invoke,
           1000,
@@ -1716,7 +1731,7 @@ export default {
           action.modelId
         );
       } else {
-        this.$children[2].$refs.vueForm.formio.submit();
+        this.$children[3].$refs.vueForm.formio.submit();
       }
     },
     invoke(actionId, isBackAction = false, modelId) {
@@ -1734,6 +1749,9 @@ export default {
         // userId: this.user.shortInfo.userId,
         appId: formId,
         data: formData,
+        // userId: this.user.shortInfo.userId,
+        // roleId: this.user.shortInfo.roleId,
+        // orgId: this.user.shortInfo.orgId,
       };
       axios
         .post(this.url + "app/action-invoke", request)
@@ -1760,15 +1778,16 @@ export default {
           }
         })
         .then(() => {
-          this.isResponse = true;
-          this.isLoading = false;
-          this.isAlertVisible = true;
+          if (modelId === this.appsServiceId) {
+            this.loaderFinish(this.appsLoader);
+          } else if (modelId === this.messagesServiceId) {
+            this.loaderFinish(this.messagesLoader);
+          }
           this.isFirstLoad = true;
-          setTimeout(this.hideAlert, 3000);
         });
     },
 
-    // Переход к следующей форме (стандартное дейтвие)
+    // Переход к следующей форме (стандартное действие)
     getNextForm(actionId, response, modelId) {
       console.log("Следующая форма");
       console.log(response);
@@ -1780,8 +1799,8 @@ export default {
       } else if (modelId === this.messagesServiceId) {
         this.messageForm = nextForm;
       }
-      this.formOptions.readOnly = !response.data.applicationDTO.active;
       this.successComment = "Заявление отправлено!";
+      console.log(this.$children[3].$refs.vueForm);
     },
 
     cleanAppForm() {
