@@ -17,6 +17,8 @@
         :url="url"
         :user="user"
         :user-selected-role-id="userSelectedRoleId"
+        :teacher-info="teacherInfo"
+        :expert-info="expertInfo"
         :is-auth-user="isAuthUser"
         :auth-error="authError"
         :auth-loader="authLoader"
@@ -45,7 +47,8 @@
         @sign-out="signOut"
         @set-role="setRole($event)"
         @edit-profile="editProfile"
-        @save-profile="saveProfile"
+        @set-teacher="setTeacher"
+        @set-expert="setExpert"
         @create-new-app="createNewApp(appsServiceId)"
         @open-existing-app="openExistingApp(appsServiceId, $event)"
         @create-new-message="createNewMessage(messagesServiceId)"
@@ -1156,6 +1159,102 @@ export default {
 
       modal: null,
       vueForm: null,
+
+      // newTeacher: {
+      //   id: 39502,
+      //   familyName: "Васильев",
+      //   name: "Михаил",
+      //   middleName: "Анатольевич",
+      //   birthday: "1980-03-08T00:00:00.000+00:00",
+      //   snils: "07397683725",
+      //   citizenship: "Российская Федерация",
+      //   mail: "mgp-nsk@yandex.ru",
+      //   phone: "+7(903)1234567",
+      //   gender: "1",
+      //   municipality: "Город Зима",
+      //   subjectArea: "Математика",
+      //   regAddress: "ул.Коммунистическая",
+      //   factAddress: "ул.Новая",
+      //   docname: "Паспорт гражданина РФ",
+      //   docSeries: "5000",
+      //   docNumber: "123456",
+      //   issueDate: "2001-02-15T00:00:00.000+00:00",
+      //   docValidate: "2051-02-15T00:00:00.000+00:00",
+      //   issueOrg: "010",
+      //   mailAgree: false,
+      //   workHistoryList: [],
+      //   attestationsResultList: [],
+      //   fileList: [],
+      // },
+      // newExpert: {
+      //   id: 39502,
+      //   familyName: "Васильев",
+      //   name: "Михаил",
+      //   middleName: "Анатольевич",
+      //   snils: "07397683725",
+      //   mail: "mgp-nsk@yandex.ru",
+      //   phone: "+7(903)1234567",
+      //   position: "Специалист отдела образования",
+      //   municipality: "Город Зима",
+      //   organization: "Администрация города Зима",
+      //   subjectArea: "Математика",
+      //   rating: "5",
+      //   status: true,
+      //   mailAgree: true,
+      //   numberExaminations: 32,
+      //   numberPositiveResult: 16,
+      //   numberNegativeResult: 4,
+      //   numberCoincidences: 12,
+      // },
+
+      teacherRoleId: 39707,
+      expertRoleId: 39927,
+      teacherInfo: {
+        id: 0,
+        familyName: "",
+        name: "",
+        middleName: "",
+        birthday: "",
+        snils: "",
+        citizenship: "",
+        mail: "",
+        phone: "",
+        gender: "",
+        municipality: "",
+        subjectArea: "",
+        regAddress: "",
+        factAddress: "",
+        docname: "",
+        docSeries: "",
+        docNumber: "",
+        issueDate: "",
+        docValidate: "",
+        issueOrg: "",
+        mailAgree: false,
+        workHistoryList: [],
+        attestationsResultList: [],
+        fileList: [],
+      },
+      expertInfo: {
+        id: 0,
+        familyName: "",
+        name: "",
+        middleName: "",
+        snils: "",
+        mail: "",
+        phone: "",
+        position: "",
+        municipality: "",
+        organization: "",
+        subjectArea: "",
+        rating: "",
+        status: false,
+        mailAgree: false,
+        numberExaminations: 0,
+        numberPositiveResult: 0,
+        numberNegativeResult: 0,
+        numberCoincidences: 0,
+      },
     };
   },
 
@@ -1377,6 +1476,11 @@ export default {
       console.groupCollapsed("Пользователь проинициализирован с ролью");
       console.log(role);
       console.groupEnd();
+      if (this.user.shortInfo.roleId === this.teacherRoleId) {
+        this.getTeacher();
+      } else if (this.user.shortInfo.roleId === this.expertRoleId) {
+        this.getExpert();
+      }
     },
 
     // Смена роли пользователя
@@ -1399,6 +1503,11 @@ export default {
               role.id +
               ")"
           );
+          if (this.user.shortInfo.roleId === this.teacherRoleId) {
+            this.getTeacher();
+          } else if (this.user.shortInfo.roleId === this.expertRoleId) {
+            this.getExpert();
+          }
         });
     },
     getRoleById(roleId) {
@@ -1867,10 +1976,6 @@ export default {
       this.loaderStart(this.profileLoader, "Редактирование личных данных");
       setTimeout(this.loaderFinish, this.loadersDelay, this.profileLoader);
     },
-    saveProfile() {
-      this.loaderStart(this.profileLoader, "Сохранение личных данных");
-      setTimeout(this.loaderFinish, this.loadersDelay, this.profileLoader);
-    },
 
     // Заявления
     createNewApp(appsServiceId) {
@@ -1944,6 +2049,78 @@ export default {
         (item) => item.id === messageId
       );
       this.messagesList.splice(messageIndex, 1);
+    },
+
+    // Данные личного кабинета
+    getTeacher() {
+      axios
+        .get("https://teachers.coko38.ru/teachapp/api/teacher/get")
+        .then((response) => {
+          this.teacherInfo = response.data;
+          console.groupCollapsed("Личные данные педагога");
+          console.log(response.data);
+          console.groupEnd();
+        });
+    },
+    setTeacher() {
+      this.loaderStart(this.profileLoader, "Сохранение личных данных");
+      axios
+        .post(
+          "https://teachers.coko38.ru/teachapp/api/teacher/edit",
+          this.teacherInfo,
+          {
+            withCredentials: true,
+          }
+        )
+        .then((response) => {
+          this.teacherInfo = response.data;
+          console.groupCollapsed("Ответ на редактирование данных педагога");
+          console.log(response.data);
+          console.groupEnd();
+        })
+        .catch(() => {
+          console.log(
+            "Непредвиденная шибка при сохранении личных данных учителя"
+          );
+        })
+        .then(() => {
+          setTimeout(this.loaderFinish, this.loadersDelay, this.profileLoader);
+        });
+    },
+    getExpert() {
+      axios
+        .get("https://teachers.coko38.ru/teachapp/api/expert/get")
+        .then((response) => {
+          this.expertInfo = response.data;
+          console.groupCollapsed("Личные данные эксперта");
+          console.log(response.data);
+          console.groupEnd();
+        });
+    },
+    setExpert() {
+      this.loaderStart(this.profileLoader, "Сохранение личных данных");
+      axios
+        .post(
+          "https://teachers.coko38.ru/teachapp/api/expert/edit",
+          this.expertInfo,
+          {
+            withCredentials: true,
+          }
+        )
+        .then((response) => {
+          this.expertInfo = response.data;
+          console.groupCollapsed("Ответ на редактирование данных эксперта");
+          console.log(response.data);
+          console.groupEnd();
+        })
+        .catch(() => {
+          console.log(
+            "Непредвиденная шибка при сохранении личных данных эксперта'"
+          );
+        })
+        .then(() => {
+          setTimeout(this.loaderFinish, this.loadersDelay, this.profileLoader);
+        });
     },
   },
 

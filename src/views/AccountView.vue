@@ -94,7 +94,7 @@
                             class="form-control"
                             id="lastName"
                             disabled
-                            v-model="teacherProfile.basic.lastName"
+                            v-model="teacherProfile.familyName"
                           />
                         </div>
                         <div class="col-6 form-group">
@@ -108,7 +108,7 @@
                             class="form-control"
                             id="firstName"
                             disabled
-                            v-model="teacherProfile.basic.firstName"
+                            v-model="teacherProfile.name"
                           />
                         </div>
                         <div class="col-6 form-group">
@@ -122,7 +122,7 @@
                             class="form-control"
                             id="middleName"
                             disabled
-                            v-model="teacherProfile.basic.middleName"
+                            v-model="teacherProfile.middleName"
                           />
                         </div>
                         <div class="col-6 form-group">
@@ -136,7 +136,7 @@
                             class="form-control"
                             id="birthDate"
                             disabled
-                            v-model="teacherProfile.basic.birthDate"
+                            v-model="teacherProfile.birthday"
                           />
                         </div>
                         <div class="col-6 form-group">
@@ -150,7 +150,7 @@
                             class="form-control"
                             id="snils"
                             disabled
-                            v-model="teacherProfile.basic.snils"
+                            v-model="teacherProfile.snils"
                           />
                         </div>
                         <div class="col-6 form-group">
@@ -162,7 +162,7 @@
                             class="form-control"
                             id="citizenship"
                             disabled
-                            v-model="teacherProfile.basic.citizenship"
+                            v-model="teacherProfile.citizenship"
                           />
                         </div>
                         <div class="col-6 form-group">
@@ -176,7 +176,7 @@
                             class="form-control"
                             id="email"
                             :disabled="!editableProfile"
-                            v-model="teacherProfile.basic.email"
+                            v-model="teacherProfile.mail"
                           />
                         </div>
                         <div class="col-6 form-group">
@@ -186,7 +186,7 @@
                             class="form-control"
                             id="phone"
                             :disabled="!editableProfile"
-                            v-model="teacherProfile.basic.phone"
+                            v-model="teacherProfile.phone"
                           />
                         </div>
                         <div class="col-6 form-group">
@@ -195,7 +195,7 @@
                             id="gender"
                             class="form-control"
                             disabled
-                            v-model="teacherProfile.basic.gender"
+                            v-model="teacherProfile.gender"
                           >
                             <option selected>Выберите...</option>
                             <option>Мужской</option>
@@ -210,7 +210,7 @@
                             id="region"
                             class="form-control"
                             :disabled="!editableProfile"
-                            v-model="teacherProfile.basic.region"
+                            v-model="teacherProfile.municipality"
                           >
                             <option selected>Выберите...</option>
                             <option>Новосибирская область</option>
@@ -226,7 +226,7 @@
                             id="educationSubject"
                             class="form-control"
                             :disabled="!editableProfile"
-                            v-model="teacherProfile.basic.educationSubject"
+                            v-model="teacherProfile.subjectArea"
                           >
                             <option selected>Выберите...</option>
                             <option>Русский язык и литература</option>
@@ -268,7 +268,7 @@
                             class="form-control"
                             id="registrationAddress"
                             :disabled="!editableProfile"
-                            v-model="teacherProfile.address.registrationAddress"
+                            v-model="teacherProfile.regAddress"
                           />
                         </div>
                         <div class="col-12 form-group">
@@ -280,7 +280,7 @@
                             class="form-control"
                             id="livingAddress"
                             :disabled="!editableProfile"
-                            v-model="teacherProfile.address.livingAddress"
+                            v-model="teacherProfile.factAddress"
                           />
                         </div>
                       </form>
@@ -316,7 +316,7 @@
                             id="docType"
                             class="form-control"
                             :disabled="!editableProfile"
-                            v-model="teacherProfile.document.docType"
+                            v-model="teacherProfile.docname"
                           >
                             <option selected>Выберите...</option>
                             <option>Паспорт гражданина РФ</option>
@@ -332,7 +332,7 @@
                             class="form-control"
                             id="docSeries"
                             :disabled="!editableProfile"
-                            v-model="teacherProfile.document.docSeries"
+                            v-model="teacherProfile.docSeries"
                           />
                         </div>
                         <div class="col-6 form-group">
@@ -344,7 +344,7 @@
                             class="form-control"
                             id="docNumber"
                             :disabled="!editableProfile"
-                            v-model="teacherProfile.document.docNumber"
+                            v-model="teacherProfile.docNumber"
                           />
                         </div>
                         <div class="col-6 form-group">
@@ -356,7 +356,7 @@
                             class="form-control"
                             id="docIssueDate"
                             :disabled="!editableProfile"
-                            v-model="teacherProfile.document.docIssueDate"
+                            v-model="teacherProfile.issueDate"
                           />
                         </div>
                         <div class="col-6 form-group">
@@ -368,7 +368,7 @@
                             class="form-control"
                             id="docFinishDate"
                             :disabled="!editableProfile"
-                            v-model="teacherProfile.document.docFinishDate"
+                            v-model="teacherProfile.docValidate"
                           />
                         </div>
                         <div class="col-12 form-group">
@@ -380,7 +380,7 @@
                             class="form-control"
                             id="docIssuer"
                             :disabled="!editableProfile"
-                            v-model="teacherProfile.document.docIssuer"
+                            v-model="teacherProfile.issueOrg"
                           />
                         </div>
                       </form>
@@ -415,7 +415,7 @@
                               type="checkbox"
                               id="mailing"
                               :disabled="!editableProfile"
-                              v-model="teacherProfile.mailing"
+                              v-model="teacherProfile.mailAgree"
                             />
                             <label class="form-check-label" for="mailing">
                               Я согласен(а) на получение уведомлений на
@@ -435,7 +435,7 @@
               >
                 Редактировать профиль
               </button>
-              <button v-else class="btn btn-primary mt-3" @click="saveProfile">
+              <button v-else class="btn btn-primary mt-3" @click="setTeacher">
                 Сохранить профиль
               </button>
             </template>
@@ -573,7 +573,7 @@
                   class="form-control"
                   id="ex-lastName"
                   disabled
-                  v-model="expertProfile.lastName"
+                  v-model="expertProfile.familyName"
                 />
               </div>
               <div class="col-6 form-group">
@@ -585,7 +585,7 @@
                   class="form-control"
                   id="ex-firstName"
                   disabled
-                  v-model="expertProfile.firstName"
+                  v-model="expertProfile.name"
                 />
               </div>
               <div class="col-6 form-group">
@@ -621,7 +621,7 @@
                   class="form-control"
                   id="ex-email"
                   :disabled="!editableProfile"
-                  v-model="expertProfile.email"
+                  v-model="expertProfile.mail"
                 />
               </div>
               <div class="col-6 form-group">
@@ -642,7 +642,7 @@
                   id="ex-region"
                   class="form-control"
                   :disabled="!editableProfile"
-                  v-model="expertProfile.region"
+                  v-model="expertProfile.municipality"
                 >
                   <option selected disabled>Выберите...</option>
                   <option>Иркутская область</option>
@@ -658,7 +658,7 @@
                   id="ex-workPosition"
                   class="form-control"
                   :disabled="!editableProfile"
-                  v-model="expertProfile.workPosition"
+                  v-model="expertProfile.position"
                 >
                   <option selected disabled>Выберите...</option>
                   <option>Специалист отдела образования</option>
@@ -689,7 +689,7 @@
                   id="ex-educationSubject"
                   class="form-control"
                   :disabled="!editableProfile"
-                  v-model="expertProfile.educationSubject"
+                  v-model="expertProfile.subjectArea"
                 >
                   <option selected disabled>Выберите...</option>
                   <option>Русский язык и литература</option>
@@ -715,7 +715,7 @@
                   id="ex-activity"
                   class="form-control"
                   :disabled="!editableProfile"
-                  v-model="expertProfile.activity"
+                  v-model="expertProfile.status"
                 >
                   <option selected disabled>Выберите...</option>
                   <option>Активен</option>
@@ -728,7 +728,7 @@
                     class="form-check-input"
                     type="checkbox"
                     id="ex-mailing"
-                    v-model="expertProfile.mailing"
+                    v-model="expertProfile.mailAgree"
                   />
                   <label class="form-check-label" for="ex-mailing">
                     Я согласен(а) на получение уведомлений на электронную почту
@@ -737,12 +737,14 @@
               </div>
             </form>
             <button
-              class="btn btn-primary"
-              @click="editableProfile = !editableProfile"
+              v-if="!editableProfile"
+              class="btn btn-primary mt-3"
+              @click="editProfile"
             >
-              {{
-                editableProfile ? "Сохранить профиль" : "Редактировать профиль"
-              }}
+              Редактировать профиль
+            </button>
+            <button v-else class="btn btn-primary mt-3" @click="setExpert">
+              Сохранить профиль
             </button>
           </div>
           <div
@@ -1238,6 +1240,8 @@ export default {
   },
   props: [
     "user",
+    "teacherInfo",
+    "expertInfo",
     "profileLoader",
     "appsTable",
     "appForm",
@@ -1269,48 +1273,94 @@ export default {
       },
       selectedRole: "",
       editableProfile: false,
+      // teacherProfile: {
+      //   basic: {
+      //     lastName: this.user.fullInfo.userData.lastName,
+      //     firstName: this.user.fullInfo.userData.firstName,
+      //     middleName: this.user.fullInfo.userData.middleName,
+      //     birthDate: this.user.fullInfo.userData.birthDate.substr(0, 10),
+      //     snils: this.user.fullInfo.userData.snils,
+      //     citizenship: "Российская Федерация",
+      //     email: this.user.fullInfo.contacts[0].value,
+      //     phone: "8-903-903-9000",
+      //     gender: "Женский",
+      //     region: "Новосибирская область",
+      //     educationSubject: "Русский язык и литература",
+      //   },
+      //   address: {
+      //     registrationAddress: "г.Новосибирск, ул.Советская, д.23, кв.45",
+      //     livingAddress: "г.Новосибирск, ул.Ленина, д.12, кв.23",
+      //   },
+      //   document: {
+      //     docType: "Паспорт гражданина РФ",
+      //     docSeries: "5000",
+      //     docNumber: "345678",
+      //     docIssueDate: "2000-05-05",
+      //     docFinishDate: "2050-05-04",
+      //     docIssuer: "УВД Центрального района г.Новосибирска",
+      //   },
+      //   mailing: true,
+      // },
+      // expertProfile: {
+      //   lastName: this.user.fullInfo.userData.lastName,
+      //   firstName: this.user.fullInfo.userData.firstName,
+      //   middleName: this.user.fullInfo.userData.middleName,
+      //   snils: this.user.fullInfo.userData.snils,
+      //   email: this.user.fullInfo.contacts[0].value,
+      //   phone: "8-913-913-9999",
+      //   region: "Иркутская область",
+      //   workPosition: "Специалист отдела образования",
+      //   organization: "Министерство образования",
+      //   educationSubject: "Математика",
+      //   rating: 5,
+      //   activity: "Активен",
+      //   mailing: false,
+      // },
       teacherProfile: {
-        basic: {
-          lastName: this.user.fullInfo.userData.lastName,
-          firstName: this.user.fullInfo.userData.firstName,
-          middleName: this.user.fullInfo.userData.middleName,
-          birthDate: this.user.fullInfo.userData.birthDate.substr(0, 10),
-          snils: this.user.fullInfo.userData.snils,
-          citizenship: "Российская Федерация",
-          email: this.user.fullInfo.contacts[0].value,
-          phone: "8-903-903-9000",
-          gender: "Женский",
-          region: "Новосибирская область",
-          educationSubject: "Русский язык и литература",
-        },
-        address: {
-          registrationAddress: "г.Новосибирск, ул.Советская, д.23, кв.45",
-          livingAddress: "г.Новосибирск, ул.Ленина, д.12, кв.23",
-        },
-        document: {
-          docType: "Паспорт гражданина РФ",
-          docSeries: "5000",
-          docNumber: "345678",
-          docIssueDate: "2000-05-05",
-          docFinishDate: "2050-05-04",
-          docIssuer: "УВД Центрального района г.Новосибирска",
-        },
-        mailing: true,
+        id: 0,
+        familyName: "",
+        name: "",
+        middleName: "",
+        birthday: "",
+        snils: "",
+        citizenship: "",
+        mail: "",
+        phone: "",
+        gender: "",
+        municipality: "",
+        subjectArea: "",
+        regAddress: "",
+        factAddress: "",
+        docname: "",
+        docSeries: "",
+        docNumber: "",
+        issueDate: "",
+        docValidate: "",
+        issueOrg: "",
+        mailAgree: false,
+        workHistoryList: [],
+        attestationsResultList: [],
+        fileList: [],
       },
       expertProfile: {
-        lastName: this.user.fullInfo.userData.lastName,
-        firstName: this.user.fullInfo.userData.firstName,
-        middleName: this.user.fullInfo.userData.middleName,
-        snils: this.user.fullInfo.userData.snils,
-        email: this.user.fullInfo.contacts[0].value,
-        phone: "8-913-913-9999",
-        region: "Иркутская область",
-        workPosition: "Специалист отдела образования",
-        organization: "Министерство образования",
-        educationSubject: "Математика",
-        rating: 5,
-        activity: "Активен",
-        mailing: false,
+        id: 0,
+        familyName: "",
+        name: "",
+        middleName: "",
+        snils: "",
+        mail: "",
+        phone: "",
+        position: "",
+        municipality: "",
+        organization: "",
+        subjectArea: "",
+        rating: "",
+        status: false,
+        mailAgree: false,
+        numberExaminations: 0,
+        numberPositiveResult: 0,
+        numberNegativeResult: 0,
+        numberCoincidences: 0,
       },
       tableExpertises: {
         columnsList: [
@@ -1450,10 +1500,6 @@ export default {
       this.editableProfile = true;
       this.$emit("edit-profile");
     },
-    saveProfile() {
-      this.editableProfile = false;
-      this.$emit("save-profile");
-    },
     openExistingApp(modalTitle, appId) {
       this.$emit("open-existing-app", appId);
       this.openModal(modalTitle);
@@ -1492,6 +1538,19 @@ export default {
       }
       table.sortColumn = table.columnsList[column];
     },
+    setTeacher() {
+      this.editableProfile = false;
+      this.$emit("set-teacher");
+    },
+    setExpert() {
+      this.editableProfile = false;
+      this.$emit("set-expert");
+    },
+  },
+
+  created() {
+    this.teacherProfile = this.teacherInfo;
+    this.expertProfile = this.expertInfo;
   },
 
   mounted() {
