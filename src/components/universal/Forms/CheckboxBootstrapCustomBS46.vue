@@ -8,6 +8,8 @@
         :checked="value"
         :required="required"
         :disabled="disabled"
+        v-model="inputValue"
+        @change="$emit('change', inputValue)"
       />
       <label class="form-check-label" :for="id">{{ label }}</label>
     </div>
@@ -27,6 +29,28 @@ export default {
     required: Boolean,
     readonly: Boolean,
     disabled: Boolean,
+  },
+  data() {
+    return {
+      inputValue: false,
+    };
+  },
+  computed: {
+    idFull: function () {
+      let idFull = this.id;
+      if (this.idPostfix) {
+        idFull += "-" + this.idPostfix;
+      }
+      return idFull;
+    },
+  },
+  created() {
+    this.inputValue = this.value;
+  },
+  watch: {
+    value: function () {
+      this.inputValue = this.value;
+    },
   },
 };
 </script>

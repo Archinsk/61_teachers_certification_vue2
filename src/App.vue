@@ -42,6 +42,7 @@
         :log-form="logForm"
         :log-form-options="i18n"
         :logs-loader="logsLoader"
+        :dictionaries="dictionaries"
         @sign-in-local="signInLocal($event)"
         @sign-in-esia="getLogin"
         @sign-out="signOut"
@@ -238,7 +239,7 @@ export default {
         ascendingSortOrder: false,
         filters: [
           {
-            id: 1,
+            id: "1",
             label: "№ заявления",
             type: "input",
             subtype: "number",
@@ -247,7 +248,7 @@ export default {
             readonly: true,
           },
           {
-            id: 2,
+            id: "2",
             label: "Наименование услуги",
             type: "select",
             itemsList: [
@@ -265,7 +266,7 @@ export default {
             disabled: true,
           },
           {
-            id: 3,
+            id: "3",
             label: "Дата создания",
             type: "range",
             subtype: "date",
@@ -275,14 +276,14 @@ export default {
             responsive: "col-sm-6",
           },
           {
-            id: 4,
+            id: "4",
             label: "№ ЕПГУ",
             type: "input",
             subtype: "number",
             width: 4,
           },
           {
-            id: 5,
+            id: "5",
             label: "Статус",
             type: "select",
             itemsList: [
@@ -294,7 +295,7 @@ export default {
             width: 4,
           },
           {
-            id: 6,
+            id: "6",
             label: "Дата изменения статуса",
             type: "range",
             subtype: "date",
@@ -305,7 +306,7 @@ export default {
             width: 8,
           },
           {
-            id: 7,
+            id: "7",
             label: "Показать архивные",
             type: "checkbox",
             width: 12,
@@ -383,14 +384,14 @@ export default {
         ascendingSortOrder: false,
         filters: [
           {
-            id: 1,
+            id: "1",
             label: "№ сообщения",
             type: "input",
             subtype: "number",
             width: 4,
           },
           {
-            id: 2,
+            id: "2",
             label: "Дата создания сообщения",
             type: "range",
             subtype: "date",
@@ -398,14 +399,14 @@ export default {
             width: 8,
           },
           {
-            id: 3,
+            id: "3",
             label: "Тема",
             type: "input",
             subtype: "Тема",
             width: 4,
           },
           {
-            id: 4,
+            id: "4",
             label: "Дата входа в статус",
             type: "range",
             subtype: "date",
@@ -413,7 +414,7 @@ export default {
             width: 8,
           },
           {
-            id: 5,
+            id: "5",
             label: "Статус",
             type: "select",
             itemsList: [
@@ -425,7 +426,7 @@ export default {
             width: 4,
           },
           {
-            id: 6,
+            id: "6",
             label: "Срок отправки ответа",
             type: "range",
             subtype: "date",
@@ -433,7 +434,7 @@ export default {
             width: 8,
           },
           {
-            id: 7,
+            id: "7",
             label: "Показать только архивные",
             type: "checkbox",
             width: 12,
@@ -513,21 +514,21 @@ export default {
         ascendingSortOrder: false,
         filters: [
           {
-            id: 1,
+            id: "1",
             label: "№ заявления",
             type: "input",
             subtype: "number",
             width: 4,
           },
           {
-            id: 2,
+            id: "2",
             label: "ФИО пед.работника",
             type: "input",
             subtype: "text",
             width: 8,
           },
           {
-            id: 3,
+            id: "3",
             label: "Дата начала экспертизы",
             type: "range",
             subtype: "date",
@@ -535,7 +536,7 @@ export default {
             width: 12,
           },
           {
-            id: 4,
+            id: "4",
             label: "Срок окончания экспертизы",
             type: "range",
             subtype: "date",
@@ -543,7 +544,7 @@ export default {
             width: 12,
           },
           {
-            id: 5,
+            id: "5",
             label: "Дата окончания экспертизы",
             type: "range",
             subtype: "date",
@@ -551,7 +552,7 @@ export default {
             width: 12,
           },
           {
-            id: 6,
+            id: "6",
             label: "Результат окончания экспертизы",
             type: "select",
             itemsList: [
@@ -562,7 +563,7 @@ export default {
             width: 4,
           },
           {
-            id: 7,
+            id: "7",
             label: "Статус",
             type: "select",
             itemsList: [
@@ -617,7 +618,7 @@ export default {
         ascendingSortOrder: false,
         filters: [
           {
-            id: 1,
+            id: "1",
             label: "№ заявления",
             type: "input",
             subtype: "number",
@@ -627,7 +628,7 @@ export default {
             disabled: true,
           },
           {
-            id: 2,
+            id: "2",
             label: "Квалификация",
             type: "select",
             itemsList: [
@@ -637,13 +638,13 @@ export default {
             ],
           },
           {
-            id: 3,
+            id: "3",
             label: "Показать только архивные",
             type: "checkbox",
             width: 12,
           },
           {
-            id: 4,
+            id: "4",
             label: "",
             type: "range",
             subtype: "date",
@@ -704,14 +705,14 @@ export default {
         ascendingSortOrder: false,
         filters: [
           {
-            id: 1,
+            id: "1",
             label: "Id записи",
             type: "input",
             subtype: "number",
             width: 4,
           },
           {
-            id: 2,
+            id: "2",
             label: "Дата события",
             type: "range",
             subtype: "date",
@@ -719,14 +720,14 @@ export default {
             width: 12,
           },
           {
-            id: 3,
+            id: "3",
             label: "Описание",
             type: "input",
             subtype: "text",
             width: 6,
           },
           {
-            id: 4,
+            id: "4",
             label: "Событие",
             type: "select",
             itemsList: [
@@ -738,7 +739,7 @@ export default {
             width: 6,
           },
           {
-            id: 5,
+            id: "5",
             label: "Изменения",
             type: "input",
             subtype: "text",
@@ -1254,6 +1255,12 @@ export default {
         numberPositiveResult: 0,
         numberNegativeResult: 0,
         numberCoincidences: 0,
+      },
+
+      dictionaries: {
+        gender: [],
+        subjectArea: [],
+        municipalEntityIrkutsk: [],
       },
     };
   },
@@ -2022,7 +2029,10 @@ export default {
       axios
         .get(
           this.url +
-            "serv/get-services?pageNum=0&pageSize=100&sortCol=id&sortDesc=false&active=true"
+            "serv/get-services?pageNum=0&pageSize=100&sortCol=id&sortDesc=false&active=true",
+          {
+            withCredentials: true,
+          }
         )
         .then((response) => {
           // this.measuresCardsList = response.data.content;
@@ -2054,7 +2064,9 @@ export default {
     // Данные личного кабинета
     getTeacher() {
       axios
-        .get("https://teachers.coko38.ru/teachapp/api/teacher/get")
+        .get("https://teachers.coko38.ru/teachapp/api/teacher/get", {
+          withCredentials: true,
+        })
         .then((response) => {
           this.teacherInfo = response.data;
           console.groupCollapsed("Личные данные педагога");
@@ -2089,7 +2101,9 @@ export default {
     },
     getExpert() {
       axios
-        .get("https://teachers.coko38.ru/teachapp/api/expert/get")
+        .get("https://teachers.coko38.ru/teachapp/api/expert/get", {
+          withCredentials: true,
+        })
         .then((response) => {
           this.expertInfo = response.data;
           console.groupCollapsed("Личные данные эксперта");
@@ -2122,6 +2136,48 @@ export default {
           setTimeout(this.loaderFinish, this.loadersDelay, this.profileLoader);
         });
     },
+
+    // Словари
+    getAllDictionaries() {
+      this.getDictionary("gender", '"Пол"');
+      this.getDictionary("subjectArea", '"Предметная область"');
+      this.getDictionary(
+        "municipalEntityIrkutsk",
+        '"Муниципальные образования"'
+      );
+    },
+    getDictionary(dictionaryCode, logComment) {
+      axios
+        .get(this.url + "core/get-dictdata?code=" + dictionaryCode, {
+          withCredentials: true,
+        })
+        .then((response) => {
+          this.dictionaries[dictionaryCode] = this.convertDictionary(
+            response.data
+          );
+          console.groupCollapsed("Справочник" + logComment);
+          console.log(response.data);
+          console.groupEnd();
+        })
+        .catch(() => {
+          console.log(
+            'Непредвиденная ошибка при выполнении запроса справочника "' +
+              logComment +
+              '"'
+          );
+        });
+    },
+    convertDictionary(dictionary) {
+      let convertedDictionary = [];
+      dictionary.forEach((dictionaryItem) => {
+        let convertedItem = {};
+        convertedItem.id = dictionaryItem.value;
+        convertedItem.label = dictionaryItem.label;
+        convertedItem.value = dictionaryItem.label;
+        convertedDictionary.push(convertedItem);
+      });
+      return convertedDictionary;
+    },
   },
 
   watch: {
@@ -2146,6 +2202,9 @@ export default {
 
     // Получение бизнес-процессов (для справки)
     this.getServises();
+
+    // Получение справочников
+    this.getAllDictionaries();
   },
 };
 </script>

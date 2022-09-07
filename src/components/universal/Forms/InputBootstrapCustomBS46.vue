@@ -12,6 +12,8 @@
       :required="required"
       :readonly="readonly"
       :disabled="disabled"
+      v-model="inputValue"
+      @input="$emit('input', inputValue)"
     />
   </FormGroupBootstrapCustomBS46>
 </template>
@@ -24,7 +26,7 @@ export default {
   props: {
     label: String,
     type: String,
-    id: Number,
+    id: String,
     idPostfix: String,
     value: String,
     widthGroup: Number,
@@ -33,6 +35,11 @@ export default {
     readonly: Boolean,
     disabled: Boolean,
   },
+  data() {
+    return {
+      inputValue: "",
+    };
+  },
   computed: {
     idFull: function () {
       let idFull = this.id;
@@ -40,6 +47,14 @@ export default {
         idFull += "-" + this.idPostfix;
       }
       return idFull;
+    },
+  },
+  created() {
+    this.inputValue = this.value;
+  },
+  watch: {
+    value: function () {
+      this.inputValue = this.value;
     },
   },
 };

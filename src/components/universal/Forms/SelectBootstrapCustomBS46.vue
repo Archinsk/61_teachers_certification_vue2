@@ -9,16 +9,18 @@
       class="form-control"
       :required="required"
       :disabled="disabled"
+      v-model="selectedValue"
+      @change="$emit('change', selectedValue)"
     >
       <option disabled>Выберите...</option>
       <template v-if="itemsList.length > 0">
         <option
-          v-for="(option, index) of itemsList"
-          :value="option.id + '-' + index"
-          :key="option.id + '-' + index"
-          :selected="option.selected"
+          v-for="option of itemsList"
+          :value="option.value"
+          :key="option.id"
+          :selected="option.value === selectedValue"
         >
-          {{ option.text }}
+          {{ option.label }}
         </option>
       </template>
     </select>
@@ -32,12 +34,26 @@ export default {
   components: { FormGroupBootstrapCustomBS46 },
   props: {
     label: String,
-    id: Number,
+    id: String,
+    itemsList: Array,
+    value: String,
     widthGroup: Number,
     responsive: String,
-    itemsList: Array,
     required: Boolean,
     disabled: Boolean,
+  },
+  data() {
+    return {
+      selectedValue: "",
+    };
+  },
+  created() {
+    this.selectedValue = this.value;
+  },
+  watch: {
+    value: function () {
+      this.selectedValue = this.value;
+    },
   },
 };
 </script>

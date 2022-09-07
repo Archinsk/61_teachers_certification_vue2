@@ -564,177 +564,116 @@
             tabindex="0"
           >
             <form class="row g-3">
-              <div class="col-6 form-group">
-                <label for="ex-lastName" class="form-label from-closed-server"
-                  >Фамилия</label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  id="ex-lastName"
-                  disabled
-                  v-model="expertProfile.familyName"
-                />
-              </div>
-              <div class="col-6 form-group">
-                <label for="ex-firstName" class="form-label from-closed-server"
-                  >Имя</label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  id="ex-firstName"
-                  disabled
-                  v-model="expertProfile.name"
-                />
-              </div>
-              <div class="col-6 form-group">
-                <label for="ex-middleName" class="form-label from-closed-server"
-                  >Отчество</label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  id="ex-middleName"
-                  disabled
-                  v-model="expertProfile.middleName"
-                />
-              </div>
-              <div class="col-6 form-group">
-                <label for="ex-snils" class="form-label from-closed-server"
-                  >СНИЛС</label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  id="ex-snils"
-                  disabled
-                  v-model="expertProfile.snils"
-                />
-              </div>
-              <div class="col-6 form-group">
-                <label for="ex-email" class="form-label from-closed-server"
-                  >Электронная почта</label
-                >
-                <input
-                  type="email"
-                  class="form-control"
-                  id="ex-email"
-                  :disabled="!editableProfile"
-                  v-model="expertProfile.mail"
-                />
-              </div>
-              <div class="col-6 form-group">
-                <label for="ex-phone" class="form-label">Телефон</label>
-                <input
-                  type="tel"
-                  class="form-control"
-                  id="ex-phone"
-                  :disabled="!editableProfile"
-                  v-model="expertProfile.phone"
-                />
-              </div>
-              <div class="col-6 form-group">
-                <label for="ex-region" class="form-label"
-                  >Муниципальное образование</label
-                >
-                <select
-                  id="ex-region"
-                  class="form-control"
-                  :disabled="!editableProfile"
-                  v-model="expertProfile.municipality"
-                >
-                  <option selected disabled>Выберите...</option>
-                  <option>Иркутская область</option>
-                  <option>Республика Бурятия</option>
-                  <option>Забайкальский край</option>
-                </select>
-              </div>
-              <div class="col-6 form-group">
-                <label for="ex-workPosition" class="form-label"
-                  >Должность</label
-                >
-                <select
-                  id="ex-workPosition"
-                  class="form-control"
-                  :disabled="!editableProfile"
-                  v-model="expertProfile.position"
-                >
-                  <option selected disabled>Выберите...</option>
-                  <option>Специалист отдела образования</option>
-                  <option>Начальник отдела</option>
-                  <option>Министр</option>
-                </select>
-              </div>
-              <div class="col-6 form-group">
-                <label for="ex-organization" class="form-label"
-                  >Организация</label
-                >
-                <select
-                  id="ex-organization"
-                  class="form-control"
-                  :disabled="!editableProfile"
-                  v-model="expertProfile.organization"
-                >
-                  <option selected disabled>Выберите...</option>
-                  <option>Министерство образования</option>
-                  <option>Отдел образования Администрации</option>
-                </select>
-              </div>
-              <div class="col-6 form-group">
-                <label for="ex-educationSubject" class="form-label"
-                  >Предметная область</label
-                >
-                <select
-                  id="ex-educationSubject"
-                  class="form-control"
-                  :disabled="!editableProfile"
-                  v-model="expertProfile.subjectArea"
-                >
-                  <option selected disabled>Выберите...</option>
-                  <option>Русский язык и литература</option>
-                  <option>Математика</option>
-                  <option>Химия и биология</option>
-                </select>
-              </div>
-              <div class="col-6 form-group">
-                <label for="rating" class="form-label">Рейтинг</label>
-                <input
-                  type="number"
-                  class="form-control"
-                  id="rating"
-                  disabled
-                  v-model="expertProfile.rating"
-                />
-              </div>
-              <div class="col-6 form-group">
-                <label for="ex-activity" class="form-label">
-                  Статус активности</label
-                >
-                <select
-                  id="ex-activity"
-                  class="form-control"
-                  :disabled="!editableProfile"
-                  v-model="expertProfile.status"
-                >
-                  <option selected disabled>Выберите...</option>
-                  <option>Активен</option>
-                  <option>Не активен</option>
-                </select>
-              </div>
-              <div class="col-12 form-group">
-                <div class="form-check">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    id="ex-mailing"
-                    v-model="expertProfile.mailAgree"
-                  />
-                  <label class="form-check-label" for="ex-mailing">
-                    Я согласен(а) на получение уведомлений на электронную почту
-                  </label>
-                </div>
-              </div>
+              <InputBootstrapCustomBS46
+                label="Фамилия"
+                id="ex-familyName"
+                :value="expertProfile.familyName"
+                type="text"
+                :width-group="6"
+                disabled
+              />
+              <InputBootstrapCustomBS46
+                label="Имя"
+                id="ex-name"
+                :value="expertProfile.name"
+                type="text"
+                :width-group="6"
+                disabled
+              />
+              <InputBootstrapCustomBS46
+                label="Отчество"
+                id="ex-middleName"
+                :value="expertProfile.middleName"
+                type="text"
+                :width-group="6"
+                disabled
+              />
+              <InputBootstrapCustomBS46
+                label="СНИЛС"
+                id="ex-snils"
+                :value="expertProfile.snils"
+                type="text"
+                :width-group="6"
+                disabled
+              />
+              <InputBootstrapCustomBS46
+                label="Электронная почта"
+                id="ex-mail"
+                :value="expertProfile.mail"
+                type="text"
+                :width-group="6"
+                :disabled="!editableProfile"
+                @input="expertProfile.mail = $event"
+              />
+              <InputBootstrapCustomBS46
+                label="Телефон"
+                id="ex-phone"
+                :value="expertProfile.phone"
+                type="text"
+                :width-group="6"
+                :disabled="!editableProfile"
+                @input="expertProfile.phone = $event"
+              />
+              <SelectBootstrapCustomBS46
+                label="Муниципальное образование"
+                id="ex-municipality"
+                :itemsList="dictionaries.municipalEntityIrkutsk"
+                :value="expertProfile.municipality"
+                :width-group="6"
+                :disabled="!editableProfile"
+                @change="expertProfile.municipality = $event"
+              />
+              <InputBootstrapCustomBS46
+                label="Должность"
+                id="ex-position"
+                :value="expertProfile.position"
+                type="text"
+                :width-group="6"
+                :disabled="!editableProfile"
+                @input="expertProfile.position = $event"
+              />
+              <InputBootstrapCustomBS46
+                label="Организация"
+                id="ex-organization"
+                :value="expertProfile.organization"
+                type="text"
+                :width-group="6"
+                :disabled="!editableProfile"
+                @input="expertProfile.organization = $event"
+              />
+              <SelectBootstrapCustomBS46
+                label="Предметная область"
+                id="ex-subjectArea"
+                :itemsList="dictionaries.subjectArea"
+                :value="expertProfile.subjectArea"
+                :width-group="6"
+                :disabled="!editableProfile"
+                @change="expertProfile.subjectArea = $event"
+              />
+              <InputBootstrapCustomBS46
+                label="Рейтинг"
+                id="ex-rating"
+                :value="expertProfile.rating"
+                type="text"
+                :width-group="6"
+                disabled
+              />
+              <CheckboxBootstrapCustomBS46
+                label="Активен"
+                id="ex-status"
+                :value="expertProfile.status"
+                :width-group="12"
+                :disabled="!editableProfile"
+                @change="expertProfile.status = $event"
+              />
+              <CheckboxBootstrapCustomBS46
+                label="Я согласен(а) на получение уведомлений на электронную почту"
+                id="ex-mailAgree"
+                :value="expertProfile.mailAgree"
+                :width-group="12"
+                :disabled="!editableProfile"
+                @change="expertProfile.mailAgree = $event"
+              />
             </form>
             <button
               v-if="!editableProfile"
@@ -1229,10 +1168,16 @@ import ModalBootstrapCustom46 from "../components/universal/ModalBootstrapCustom
 import TableBootstrapCustomBS46 from "../components/universal/TableBootstrapCustomBS46";
 import { Form } from "vue-formio";
 import LoaderBootstrapCustomBS46 from "../components/universal/LoaderBootstrapCustomBS46";
+import InputBootstrapCustomBS46 from "../components/universal/Forms/InputBootstrapCustomBS46";
+import CheckboxBootstrapCustomBS46 from "../components/universal/Forms/CheckboxBootstrapCustomBS46";
+import SelectBootstrapCustomBS46 from "../components/universal/Forms/SelectBootstrapCustomBS46";
 
 export default {
   name: "AccountView",
   components: {
+    SelectBootstrapCustomBS46,
+    CheckboxBootstrapCustomBS46,
+    InputBootstrapCustomBS46,
     LoaderBootstrapCustomBS46,
     TableBootstrapCustomBS46,
     ModalBootstrapCustom46,
@@ -1263,6 +1208,7 @@ export default {
     "logForm",
     "logFormOptions",
     "logsLoader",
+    "dictionaries",
   ],
   data() {
     return {
@@ -1492,6 +1438,15 @@ export default {
           width: 6,
         },
       ],
+      testItemsList: [
+        {
+          id: 1,
+          text: "Математика",
+        },
+        { id: 2, text: "Литература" },
+        { id: 3, text: "Русский язык" },
+      ],
+      testValue: "Русский язык",
     };
   },
 
@@ -1499,6 +1454,14 @@ export default {
     editProfile() {
       this.editableProfile = true;
       this.$emit("edit-profile");
+    },
+    setTeacher() {
+      this.editableProfile = false;
+      this.$emit("set-teacher");
+    },
+    setExpert() {
+      this.editableProfile = false;
+      this.$emit("set-expert");
     },
     openExistingApp(modalTitle, appId) {
       this.$emit("open-existing-app", appId);
@@ -1537,14 +1500,6 @@ export default {
         table.ascendingSortOrder = true;
       }
       table.sortColumn = table.columnsList[column];
-    },
-    setTeacher() {
-      this.editableProfile = false;
-      this.$emit("set-teacher");
-    },
-    setExpert() {
-      this.editableProfile = false;
-      this.$emit("set-expert");
     },
   },
 
