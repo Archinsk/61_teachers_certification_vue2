@@ -83,157 +83,98 @@
                   >
                     <div class="accordion-body">
                       <form class="row">
-                        <div class="col-6 form-group">
-                          <label
-                            for="lastName"
-                            class="form-label from-closed-server"
-                            >Фамилия</label
-                          >
-                          <input
-                            type="text"
-                            class="form-control"
-                            id="lastName"
-                            disabled
-                            v-model="teacherProfile.familyName"
-                          />
-                        </div>
-                        <div class="col-6 form-group">
-                          <label
-                            for="firstName"
-                            class="form-label from-closed-server"
-                            >Имя</label
-                          >
-                          <input
-                            type="text"
-                            class="form-control"
-                            id="firstName"
-                            disabled
-                            v-model="teacherProfile.name"
-                          />
-                        </div>
-                        <div class="col-6 form-group">
-                          <label
-                            for="middleName"
-                            class="form-label from-closed-server"
-                            >Отчество</label
-                          >
-                          <input
-                            type="text"
-                            class="form-control"
-                            id="middleName"
-                            disabled
-                            v-model="teacherProfile.middleName"
-                          />
-                        </div>
-                        <div class="col-6 form-group">
-                          <label
-                            for="birthDate"
-                            class="form-label from-closed-server"
-                            >Дата рождения</label
-                          >
-                          <input
-                            type="date"
-                            class="form-control"
-                            id="birthDate"
-                            disabled
-                            v-model="teacherProfile.birthday"
-                          />
-                        </div>
-                        <div class="col-6 form-group">
-                          <label
-                            for="snils"
-                            class="form-label from-closed-server"
-                            >СНИЛС</label
-                          >
-                          <input
-                            type="text"
-                            class="form-control"
-                            id="snils"
-                            disabled
-                            v-model="teacherProfile.snils"
-                          />
-                        </div>
-                        <div class="col-6 form-group">
-                          <label for="citizenship" class="form-label"
-                            >Гражданство</label
-                          >
-                          <input
-                            type="text"
-                            class="form-control"
-                            id="citizenship"
-                            disabled
-                            v-model="teacherProfile.citizenship"
-                          />
-                        </div>
-                        <div class="col-6 form-group">
-                          <label
-                            for="email"
-                            class="form-label from-closed-server"
-                            >Электронная почта</label
-                          >
-                          <input
-                            type="email"
-                            class="form-control"
-                            id="email"
-                            :disabled="!editableProfile"
-                            v-model="teacherProfile.mail"
-                          />
-                        </div>
-                        <div class="col-6 form-group">
-                          <label for="phone" class="form-label">Телефон</label>
-                          <input
-                            type="tel"
-                            class="form-control"
-                            id="phone"
-                            :disabled="!editableProfile"
-                            v-model="teacherProfile.phone"
-                          />
-                        </div>
-                        <div class="col-6 form-group">
-                          <label for="gender" class="form-label">Пол</label>
-                          <select
-                            id="gender"
-                            class="form-control"
-                            disabled
-                            v-model="teacherProfile.gender"
-                          >
-                            <option selected>Выберите...</option>
-                            <option>Мужской</option>
-                            <option>Женский</option>
-                          </select>
-                        </div>
-                        <div class="col-6 form-group">
-                          <label for="region" class="form-label"
-                            >Муниципальное образование</label
-                          >
-                          <select
-                            id="region"
-                            class="form-control"
-                            :disabled="!editableProfile"
-                            v-model="teacherProfile.municipality"
-                          >
-                            <option selected>Выберите...</option>
-                            <option>Новосибирская область</option>
-                            <option>Республика Алтай</option>
-                            <option>Алтайский край</option>
-                          </select>
-                        </div>
-                        <div class="col-12 form-group">
-                          <label for="educationSubject" class="form-label"
-                            >Предметная область</label
-                          >
-                          <select
-                            id="educationSubject"
-                            class="form-control"
-                            :disabled="!editableProfile"
-                            v-model="teacherProfile.subjectArea"
-                          >
-                            <option selected>Выберите...</option>
-                            <option>Русский язык и литература</option>
-                            <option>Математика</option>
-                            <option>Химия и биология</option>
-                          </select>
-                        </div>
+                        <InputBootstrapCustomBS46
+                          label="Фамилия"
+                          id="familyName"
+                          :value="teacherProfile.familyName"
+                          type="text"
+                          :width-group="6"
+                          disabled
+                        />
+                        <InputBootstrapCustomBS46
+                          label="Имя"
+                          id="name"
+                          :value="teacherProfile.name"
+                          type="text"
+                          :width-group="6"
+                          disabled
+                        />
+                        <InputBootstrapCustomBS46
+                          label="Отчество"
+                          id="middleName"
+                          :value="teacherProfile.middleName"
+                          type="text"
+                          :width-group="6"
+                          disabled
+                        />
+                        <InputBootstrapCustomBS46
+                          label="Дата рождения"
+                          id="birthday"
+                          :value="teacherProfile.birthday"
+                          type="text"
+                          :width-group="6"
+                          disabled
+                        />
+                        <InputBootstrapCustomBS46
+                          label="СНИЛС"
+                          id="snils"
+                          :value="teacherProfile.snils"
+                          type="text"
+                          :width-group="6"
+                          disabled
+                        />
+                        <InputBootstrapCustomBS46
+                          label="Гражданство"
+                          id="citizenship"
+                          :value="teacherProfile.citizenship"
+                          type="text"
+                          :width-group="6"
+                          disabled
+                        />
+                        <InputBootstrapCustomBS46
+                          label="Электронная почта"
+                          id="mail"
+                          :value="teacherProfile.mail"
+                          type="text"
+                          :width-group="6"
+                          :disabled="!editableProfile"
+                          @input="teacherProfile.mail = $event"
+                        />
+                        <InputBootstrapCustomBS46
+                          label="Телефон"
+                          id="phone"
+                          :value="teacherProfile.phone"
+                          type="text"
+                          :width-group="6"
+                          :disabled="!editableProfile"
+                          @input="teacherProfile.phone = $event"
+                        />
+                        <SelectBootstrapCustomBS46
+                          label="Пол"
+                          id="subjectArea"
+                          :itemsList="dictionaries.gender"
+                          :value="teacherProfile.gender"
+                          :width-group="6"
+                          disabled
+                        />
+                        <SelectBootstrapCustomBS46
+                          label="Муниципальное образование"
+                          id="municipality"
+                          :itemsList="dictionaries.municipalEntityIrkutsk"
+                          :value="teacherProfile.municipality"
+                          :width-group="6"
+                          :disabled="!editableProfile"
+                          @change="teacherProfile.municipality = $event"
+                        />
+                        <SelectBootstrapCustomBS46
+                          label="Предметная область"
+                          id="subjectArea"
+                          :itemsList="dictionaries.subjectArea"
+                          :value="teacherProfile.subjectArea"
+                          :width-group="6"
+                          :disabled="!editableProfile"
+                          @change="teacherProfile.subjectArea = $event"
+                        />
                       </form>
                     </div>
                   </div>
@@ -259,30 +200,24 @@
                   >
                     <div class="accordion-body">
                       <form class="row">
-                        <div class="col-12 form-group">
-                          <label for="registrationAddress" class="form-label"
-                            >Адрес регистрации</label
-                          >
-                          <input
-                            type="text"
-                            class="form-control"
-                            id="registrationAddress"
-                            :disabled="!editableProfile"
-                            v-model="teacherProfile.regAddress"
-                          />
-                        </div>
-                        <div class="col-12 form-group">
-                          <label for="livingAddress" class="form-label"
-                            >Адрес места жительства</label
-                          >
-                          <input
-                            type="text"
-                            class="form-control"
-                            id="livingAddress"
-                            :disabled="!editableProfile"
-                            v-model="teacherProfile.factAddress"
-                          />
-                        </div>
+                        <InputBootstrapCustomBS46
+                          label="Адрес регистрации"
+                          id="regAddress"
+                          :value="teacherProfile.regAddress"
+                          type="text"
+                          :width-group="12"
+                          :disabled="!editableProfile"
+                          @input="teacherProfile.regAddress = $event"
+                        />
+                        <InputBootstrapCustomBS46
+                          label="Адрес места жительства"
+                          id="factAddress"
+                          :value="teacherProfile.factAddress"
+                          type="text"
+                          :width-group="12"
+                          :disabled="!editableProfile"
+                          @input="teacherProfile.factAddress = $event"
+                        />
                       </form>
                     </div>
                   </div>
@@ -308,81 +243,60 @@
                   >
                     <div class="accordion-body">
                       <form class="row">
-                        <div class="col-12 form-group">
-                          <label for="docType" class="form-label"
-                            >Наименование документа</label
-                          >
-                          <select
-                            id="docType"
-                            class="form-control"
-                            :disabled="!editableProfile"
-                            v-model="teacherProfile.docname"
-                          >
-                            <option selected>Выберите...</option>
-                            <option>Паспорт гражданина РФ</option>
-                            <option>Паспорт иностранного гражданина</option>
-                          </select>
-                        </div>
-                        <div class="col-6 form-group">
-                          <label for="docSeries" class="form-label"
-                            >Серия</label
-                          >
-                          <input
-                            type="email"
-                            class="form-control"
-                            id="docSeries"
-                            :disabled="!editableProfile"
-                            v-model="teacherProfile.docSeries"
-                          />
-                        </div>
-                        <div class="col-6 form-group">
-                          <label for="docNumber" class="form-label"
-                            >Номер</label
-                          >
-                          <input
-                            type="text"
-                            class="form-control"
-                            id="docNumber"
-                            :disabled="!editableProfile"
-                            v-model="teacherProfile.docNumber"
-                          />
-                        </div>
-                        <div class="col-6 form-group">
-                          <label for="docIssueDate" class="form-label"
-                            >Дата выдачи</label
-                          >
-                          <input
-                            type="date"
-                            class="form-control"
-                            id="docIssueDate"
-                            :disabled="!editableProfile"
-                            v-model="teacherProfile.issueDate"
-                          />
-                        </div>
-                        <div class="col-6 form-group">
-                          <label for="docFinishDate" class="form-label"
-                            >Срок действия</label
-                          >
-                          <input
-                            type="date"
-                            class="form-control"
-                            id="docFinishDate"
-                            :disabled="!editableProfile"
-                            v-model="teacherProfile.docValidate"
-                          />
-                        </div>
-                        <div class="col-12 form-group">
-                          <label for="docIssuer" class="form-label"
-                            >Кем выдан</label
-                          >
-                          <input
-                            type="text"
-                            class="form-control"
-                            id="docIssuer"
-                            :disabled="!editableProfile"
-                            v-model="teacherProfile.issueOrg"
-                          />
-                        </div>
+                        <SelectBootstrapCustomBS46
+                          label="Наименование документа"
+                          id="docname"
+                          :itemsList="dictionaries.DocumentPersonal"
+                          :value="teacherProfile.docName"
+                          :width-group="6"
+                          :disabled="!editableProfile"
+                          @change="teacherProfile.docName = $event"
+                        />
+                        <InputBootstrapCustomBS46
+                          label="Серия"
+                          id="factAddress"
+                          :value="teacherProfile.docSeries"
+                          type="text"
+                          :width-group="6"
+                          :disabled="!editableProfile"
+                          @input="teacherProfile.docSeries = $event"
+                        />
+                        <InputBootstrapCustomBS46
+                          label="Номер"
+                          id="factAddress"
+                          :value="teacherProfile.docNumber"
+                          type="text"
+                          :width-group="6"
+                          :disabled="!editableProfile"
+                          @input="teacherProfile.docNumber = $event"
+                        />
+                        <InputBootstrapCustomBS46
+                          label="Дата выдачи"
+                          id="factAddress"
+                          :value="teacherProfile.issueDate"
+                          type="text"
+                          :width-group="6"
+                          :disabled="!editableProfile"
+                          @input="teacherProfile.issueDate = $event"
+                        />
+                        <InputBootstrapCustomBS46
+                          label="Срок действия"
+                          id="factAddress"
+                          :value="teacherProfile.docValidate"
+                          type="text"
+                          :width-group="6"
+                          :disabled="!editableProfile"
+                          @input="teacherProfile.docValidate = $event"
+                        />
+                        <InputBootstrapCustomBS46
+                          label="Кем выдан"
+                          id="factAddress"
+                          :value="teacherProfile.issueOrg"
+                          type="text"
+                          :width-group="6"
+                          :disabled="!editableProfile"
+                          @input="teacherProfile.issueOrg = $event"
+                        />
                       </form>
                     </div>
                   </div>
@@ -408,21 +322,14 @@
                   >
                     <div class="accordion-body">
                       <form class="row">
-                        <div class="col-12 form-group">
-                          <div class="form-check">
-                            <input
-                              class="form-check-input"
-                              type="checkbox"
-                              id="mailing"
-                              :disabled="!editableProfile"
-                              v-model="teacherProfile.mailAgree"
-                            />
-                            <label class="form-check-label" for="mailing">
-                              Я согласен(а) на получение уведомлений на
-                              электронную почту
-                            </label>
-                          </div>
-                        </div>
+                        <CheckboxBootstrapCustomBS46
+                          label="Я согласен(а) на получение уведомлений на электронную почту"
+                          id="mailAgree"
+                          :value="teacherProfile.mailAgree"
+                          :width-group="12"
+                          :disabled="!editableProfile"
+                          @change="teacherProfile.mailAgree = $event"
+                        />
                       </form>
                     </div>
                   </div>
@@ -1185,6 +1092,7 @@ export default {
   },
   props: [
     "user",
+    "isAuthUser",
     "teacherInfo",
     "expertInfo",
     "profileLoader",
@@ -1277,7 +1185,7 @@ export default {
         subjectArea: "",
         regAddress: "",
         factAddress: "",
-        docname: "",
+        docName: "",
         docSeries: "",
         docNumber: "",
         issueDate: "",
@@ -1504,6 +1412,9 @@ export default {
   },
 
   created() {
+    // if (!this.isAuthUser) {
+    //   this.$router.push("/");
+    // }
     this.teacherProfile = this.teacherInfo;
     this.expertProfile = this.expertInfo;
   },
@@ -1512,6 +1423,19 @@ export default {
     this.modal.instance = new Modal(
       document.getElementById(this.modal.modalId)
     );
+  },
+
+  watch: {
+    teacherInfo: function () {
+      if (this.isAuthUser) {
+        this.teacherProfile = this.teacherInfo;
+      }
+    },
+    expertInfo: function () {
+      if (this.isAuthUser) {
+        this.expertProfile = this.expertInfo;
+      }
+    },
   },
 };
 </script>

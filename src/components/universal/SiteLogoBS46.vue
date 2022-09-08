@@ -1,7 +1,9 @@
 <template>
   <router-link to="/" class="logo d-flex align-items-center">
-    <img src="@/assets/iss_logo.svg" alt="" class="logo__image" />
-    <div class="logo__text ml-2 font-weight-bold">Логотип</div>
+    <img src="images/logo.svg" alt="" class="logo__image" />
+    <div class="logo__text font-weight-bold">
+      Министерство образования Иркутской области
+    </div>
   </router-link>
 </template>
 
@@ -13,13 +15,18 @@ export default {
 
 <style lang="scss" scoped>
 .logo {
-  text-decoration: none;
-  .logo__image {
-    height: 1.875rem;
+  font-size: 1rem;
+  line-height: 0.9375;
+  white-space: normal;
+  margin-right: 0;
+
+  @media (max-width: 991.98px) {
+    width: calc(100% - 6.25rem);
   }
 
-  .logo__text {
-    font-size: 1rem;
+  .logo__image {
+    height: 1.875rem;
+    margin-right: 1rem;
   }
 }
 </style>

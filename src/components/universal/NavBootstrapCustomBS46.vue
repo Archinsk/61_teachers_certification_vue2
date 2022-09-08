@@ -36,6 +36,13 @@
             >
           </div>
         </li>
+        <li
+          v-else-if="listItem.type === 'text'"
+          :key="listItem.id"
+          class="nav-item"
+        >
+          {{ listItem.title }}
+        </li>
       </template>
     </template>
 

@@ -1134,26 +1134,26 @@ export default {
         {
           id: 1,
           title: "Министерство образования Иркутской области",
-          type: "link",
+          type: "text",
           link: "/",
         },
         {
           id: 2,
           title:
             "Адрес: 664025, Иркутская область, город Иркутск, Российская ул, д. 21",
-          type: "link",
+          type: "text",
           link: "/",
         },
         {
           id: 3,
           title: "Телефон: +7 (999) 999-99 99",
-          type: "link",
+          type: "text",
           link: "/",
         },
         {
           id: 4,
           title: "Электронная почта: test@mail.ru",
-          type: "link",
+          type: "text",
           link: "/",
         },
       ],
@@ -1225,7 +1225,7 @@ export default {
         subjectArea: "",
         regAddress: "",
         factAddress: "",
-        docname: "",
+        docName: "",
         docSeries: "",
         docNumber: "",
         issueDate: "",
@@ -1261,6 +1261,7 @@ export default {
         gender: [],
         subjectArea: [],
         municipalEntityIrkutsk: [],
+        DocumentPersonal: [],
       },
     };
   },
@@ -2085,7 +2086,7 @@ export default {
           }
         )
         .then((response) => {
-          this.teacherInfo = response.data;
+          this.getTeacher();
           console.groupCollapsed("Ответ на редактирование данных педагога");
           console.log(response.data);
           console.groupEnd();
@@ -2106,6 +2107,10 @@ export default {
         })
         .then((response) => {
           this.expertInfo = response.data;
+          this.analyticsTable.rowsList.length = 0;
+          this.analyticsTable.rowsList.push(
+            this.analyticsConvertToTable(response.data)
+          );
           console.groupCollapsed("Личные данные эксперта");
           console.log(response.data);
           console.groupEnd();
@@ -2122,7 +2127,7 @@ export default {
           }
         )
         .then((response) => {
-          this.expertInfo = response.data;
+          this.getExpert();
           console.groupCollapsed("Ответ на редактирование данных эксперта");
           console.log(response.data);
           console.groupEnd();
@@ -2136,6 +2141,14 @@ export default {
           setTimeout(this.loaderFinish, this.loadersDelay, this.profileLoader);
         });
     },
+    analyticsConvertToTable(expertData) {
+      let analyticsRowsList = [];
+      analyticsRowsList.push(expertData.numberExaminations);
+      analyticsRowsList.push(expertData.numberPositiveResult);
+      analyticsRowsList.push(expertData.numberNegativeResult);
+      analyticsRowsList.push(expertData.numberCoincidences);
+      return analyticsRowsList;
+    },
 
     // Словари
     getAllDictionaries() {
@@ -2144,6 +2157,10 @@ export default {
       this.getDictionary(
         "municipalEntityIrkutsk",
         '"Муниципальные образования"'
+      );
+      this.getDictionary(
+        "DocumentPersonal",
+        '"Документы, удостоверяющие личность"'
       );
     },
     getDictionary(dictionaryCode, logComment) {
@@ -2173,7 +2190,7 @@ export default {
         let convertedItem = {};
         convertedItem.id = dictionaryItem.value;
         convertedItem.label = dictionaryItem.label;
-        convertedItem.value = dictionaryItem.label;
+        convertedItem.value = dictionaryItem.value;
         convertedDictionary.push(convertedItem);
       });
       return convertedDictionary;

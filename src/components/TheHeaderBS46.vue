@@ -101,3 +101,9 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.container {
+  padding: 0;
+}
+</style>
