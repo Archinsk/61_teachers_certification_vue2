@@ -4,7 +4,7 @@
       <InputBootstrapCustomBS46
         :id="filterData.id"
         id-postfix="start"
-        :label="filterData.label + '. ' + filterData.itemsList[0].label"
+        :label="filterData.label + filterData.itemsList[0].label"
         :type="filterData.subtype"
         :value="filterData.itemsList[0].value"
         :required="filterData.required || filterData.itemsList[0].required"
@@ -15,7 +15,7 @@
       <InputBootstrapCustomBS46
         :id="filterData.id"
         id-postfix="finish"
-        :label="filterData.label + '. ' + filterData.itemsList[1].label"
+        :label="filterData.label + filterData.itemsList[1].label"
         :type="filterData.subtype"
         :value="filterData.itemsList[1].value"
         :required="filterData.required || filterData.itemsList[1].required"

@@ -88,7 +88,8 @@
                           id="familyName"
                           :value="teacherProfile.familyName"
                           type="text"
-                          :width-group="6"
+                          :width-group="12"
+                          :responsive="'col-sm-4 col-md-3 col-lg-2'"
                           disabled
                         />
                         <InputBootstrapCustomBS46
@@ -96,7 +97,8 @@
                           id="name"
                           :value="teacherProfile.name"
                           type="text"
-                          :width-group="6"
+                          :width-group="12"
+                          :responsive="'col-sm-4 col-md-3 col-lg-2'"
                           disabled
                         />
                         <InputBootstrapCustomBS46
@@ -104,15 +106,17 @@
                           id="middleName"
                           :value="teacherProfile.middleName"
                           type="text"
-                          :width-group="6"
+                          :width-group="12"
+                          :responsive="'col-sm-4 col-md-3 col-lg-2'"
                           disabled
                         />
                         <InputBootstrapCustomBS46
                           label="Дата рождения"
                           id="birthday"
-                          :value="teacherProfile.birthday"
-                          type="text"
-                          :width-group="6"
+                          :value="teacherProfile.birthday.substr(0, 10)"
+                          type="date"
+                          :width-group="12"
+                          :responsive="'col-sm-4 col-md-3'"
                           disabled
                         />
                         <InputBootstrapCustomBS46
@@ -120,7 +124,8 @@
                           id="snils"
                           :value="teacherProfile.snils"
                           type="text"
-                          :width-group="6"
+                          :width-group="12"
+                          :responsive="'col-sm-4 col-md-3 col-lg-2'"
                           disabled
                         />
                         <InputBootstrapCustomBS46
@@ -128,7 +133,8 @@
                           id="citizenship"
                           :value="teacherProfile.citizenship"
                           type="text"
-                          :width-group="6"
+                          :width-group="12"
+                          :responsive="'col-sm-6 col-md-4 col-lg-3'"
                           disabled
                         />
                         <InputBootstrapCustomBS46
@@ -136,7 +142,8 @@
                           id="mail"
                           :value="teacherProfile.mail"
                           type="text"
-                          :width-group="6"
+                          :width-group="12"
+                          :responsive="'col-sm-6 col-md-5 col-lg-3'"
                           :disabled="!editableProfile"
                           @input="teacherProfile.mail = $event"
                         />
@@ -145,7 +152,8 @@
                           id="phone"
                           :value="teacherProfile.phone"
                           type="text"
-                          :width-group="6"
+                          :width-group="12"
+                          :responsive="'col-sm-6 col-md-4 col-lg-3'"
                           :disabled="!editableProfile"
                           @input="teacherProfile.phone = $event"
                         />
@@ -154,7 +162,8 @@
                           id="subjectArea"
                           :itemsList="dictionaries.gender"
                           :value="teacherProfile.gender"
-                          :width-group="6"
+                          :width-group="12"
+                          :responsive="'col-sm-4 col-md-3 col-lg-2'"
                           disabled
                         />
                         <SelectBootstrapCustomBS46
@@ -162,7 +171,8 @@
                           id="municipality"
                           :itemsList="dictionaries.municipalEntityIrkutsk"
                           :value="teacherProfile.municipality"
-                          :width-group="6"
+                          :width-group="12"
+                          :responsive="'col-sm-6 col-md-5 col-lg-4'"
                           :disabled="!editableProfile"
                           @change="teacherProfile.municipality = $event"
                         />
@@ -171,7 +181,8 @@
                           id="subjectArea"
                           :itemsList="dictionaries.subjectArea"
                           :value="teacherProfile.subjectArea"
-                          :width-group="6"
+                          :width-group="12"
+                          :responsive="'col-sm-6 col-md-4 col-lg-3'"
                           :disabled="!editableProfile"
                           @change="teacherProfile.subjectArea = $event"
                         />
@@ -206,6 +217,7 @@
                           :value="teacherProfile.regAddress"
                           type="text"
                           :width-group="12"
+                          :responsive="'col-md-6'"
                           :disabled="!editableProfile"
                           @input="teacherProfile.regAddress = $event"
                         />
@@ -215,6 +227,7 @@
                           :value="teacherProfile.factAddress"
                           type="text"
                           :width-group="12"
+                          :responsive="'col-md-6'"
                           :disabled="!editableProfile"
                           @input="teacherProfile.factAddress = $event"
                         />
@@ -248,7 +261,8 @@
                           id="docname"
                           :itemsList="dictionaries.DocumentPersonal"
                           :value="teacherProfile.docName"
-                          :width-group="6"
+                          :width-group="12"
+                          :responsive="'col-sm-8 col-md-6 col-lg-4'"
                           :disabled="!editableProfile"
                           @change="teacherProfile.docName = $event"
                         />
@@ -257,7 +271,8 @@
                           id="factAddress"
                           :value="teacherProfile.docSeries"
                           type="text"
-                          :width-group="6"
+                          :width-group="12"
+                          :responsive="'col-sm-4 col-md-3 col-lg-2'"
                           :disabled="!editableProfile"
                           @input="teacherProfile.docSeries = $event"
                         />
@@ -266,25 +281,28 @@
                           id="factAddress"
                           :value="teacherProfile.docNumber"
                           type="text"
-                          :width-group="6"
+                          :width-group="12"
+                          :responsive="'col-sm-4 col-md-3 col-lg-2'"
                           :disabled="!editableProfile"
                           @input="teacherProfile.docNumber = $event"
                         />
                         <InputBootstrapCustomBS46
                           label="Дата выдачи"
                           id="factAddress"
-                          :value="teacherProfile.issueDate"
-                          type="text"
-                          :width-group="6"
+                          :value="teacherProfile.issueDate.substr(0, 10)"
+                          type="date"
+                          :width-group="12"
+                          :responsive="'col-sm-4 col-md-3'"
                           :disabled="!editableProfile"
                           @input="teacherProfile.issueDate = $event"
                         />
                         <InputBootstrapCustomBS46
                           label="Срок действия"
                           id="factAddress"
-                          :value="teacherProfile.docValidate"
-                          type="text"
-                          :width-group="6"
+                          :value="teacherProfile.docValidate.substr(0, 10)"
+                          type="date"
+                          :width-group="12"
+                          :responsive="'col-sm-4 col-md-3'"
                           :disabled="!editableProfile"
                           @input="teacherProfile.docValidate = $event"
                         />
@@ -293,7 +311,8 @@
                           id="factAddress"
                           :value="teacherProfile.issueOrg"
                           type="text"
-                          :width-group="6"
+                          :width-group="12"
+                          :responsive="'col-md-6 col-lg-8'"
                           :disabled="!editableProfile"
                           @input="teacherProfile.issueOrg = $event"
                         />
@@ -476,7 +495,8 @@
                 id="ex-familyName"
                 :value="expertProfile.familyName"
                 type="text"
-                :width-group="6"
+                :width-group="12"
+                :responsive="'col-sm-4 col-md-3 col-lg-2'"
                 disabled
               />
               <InputBootstrapCustomBS46
@@ -484,7 +504,8 @@
                 id="ex-name"
                 :value="expertProfile.name"
                 type="text"
-                :width-group="6"
+                :width-group="12"
+                :responsive="'col-sm-4 col-md-3 col-lg-2'"
                 disabled
               />
               <InputBootstrapCustomBS46
@@ -492,7 +513,8 @@
                 id="ex-middleName"
                 :value="expertProfile.middleName"
                 type="text"
-                :width-group="6"
+                :width-group="12"
+                :responsive="'col-sm-4 col-md-3 col-lg-2'"
                 disabled
               />
               <InputBootstrapCustomBS46
@@ -500,7 +522,8 @@
                 id="ex-snils"
                 :value="expertProfile.snils"
                 type="text"
-                :width-group="6"
+                :width-group="12"
+                :responsive="'col-sm-4 col-md-3 col-lg-2'"
                 disabled
               />
               <InputBootstrapCustomBS46
@@ -508,7 +531,8 @@
                 id="ex-mail"
                 :value="expertProfile.mail"
                 type="text"
-                :width-group="6"
+                :width-group="12"
+                :responsive="'col-sm-6 col-md-5 col-lg-3'"
                 :disabled="!editableProfile"
                 @input="expertProfile.mail = $event"
               />
@@ -517,7 +541,8 @@
                 id="ex-phone"
                 :value="expertProfile.phone"
                 type="text"
-                :width-group="6"
+                :width-group="12"
+                :responsive="'col-sm-6 col-md-4 col-lg-3'"
                 :disabled="!editableProfile"
                 @input="expertProfile.phone = $event"
               />
@@ -526,7 +551,8 @@
                 id="ex-municipality"
                 :itemsList="dictionaries.municipalEntityIrkutsk"
                 :value="expertProfile.municipality"
-                :width-group="6"
+                :width-group="12"
+                :responsive="'col-sm-6 col-md-5 col-lg-4'"
                 :disabled="!editableProfile"
                 @change="expertProfile.municipality = $event"
               />
@@ -535,7 +561,8 @@
                 id="ex-position"
                 :value="expertProfile.position"
                 type="text"
-                :width-group="6"
+                :width-group="12"
+                :responsive="'col-sm-4 col-md-3 col-lg-2'"
                 :disabled="!editableProfile"
                 @input="expertProfile.position = $event"
               />
@@ -544,7 +571,8 @@
                 id="ex-organization"
                 :value="expertProfile.organization"
                 type="text"
-                :width-group="6"
+                :width-group="12"
+                :responsive="'col-sm-4 col-md-3 col-lg-2'"
                 :disabled="!editableProfile"
                 @input="expertProfile.organization = $event"
               />
@@ -553,7 +581,8 @@
                 id="ex-subjectArea"
                 :itemsList="dictionaries.subjectArea"
                 :value="expertProfile.subjectArea"
-                :width-group="6"
+                :width-group="12"
+                :responsive="'col-sm-6 col-md-4 col-lg-3'"
                 :disabled="!editableProfile"
                 @change="expertProfile.subjectArea = $event"
               />
@@ -562,7 +591,8 @@
                 id="ex-rating"
                 :value="expertProfile.rating"
                 type="text"
-                :width-group="6"
+                :width-group="12"
+                :responsive="'col-sm-4 col-md-3 col-lg-2'"
                 disabled
               />
               <CheckboxBootstrapCustomBS46
@@ -584,12 +614,12 @@
             </form>
             <button
               v-if="!editableProfile"
-              class="btn btn-primary mt-3"
+              class="btn btn-primary"
               @click="editProfile"
             >
               Редактировать профиль
             </button>
-            <button v-else class="btn btn-primary mt-3" @click="setExpert">
+            <button v-else class="btn btn-primary" @click="setExpert">
               Сохранить профиль
             </button>
           </div>

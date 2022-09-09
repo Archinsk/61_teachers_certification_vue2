@@ -2,8 +2,8 @@
   <footer class="footer bg-light">
     <div class="container">
       <div class="footer-content row">
-        <div class="col-4"><SiteLogoBS46 /></div>
-        <div class="col-8">
+        <div class="col-12 col-md-4 pb-2"><SiteLogoBS46 /></div>
+        <div class="col-12 col-md-8">
           <NavBootstrapCustomBS46
             :nav-list="footerContacts"
             class="flex-column"
@@ -28,4 +28,8 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style lang="scss" scoped>
+.logo {
+  color: rgba(0, 0, 0, 0.9);
+}
+</style>
