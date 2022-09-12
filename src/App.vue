@@ -1867,7 +1867,9 @@ export default {
         // orgId: this.user.shortInfo.orgId,
       };
       axios
-        .post(this.url + "app/action-invoke", request)
+        .post(this.url + "app/action-invoke", request, {
+          withCredentials: true,
+        })
         .then((response) => {
           console.log("Ответ на экшн");
           console.log(response);

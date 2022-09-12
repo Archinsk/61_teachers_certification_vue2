@@ -385,6 +385,10 @@
               pagination
               filter
               :table-data="appsTable"
+              :items-total="appsTable.pagination.itemsTotal"
+              :page="appsTable.pagination.page"
+              :page-size="appsTable.pagination.pageSize"
+              :items-per-page="appsTable.pagination.itemsPerPage"
               @row-click="openExistingApp('Детали заявления', $event)"
               @sort-table="sortTable(appsTable, $event)"
             />
@@ -684,7 +688,10 @@
           />
           <template v-else>
             <!--          Форма нового заявления-->
-            <form v-if="modal.modalTitle === 'Новое заявление'">
+            <form
+              v-if="modal.modalTitle === 'Новое заявление'"
+              class="application-form"
+            >
               <div v-if="appForm.form.id" class="row">
                 <div class="col-10">
                   <Form
@@ -701,7 +708,7 @@
 
                 <div
                   v-if="appForm.form.actions && appForm.form.actions.length > 0"
-                  class="col-2"
+                  class="col-2 action-buttons"
                 >
                   <template v-for="action of appForm.form.actions">
                     <template v-if="appForm.active || action.alwaysActive">
@@ -741,7 +748,10 @@
               </div>
             </form>
             <!--          Заполненная форма заявления-->
-            <form v-if="modal.modalTitle === 'Детали заявления'">
+            <form
+              v-if="modal.modalTitle === 'Детали заявления'"
+              class="application-form"
+            >
               <div v-if="appForm.form.id" class="row">
                 <div class="col-10">
                   <Form
@@ -757,7 +767,7 @@
                 </div>
                 <div
                   v-if="appForm.form.actions && appForm.form.actions.length > 0"
-                  class="col-2"
+                  class="col-2 action-buttons"
                 >
                   <template v-for="action of appForm.form.actions">
                     <template v-if="appForm.active || action.alwaysActive">
@@ -805,7 +815,10 @@
           />
           <template v-else>
             <!--          Форма нового сообщения-->
-            <form v-if="modal.modalTitle === 'Новое сообщение'">
+            <form
+              v-if="modal.modalTitle === 'Новое сообщение'"
+              class="application-form"
+            >
               <div v-if="messageForm.form.id" class="row">
                 <div class="col-10">
                   <Form
@@ -824,7 +837,7 @@
                     messageForm.form.actions &&
                     messageForm.form.actions.length > 0
                   "
-                  class="col-2"
+                  class="col-2 action-buttons"
                 >
                   <template v-for="action of messageForm.form.actions">
                     <template v-if="messageForm.active || action.alwaysActive">
@@ -864,7 +877,10 @@
               </div>
             </form>
             <!--          Заполненная форма сообщения-->
-            <form v-if="modal.modalTitle === 'Детали сообщения'">
+            <form
+              v-if="modal.modalTitle === 'Детали сообщения'"
+              class="application-form"
+            >
               <div v-if="messageForm.form.id" class="row">
                 <div class="col-10">
                   <Form
@@ -883,7 +899,7 @@
                     messageForm.form.actions &&
                     messageForm.form.actions.length > 0
                   "
-                  class="col-2"
+                  class="col-2 action-buttons"
                 >
                   <template v-for="action of messageForm.form.actions">
                     <template v-if="messageForm.active || action.alwaysActive">

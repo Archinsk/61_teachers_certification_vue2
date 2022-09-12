@@ -11,19 +11,21 @@
         <FilterBootstrapCustomBS46 :filter-data="tableData.filters" />
       </CollapseBootstrapCustomBS46>
     </template>
-    <table :class="tableClass">
-      <TableHeadBootstrapCustomBS46
-        :columns-list="tableData.columnsList"
-        :sort-column="tableData.sortColumn"
-        :ascending-sort-order="tableData.ascendingSortOrder"
-        @sort-table="$emit('sort-table', $event)"
-      />
-      <TableBodyBootstrapCustomBS46
-        :rows-list="sortedRows"
-        :primary-column-index="primaryColumnIndex"
-        @row-click="$emit('row-click', $event)"
-      />
-    </table>
+    <div class="table-responsive">
+      <table :class="tableClass">
+        <TableHeadBootstrapCustomBS46
+          :columns-list="tableData.columnsList"
+          :sort-column="tableData.sortColumn"
+          :ascending-sort-order="tableData.ascendingSortOrder"
+          @sort-table="$emit('sort-table', $event)"
+        />
+        <TableBodyBootstrapCustomBS46
+          :rows-list="sortedRows"
+          :primary-column-index="primaryColumnIndex"
+          @row-click="$emit('row-click', $event)"
+        />
+      </table>
+    </div>
     <template v-if="pagination">
       <PaginationBS46
         v-show="itemsTotal > pageSize"

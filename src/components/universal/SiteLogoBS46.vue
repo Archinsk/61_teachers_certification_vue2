@@ -20,6 +20,10 @@ export default {
   white-space: normal;
   margin-right: 0;
 
+  &:hover {
+    text-decoration: none;
+  }
+
   @media (max-width: 991.98px) {
     width: calc(100% - 6.25rem);
   }

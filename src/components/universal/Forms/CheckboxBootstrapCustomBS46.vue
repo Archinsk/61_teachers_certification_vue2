@@ -22,7 +22,7 @@ export default {
   name: "CheckboxBootstrapCustomBS46",
   components: { FormGroupBootstrapCustomBS46 },
   props: {
-    id: Number,
+    id: String,
     label: String,
     value: Boolean,
     widthGroup: Number,

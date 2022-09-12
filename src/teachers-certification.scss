@@ -92,6 +92,12 @@ main {
   }
 }
 
+.application-form {
+  .action-buttons {
+    word-wrap: break-word;
+  }
+}
+
 footer {
   padding-top: 1rem;
   padding-bottom: 1rem;
