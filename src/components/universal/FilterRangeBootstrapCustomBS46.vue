@@ -37,7 +37,8 @@ export default {
   },
   computed: {
     filterClass: function () {
-      let filterClass = "form-group mb-0 col";
+      let filterClass =
+        "form-group d-flex flex-column justify-content-end mb-0 col";
       if (this.filterData.width) {
         filterClass += "-" + this.filterData.width;
       }

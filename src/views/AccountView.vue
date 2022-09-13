@@ -116,7 +116,7 @@
                           :value="teacherProfile.birthday.substr(0, 10)"
                           type="date"
                           :width-group="12"
-                          :responsive="'col-sm-4 col-md-3'"
+                          :responsive="'col-sm-4 col-md-3 col-xl-2'"
                           disabled
                         />
                         <InputBootstrapCustomBS46
@@ -262,7 +262,7 @@
                           :itemsList="dictionaries.DocumentPersonal"
                           :value="teacherProfile.docName"
                           :width-group="12"
-                          :responsive="'col-sm-8 col-md-6 col-lg-4'"
+                          :responsive="'col-sm-8 col-md-8 col-lg-5'"
                           :disabled="!editableProfile"
                           @change="teacherProfile.docName = $event"
                         />
@@ -292,7 +292,7 @@
                           :value="teacherProfile.issueDate.substr(0, 10)"
                           type="date"
                           :width-group="12"
-                          :responsive="'col-sm-4 col-md-3'"
+                          :responsive="'col-sm-4 col-md-3 col-xl-2'"
                           :disabled="!editableProfile"
                           @input="teacherProfile.issueDate = $event"
                         />
@@ -302,7 +302,7 @@
                           :value="teacherProfile.docValidate.substr(0, 10)"
                           type="date"
                           :width-group="12"
-                          :responsive="'col-sm-4 col-md-3'"
+                          :responsive="'col-sm-4 col-md-3 col-xl-2'"
                           :disabled="!editableProfile"
                           @input="teacherProfile.docValidate = $event"
                         />
@@ -312,7 +312,7 @@
                           :value="teacherProfile.issueOrg"
                           type="text"
                           :width-group="12"
-                          :responsive="'col-md-6 col-lg-8'"
+                          :responsive="'col-md-6 col-md-8'"
                           :disabled="!editableProfile"
                           @input="teacherProfile.issueOrg = $event"
                         />
@@ -391,6 +391,8 @@
               :items-per-page="appsTable.pagination.itemsPerPage"
               @row-click="openExistingApp('Детали заявления', $event)"
               @sort-table="sortTable(appsTable, $event)"
+              @change-page-size="$emit('change-apps-page-size', $event)"
+              @change-page="$emit('change-apps-page', $event)"
             />
           </div>
           <div
@@ -663,12 +665,12 @@
             aria-labelledby="actions-expert-tab"
             tabindex="0"
           >
+            <!--            @row-click="openExistingLog('Детали действия', $event)"-->
             <TableBootstrapCustomBS46
               hover
               bordered
               filter
               :table-data="logsTable"
-              @row-click="openExistingLog('Детали действия', $event)"
               @sort-table="sortTable(logsTable, $event)"
             />
           </div>

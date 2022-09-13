@@ -58,6 +58,10 @@
           openExistingExpertise(expertisesServiceId, $event)
         "
         @open-existing-log="openExistingLog(logsServiceId, $event)"
+        @change-apps-page-size="
+          changePageSize(appsTable, $event, appsServiceId)
+        "
+        @change-apps-page="changePage(appsTable, $event, appsServiceId)"
         @change-message-page-size="
           changePageSize(messagesTable, $event, messagesServiceId)
         "
@@ -1675,8 +1679,7 @@ export default {
           this.appsTable.rowsList = this.appsConvertToTable(
             response.data.content
           );
-          this.appsTable.pagination.appsItemsTotal =
-            response.data.totalElements;
+          this.appsTable.pagination.itemsTotal = response.data.totalElements;
           console.groupCollapsed("Список заявлений");
           console.log(response.data.content);
           console.groupEnd();
@@ -1752,6 +1755,43 @@ export default {
         messagesTable.push(messagesTableItem);
       });
       return messagesTable;
+    },
+
+    // Список записей журнала действий
+    getAudit() {
+      axios
+        .get("https://teachers.coko38.ru/api-teacher/api/data/getAudit", {
+          withCredentials: true,
+        })
+        .then((response) => {
+          console.log(response.data);
+          let logsTableRows = this.logsConvertToTable(response.data);
+          this.logsTable.rowsList = logsTableRows;
+          this.logsTable.pagination.itemsTotal = logsTableRows.length;
+          console.groupCollapsed("Список записей журнала");
+          console.log(this.logsConvertToTable(response.data));
+          console.groupEnd();
+        });
+    },
+    logsConvertToTable(logs) {
+      let logsTable = [];
+      if (logs.length > 0) {
+        logs.forEach((item) => {
+          let logItem = [];
+          logItem.push(item.id);
+          logItem.push(item.eventDate.substring(0, 10));
+          logItem.push(item.description);
+          logItem.push(item.event);
+          let changesList = JSON.parse(item.changes).changes;
+          let changesText = "";
+          changesList.forEach((changeItem) => {
+            changesText += changeItem.name + " - " + changeItem.new_v + "; ";
+          });
+          logItem.push(changesText);
+          logsTable.push(logItem);
+        });
+      }
+      return logsTable;
     },
 
     // Стартовая форма заявления
@@ -2207,6 +2247,7 @@ export default {
           this.messagesTable.pagination.page,
           this.messagesTable.pagination.pageSize
         );
+        this.getAudit();
       }
     },
   },

@@ -11,7 +11,7 @@ export default {
   },
   computed: {
     groupClass: function () {
-      let groupClass = "form-group";
+      let groupClass = "form-group d-flex flex-column justify-content-end";
       if (this.widthGroup) {
         groupClass += " col-" + this.widthGroup;
       } else {
