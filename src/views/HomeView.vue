@@ -22,31 +22,28 @@
               </h5>
             </template>
             <template v-slot:card-body>
-              <div class="row">
-                <div class="col-12 mt-2">
+              <div v-if="fileResources.length > 0" class="row">
+                <div
+                  v-for="fileItem of fileResources"
+                  :key="fileItem.id"
+                  class="col-12 mt-2"
+                >
                   <CardBootstrapCustomBS46 class="shadow-sm">
                     <template v-slot:card-body>
                       <div class="d-flex align-items-center">
                         <span class="material-icons text-primary mr-3"
                           >description</span
                         >
-                        <a href="/"> Руководство администратора.doc </a>
+                        <a :href="url + fileItem.url.slice(5)" download>
+                          {{ fileItem.title }}
+                        </a>
                       </div>
                     </template>
                   </CardBootstrapCustomBS46>
                 </div>
-                <div class="col-12 mt-2">
-                  <CardBootstrapCustomBS46 class="shadow-sm">
-                    <template v-slot:card-body>
-                      <div class="d-flex align-items-center">
-                        <span class="material-icons text-primary mr-3"
-                          >description</span
-                        >
-                        <a href="/"> Руководство пользователя.doc </a>
-                      </div>
-                    </template>
-                  </CardBootstrapCustomBS46>
-                </div>
+              </div>
+              <div v-else class="alert alert-secondary mb-0" role="alert">
+                Материалы для работы с системой ещё не загружены
               </div>
             </template>
           </CardBootstrapCustomBS46>
@@ -142,59 +139,7 @@
               <h5 class="text-uppercase mb-0">График проведения аттестации</h5>
             </template>
             <template v-slot:card-body>
-              <p>Аттестация производится</p>
-              <p>ПН: 09:00 - 18:00</p>
-              <p>ВТ: 09:00 - 18:00</p>
-              <p>СР: 09:00 - 18:00</p>
-              <p>ЧТ: 09:00 - 18:00</p>
-              <p>ПТ: 09:00 - 18:00</p>
-              <p>СБ: 09:00 - 12:00</p>
-              <p>ВС: Выходной</p>
-              <div class="table-responsive">
-                <table
-                  border="1px solid black"
-                  border-collapse="collapse"
-                  align="left"
-                  style="width: 100%"
-                >
-                  <tbody>
-                    <tr>
-                      <th>Прием документов</th>
-                      <td>10.04.2021 - 10.05.2021</td>
-                      <td>12.05.2021 - 12.06.2021</td>
-                      <td>15.06.2021 - 15.07.2021</td>
-                      <td>10.09.2021 - 10.10.2021</td>
-                      <td>10.11.2021 - 10.12.2021</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">Рассмотерение заявлений&nbsp;</th>
-                      <td>10.04.2021 - 10.05.2021</td>
-                      <td>12.05.2021 - 12.06.2021</td>
-                      <td>15.06.2021 - 15.07.2021</td>
-                      <td>10.09.2021 - 10.10.2021</td>
-                      <td>10.11.2021 - 10.12.2021</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">
-                        Проведение аттестационной комиссии&nbsp;
-                      </th>
-                      <td>10.04.2021 - 10.05.2021</td>
-                      <td>12.05.2021 - 12.06.2021</td>
-                      <td>15.06.2021 - 15.07.2021</td>
-                      <td>10.09.2021 - 10.10.2021</td>
-                      <td>10.11.2021 - 10.12.2021</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">Формирование и издание приказа &nbsp;</th>
-                      <td>10.04.2021 - 10.05.2021</td>
-                      <td>12.05.2021 - 12.06.2021</td>
-                      <td>15.06.2021 - 15.07.2021</td>
-                      <td>10.09.2021 - 10.10.2021</td>
-                      <td>10.11.2021 - 10.12.2021</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+              <div v-html="expertisesSchedule"></div>
             </template>
           </CardBootstrapCustomBS46>
         </div>
@@ -224,6 +169,8 @@ export default {
     "newsList",
     "authError",
     "messagesTable",
+    "fileResources",
+    "expertisesSchedule",
   ],
   data() {
     return {

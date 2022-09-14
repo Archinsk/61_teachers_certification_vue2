@@ -43,6 +43,8 @@
         :log-form-options="i18n"
         :logs-loader="logsLoader"
         :dictionaries="dictionaries"
+        :file-resources="fileResources"
+        :expertises-schedule="expertisesSchedule"
         @sign-in-local="signInLocal($event)"
         @sign-in-esia="getLogin"
         @sign-out="signOut"
@@ -121,6 +123,7 @@ export default {
   data() {
     return {
       url: "https://teachers.coko38.ru/api/",
+      urlAdd: "https://teachers.coko38.ru/api-teacher/api/",
       user: {
         signInData: {
           login: "",
@@ -1263,6 +1266,11 @@ export default {
         municipalEntityIrkutsk: [],
         DocumentPersonal: [],
       },
+
+      // Документы для работы с системой
+      fileResources: [],
+
+      expertisesSchedule: "",
     };
   },
 
@@ -2233,6 +2241,53 @@ export default {
       });
       return convertedDictionary;
     },
+
+    // Файлы для работы с системой
+    getFileResources() {
+      axios
+        .get(this.urlAdd + "data/getFileResources", {
+          withCredentials: true,
+        })
+        .then((response) => {
+          this.fileResources = response.data.content;
+          console.groupCollapsed("Файлы для работы с системой");
+          console.log(response.data);
+          console.groupEnd();
+        })
+        .catch(() => {
+          console.log(
+            "Непредвиденная ошибка при выполнении запроса файлов для работы с системой"
+          );
+        });
+    },
+    // График аттестации
+    getGakJournal() {
+      axios
+        .get(this.urlAdd + "data/getGakJournal", {
+          withCredentials: true,
+        })
+        .then((response) => {
+          // this.dictionaries[dictionaryCode] = this.convertDictionary(
+          //   response.data
+          // );
+          this.expertisesSchedule = this.parseGakJournal(response.data);
+          console.groupCollapsed("Расписание аттестации");
+          console.log(response.data);
+          console.groupEnd();
+        })
+        .catch(() => {
+          console.log(
+            "Непредвиденная ошибка при выполнении запроса расписания аттестации"
+          );
+        });
+    },
+
+    parseGakJournal(xml) {
+      let startIndex = xml.indexOf("<table");
+      let finishIndex = xml.indexOf("</table>") + 8;
+      let tableString = xml.slice(startIndex, finishIndex);
+      return tableString;
+    },
   },
 
   watch: {
@@ -2256,11 +2311,17 @@ export default {
     // Запрос информации о пользователе
     this.getLogin();
 
-    // Получение бизнес-процессов (для справки)
-    this.getServises();
+    // Получение файлов для работы
+    this.getFileResources();
+
+    // Получение расписания аттестации
+    this.getGakJournal();
 
     // Получение справочников
     this.getAllDictionaries();
+
+    // Получение бизнес-процессов (для справки)
+    this.getServises();
   },
 };
 </script>
