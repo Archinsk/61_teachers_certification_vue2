@@ -1,6 +1,6 @@
 <template>
   <div
-    class="w-100 h-100 text-center d-flex flex-column justify-content-center align-items-center"
+    class="w-100 h-100 text-center d-flex flex-column justify-content-center align-items-center my-auto"
   >
     <div :class="loaderStyleClass" role="status">
       <span class="sr-only">Loading...</span>

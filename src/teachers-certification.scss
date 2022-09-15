@@ -1,6 +1,18 @@
 @import "custom-bootstrap-4.6.2.scss";
 @import "atlas-3.15.0.scss";
 
+//Шрифты
+@font-face {
+  font-family: "Material Icons";
+  src: url(./assets/fonts/MaterialIcons-Regular.woff2) format("woff2");
+}
+.material-icons {
+  font-family: "Material Icons";
+  font-size: 1.5rem;
+  display: inline-block;
+  line-height: 1;
+}
+
 //Глобальные стили
 .btn-icon-square,
 .btn-icon-only_square {
@@ -10,12 +22,12 @@
   max-width: 2.375rem;
   max-height: 2.375rem;
 
-  .material-icons {
-    font-family: "Material Icons";
-    font-size: 1.5rem;
-    display: inline-block;
-    line-height: 1;
-  }
+  //.material-icons {
+  //  font-family: "Material Icons";
+  //  font-size: 1.5rem;
+  //  display: inline-block;
+  //  line-height: 1;
+  //}
 }
 
 //Модальное окно сообщений
@@ -106,3 +118,8 @@ footer {
     align-items: center;
   }
 }
+
+//.tab-content,
+//.tab-pane {
+//  height: 100%;
+//}

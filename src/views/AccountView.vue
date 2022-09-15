@@ -1,6 +1,6 @@
 <template>
-  <div id="account">
-    <div class="container">
+  <div id="account" class="d-flex flex-column flex-grow-1">
+    <div class="container d-flex flex-column flex-grow-1">
       <!--      Вкладки педагога-->
       <template v-if="user.shortInfo.roleId === 39707">
         <ul class="nav nav-tabs" id="teacher-tab" role="tablist">
@@ -47,7 +47,10 @@
             </button>
           </li>
         </ul>
-        <div class="tab-content" id="teacherTabContent">
+        <div
+          class="tab-content flex-grow-1 position-relative"
+          id="teacherTabContent"
+        >
           <div
             class="tab-pane fade show active pt-3"
             id="profile-teacher-tab-pane"
@@ -59,6 +62,7 @@
               v-if="profileLoader.isLoading && !profileLoader.isResponse"
               :comment="profileLoader.comment"
               :theme="profileLoader.theme"
+              class="position-absolute"
             />
             <template v-else>
               <div class="accordion" id="accordionTeacherInfo">
@@ -487,7 +491,10 @@
             </button>
           </li>
         </ul>
-        <div class="tab-content" id="expertTabContent">
+        <div
+          class="tab-content flex-grow-1 position-relative"
+          id="expertTabContent"
+        >
           <div
             class="tab-pane fade show active pt-3"
             id="profile-expert-tab-pane"
@@ -495,139 +502,147 @@
             aria-labelledby="profile-expert-tab"
             tabindex="0"
           >
-            <form class="row g-3">
-              <InputBootstrapCustomBS46
-                label="Фамилия"
-                id="ex-familyName"
-                :value="expertProfile.familyName"
-                type="text"
-                :width-group="12"
-                :responsive="'col-sm-4 col-md-3 col-lg-2'"
-                disabled
-              />
-              <InputBootstrapCustomBS46
-                label="Имя"
-                id="ex-name"
-                :value="expertProfile.name"
-                type="text"
-                :width-group="12"
-                :responsive="'col-sm-4 col-md-3 col-lg-2'"
-                disabled
-              />
-              <InputBootstrapCustomBS46
-                label="Отчество"
-                id="ex-middleName"
-                :value="expertProfile.middleName"
-                type="text"
-                :width-group="12"
-                :responsive="'col-sm-4 col-md-3 col-lg-2'"
-                disabled
-              />
-              <InputBootstrapCustomBS46
-                label="СНИЛС"
-                id="ex-snils"
-                :value="expertProfile.snils"
-                type="text"
-                :width-group="12"
-                :responsive="'col-sm-4 col-md-3 col-lg-2'"
-                disabled
-              />
-              <InputBootstrapCustomBS46
-                label="Электронная почта"
-                id="ex-mail"
-                :value="expertProfile.mail"
-                type="text"
-                :width-group="12"
-                :responsive="'col-sm-6 col-md-5 col-lg-3'"
-                :disabled="!editableProfile"
-                @input="expertProfile.mail = $event"
-              />
-              <InputBootstrapCustomBS46
-                label="Телефон"
-                id="ex-phone"
-                :value="expertProfile.phone"
-                type="text"
-                :width-group="12"
-                :responsive="'col-sm-6 col-md-4 col-lg-3'"
-                :disabled="!editableProfile"
-                @input="expertProfile.phone = $event"
-              />
-              <SelectBootstrapCustomBS46
-                label="Муниципальное образование"
-                id="ex-municipality"
-                :itemsList="dictionaries.municipalEntityIrkutsk"
-                :value="expertProfile.municipality"
-                :width-group="12"
-                :responsive="'col-sm-6 col-md-5 col-lg-4'"
-                :disabled="!editableProfile"
-                @change="expertProfile.municipality = $event"
-              />
-              <InputBootstrapCustomBS46
-                label="Должность"
-                id="ex-position"
-                :value="expertProfile.position"
-                type="text"
-                :width-group="12"
-                :responsive="'col-sm-4 col-md-3 col-lg-2'"
-                :disabled="!editableProfile"
-                @input="expertProfile.position = $event"
-              />
-              <InputBootstrapCustomBS46
-                label="Организация"
-                id="ex-organization"
-                :value="expertProfile.organization"
-                type="text"
-                :width-group="12"
-                :responsive="'col-sm-4 col-md-3 col-lg-2'"
-                :disabled="!editableProfile"
-                @input="expertProfile.organization = $event"
-              />
-              <SelectBootstrapCustomBS46
-                label="Предметная область"
-                id="ex-subjectArea"
-                :itemsList="dictionaries.subjectArea"
-                :value="expertProfile.subjectArea"
-                :width-group="12"
-                :responsive="'col-sm-6 col-md-4 col-lg-3'"
-                :disabled="!editableProfile"
-                @change="expertProfile.subjectArea = $event"
-              />
-              <InputBootstrapCustomBS46
-                label="Рейтинг"
-                id="ex-rating"
-                :value="expertProfile.rating"
-                type="text"
-                :width-group="12"
-                :responsive="'col-sm-4 col-md-3 col-lg-2'"
-                disabled
-              />
-              <CheckboxBootstrapCustomBS46
-                label="Активен"
-                id="ex-status"
-                :value="expertProfile.status"
-                :width-group="12"
-                :disabled="!editableProfile"
-                @change="expertProfile.status = $event"
-              />
-              <CheckboxBootstrapCustomBS46
-                label="Я согласен(а) на получение уведомлений на электронную почту"
-                id="ex-mailAgree"
-                :value="expertProfile.mailAgree"
-                :width-group="12"
-                :disabled="!editableProfile"
-                @change="expertProfile.mailAgree = $event"
-              />
-            </form>
-            <button
-              v-if="!editableProfile"
-              class="btn btn-primary"
-              @click="editProfile"
-            >
-              Редактировать профиль
-            </button>
-            <button v-else class="btn btn-primary" @click="setExpert">
-              Сохранить профиль
-            </button>
+            <LoaderBootstrapCustomBS46
+              v-if="profileLoader.isLoading && !profileLoader.isResponse"
+              :comment="profileLoader.comment"
+              :theme="profileLoader.theme"
+              class="position-absolute"
+            />
+            <template v-else>
+              <form class="row g-3">
+                <InputBootstrapCustomBS46
+                  label="Фамилия"
+                  id="ex-familyName"
+                  :value="expertProfile.familyName"
+                  type="text"
+                  :width-group="12"
+                  :responsive="'col-sm-4 col-md-3 col-lg-2'"
+                  disabled
+                />
+                <InputBootstrapCustomBS46
+                  label="Имя"
+                  id="ex-name"
+                  :value="expertProfile.name"
+                  type="text"
+                  :width-group="12"
+                  :responsive="'col-sm-4 col-md-3 col-lg-2'"
+                  disabled
+                />
+                <InputBootstrapCustomBS46
+                  label="Отчество"
+                  id="ex-middleName"
+                  :value="expertProfile.middleName"
+                  type="text"
+                  :width-group="12"
+                  :responsive="'col-sm-4 col-md-3 col-lg-2'"
+                  disabled
+                />
+                <InputBootstrapCustomBS46
+                  label="СНИЛС"
+                  id="ex-snils"
+                  :value="expertProfile.snils"
+                  type="text"
+                  :width-group="12"
+                  :responsive="'col-sm-4 col-md-3 col-lg-2'"
+                  disabled
+                />
+                <InputBootstrapCustomBS46
+                  label="Электронная почта"
+                  id="ex-mail"
+                  :value="expertProfile.mail"
+                  type="text"
+                  :width-group="12"
+                  :responsive="'col-sm-6 col-md-5 col-lg-3'"
+                  :disabled="!editableProfile"
+                  @input="expertProfile.mail = $event"
+                />
+                <InputBootstrapCustomBS46
+                  label="Телефон"
+                  id="ex-phone"
+                  :value="expertProfile.phone"
+                  type="text"
+                  :width-group="12"
+                  :responsive="'col-sm-6 col-md-4 col-lg-3'"
+                  :disabled="!editableProfile"
+                  @input="expertProfile.phone = $event"
+                />
+                <SelectBootstrapCustomBS46
+                  label="Муниципальное образование"
+                  id="ex-municipality"
+                  :itemsList="dictionaries.municipalEntityIrkutsk"
+                  :value="expertProfile.municipality"
+                  :width-group="12"
+                  :responsive="'col-sm-6 col-md-5 col-lg-4'"
+                  :disabled="!editableProfile"
+                  @change="expertProfile.municipality = $event"
+                />
+                <InputBootstrapCustomBS46
+                  label="Должность"
+                  id="ex-position"
+                  :value="expertProfile.position"
+                  type="text"
+                  :width-group="12"
+                  :responsive="'col-sm-4 col-md-3 col-lg-2'"
+                  :disabled="!editableProfile"
+                  @input="expertProfile.position = $event"
+                />
+                <InputBootstrapCustomBS46
+                  label="Организация"
+                  id="ex-organization"
+                  :value="expertProfile.organization"
+                  type="text"
+                  :width-group="12"
+                  :responsive="'col-sm-4 col-md-3 col-lg-2'"
+                  :disabled="!editableProfile"
+                  @input="expertProfile.organization = $event"
+                />
+                <SelectBootstrapCustomBS46
+                  label="Предметная область"
+                  id="ex-subjectArea"
+                  :itemsList="dictionaries.subjectArea"
+                  :value="expertProfile.subjectArea"
+                  :width-group="12"
+                  :responsive="'col-sm-6 col-md-4 col-lg-3'"
+                  :disabled="!editableProfile"
+                  @change="expertProfile.subjectArea = $event"
+                />
+                <InputBootstrapCustomBS46
+                  label="Рейтинг"
+                  id="ex-rating"
+                  :value="expertProfile.rating"
+                  type="text"
+                  :width-group="12"
+                  :responsive="'col-sm-4 col-md-3 col-lg-2'"
+                  disabled
+                />
+                <CheckboxBootstrapCustomBS46
+                  label="Активен"
+                  id="ex-status"
+                  :value="expertProfile.status"
+                  :width-group="12"
+                  :disabled="!editableProfile"
+                  @change="expertProfile.status = $event"
+                />
+                <CheckboxBootstrapCustomBS46
+                  label="Я согласен(а) на получение уведомлений на электронную почту"
+                  id="ex-mailAgree"
+                  :value="expertProfile.mailAgree"
+                  :width-group="12"
+                  :disabled="!editableProfile"
+                  @change="expertProfile.mailAgree = $event"
+                />
+              </form>
+              <button
+                v-if="!editableProfile"
+                class="btn btn-primary"
+                @click="editProfile"
+              >
+                Редактировать профиль
+              </button>
+              <button v-else class="btn btn-primary" @click="setExpert">
+                Сохранить профиль
+              </button>
+            </template>
           </div>
           <div
             class="tab-pane fade pt-3"

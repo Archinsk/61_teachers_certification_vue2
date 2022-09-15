@@ -3,15 +3,13 @@
     <TheHeaderBS46
       :navbar-items="headerNavbarList"
       :is-auth-user="isAuthUser"
-      messages
-      :unread-messages="unreadMessages"
       variant="light"
       expand
       expand-width-point="lg"
       sticky
       shadow
     />
-    <main>
+    <main class="d-flex flex-column">
       <router-view
         :news-list="newsList"
         :url="url"
@@ -72,30 +70,40 @@
         "
         @invoke-action="invokeAction($event)"
       />
-      <ModalBootstrapCustomBS46 modal-id="messages" header scrollable>
-        <template v-slot:modal-title> Уведомления </template>
+      <ModalBootstrapCustomBS46 modal-id="notify" header>
+        <template v-slot:modal-title> Оповещение </template>
         <template v-slot:modal-body>
-          <transition-group
-            name="fade-out-group"
-            tag="div"
-            class="accordion"
-            id="accordionMessages"
-          >
-            <MessagesAccordionItemBS46
-              v-for="message of sortedMessagesList"
-              :key="message.id"
-              :message="message"
-              @read-message="readMessage(message.id)"
-              @delete-message="deleteMessage(message.id)"
-            />
-          </transition-group>
-          <div
-            v-if="messagesList.length === 0"
-            class="alert alert-secondary"
-            role="alert"
-          >
-            У вас отсутствуют уведомления!
-          </div>
+          <!--          Уведомления!-->
+          <template v-if="false">
+            <transition-group
+              if="false"
+              name="fade-out-group"
+              tag="div"
+              class="accordion"
+              id="accordionMessages"
+            >
+              <MessagesAccordionItemBS46
+                v-for="message of sortedMessagesList"
+                :key="message.id"
+                :message="message"
+                @read-message="readMessage(message.id)"
+                @delete-message="deleteMessage(message.id)"
+              />
+            </transition-group>
+            <div
+              v-if="messagesList.length === 0"
+              class="alert alert-secondary mb-0"
+              role="alert"
+            >
+              У вас отсутствуют уведомления!
+            </div>
+          </template>
+          <template v-else>
+            <div class="alert alert-secondary mb-0" role="alert">
+              Время рабочей сессии завершено. Для продолжения работы необходимо
+              повторно пройти авторизацию
+            </div>
+          </template>
         </template>
       </ModalBootstrapCustomBS46>
     </main>
@@ -110,6 +118,7 @@ import TheFooterBS46 from "./components/TheFooterBS46";
 import { Modal } from "bootstrap";
 import ModalBootstrapCustomBS46 from "./components/universal/ModalBootstrapCustomBS46";
 import MessagesAccordionItemBS46 from "./components/MessagesAccordionItemBS46";
+import $ from "jquery";
 
 export default {
   name: "TheApp",
@@ -1271,6 +1280,8 @@ export default {
       fileResources: [],
 
       expertisesSchedule: "",
+
+      authIntervalId: null,
     };
   },
 
@@ -1501,6 +1512,7 @@ export default {
 
     // Смена роли пользователя
     setRole(roleId) {
+      this.loaderStart(this.authLoader, "Смена роли пользователя");
       axios
         .put(this.url + "core/put-metadata?orgId=0&roleId=" + roleId, "", {
           withCredentials: true,
@@ -1524,6 +1536,9 @@ export default {
           } else if (this.user.shortInfo.roleId === this.expertRoleId) {
             this.getExpert();
           }
+        })
+        .then(() => {
+          setTimeout(this.loaderFinish, this.loadersDelay, this.authLoader);
         });
     },
     getRoleById(roleId) {
@@ -2288,6 +2303,26 @@ export default {
       let tableString = xml.slice(startIndex, finishIndex);
       return tableString;
     },
+
+    openNotify() {
+      $("#notify").modal("show");
+    },
+    afterCloseNotify() {
+      console.log("Модалка закрылась");
+      console.log(this);
+      if (this.$route.path !== "/") {
+        this.$router.push("/");
+        // window.location.reload();
+      }
+    },
+
+    checkAuth() {
+      axios(this.url + "auth/get-login", {
+        withCredentials: true,
+      }).then(() => {
+        this.openNotify();
+      });
+    },
   },
 
   watch: {
@@ -2303,11 +2338,17 @@ export default {
           this.messagesTable.pagination.pageSize
         );
         this.getAudit();
+        this.authIntervalId = setInterval(this.checkAuth, 30000);
+      } else {
+        clearInterval(this.authIntervalId);
       }
     },
   },
 
   mounted: function () {
+    // Событие при закрытии модального окна
+    $("#notify").on("hidden.bs.modal", this.afterCloseNotify);
+
     // Запрос информации о пользователе
     this.getLogin();
 
