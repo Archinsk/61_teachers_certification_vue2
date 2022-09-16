@@ -6,28 +6,23 @@
         :key="indexColumn"
         scope="col"
       >
-        <div class="d-flex justify-content-between">
+        <div v-if="column.sorted" class="d-flex justify-content-between">
           <span
             class="pr-2 sort-link"
             @click="$emit('sort-table', indexColumn)"
           >
-            {{ column }}
+            {{ column.title }}
           </span>
           <span
             :class="[
               'material-icons align-self-end',
-              column === sortColumn ? '' : 'invisible',
+              column.name === sortColumn ? '' : 'invisible',
               ascendingSortOrder ? '' : 'rotate-180',
             ]"
             >arrow_circle_down</span
           >
-          <!--          <template v-if="column === sortColumn">-->
-          <!--            <span v-if="ascendingSortOrder" class="material-icons"-->
-          <!--              >arrow_circle_down</span-->
-          <!--            >-->
-          <!--            <span v-else class="material-icons">arrow_circle_up</span>-->
-          <!--          </template>-->
         </div>
+        <div v-else>{{ column.title }}</div>
       </th>
     </tr>
   </thead>

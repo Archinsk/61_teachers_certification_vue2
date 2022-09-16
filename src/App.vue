@@ -69,6 +69,7 @@
           changePage(messagesTable, $event, messagesServiceId)
         "
         @invoke-action="invokeAction($event)"
+        @sort-table="sortTable($event.tableName, $event.sortedColumnIndex)"
       />
       <ModalBootstrapCustomBS46 modal-id="notify" header>
         <template v-slot:modal-title> Оповещение </template>
@@ -216,13 +217,14 @@ export default {
       appsServiceId: 2,
       appsTable: {
         id: "appsTable",
+        service: 2,
         columnsList: [
-          "№ заявления",
-          "Наименование услуги",
-          "Дата создания",
-          "Номер ЕПГУ",
-          "Статус",
-          "Дата изменения статуса",
+          { title: "№ заявления", name: "id", sorted: true },
+          { title: "Наименование услуги", name: "service" },
+          { title: "Дата создания", name: "startDate", sorted: true },
+          { title: "Номер ЕПГУ", name: "epguNumber" },
+          { title: "Статус", name: "status", sorted: true },
+          { title: "Дата изменения статуса", name: "statusLastUpdateDate" },
         ],
         primaryColumn: "№ заявления",
         rowsList: [
@@ -251,7 +253,7 @@ export default {
             "10.08.2022",
           ],
         ],
-        sortColumn: "",
+        sortColumn: "id",
         ascendingSortOrder: false,
         filters: [
           {
@@ -339,13 +341,14 @@ export default {
       messagesServiceId: 1,
       messagesTable: {
         id: "messagesTable",
+        service: 1,
         columnsList: [
-          "№ сообщения",
-          "Дата создания сообщения",
-          "Тема",
-          "Дата входа в статус",
-          "Статус",
-          "Срок отправки ответа",
+          { title: "№ сообщения", name: "id", sorted: true },
+          { title: "Дата создания сообщения", name: "startDate", sorted: true },
+          { title: "Тема", name: "messageTitle" },
+          { title: "Дата входа в статус", name: "statusStartDate" },
+          { title: "Статус", name: "status", sorted: true },
+          { title: "Срок отправки ответа", name: "responseLimit" },
         ],
         primaryColumn: "№ сообщения",
         rowsList: [
@@ -374,7 +377,7 @@ export default {
             "10.08.2022",
           ],
         ],
-        sortColumn: "",
+        sortColumn: "id",
         ascendingSortOrder: false,
         filters: [
           {
@@ -473,13 +476,33 @@ export default {
       expertisesTable: {
         id: "expertisesTable",
         columnsList: [
-          "№ заявления",
-          "ФИО педагогического работника",
-          "Дата начала экспертизы",
-          "Срок окончания экспертизы",
-          "Дата окончания экспертизы",
-          "Результат экспертизы",
-          "Статус",
+          { title: "№ заявления", name: "id", sorted: true },
+          {
+            title: "ФИО педагогического работника",
+            name: "teacherFullname",
+            sorted: true,
+          },
+          {
+            title: "Дата начала экспертизы",
+            name: "expertiseStartDate",
+            sorted: true,
+          },
+          {
+            title: "Срок окончания экспертизы",
+            name: "expertiseLimit",
+            sorted: true,
+          },
+          {
+            title: "Дата окончания экспертизы",
+            name: "expertiseFinishDate",
+            sorted: true,
+          },
+          {
+            title: "Результат экспертизы",
+            name: "expertiseResult",
+            sorted: true,
+          },
+          { title: "Статус", name: "status", sorted: true },
         ],
         primaryColumn: "№ заявления",
         rowsList: [
@@ -614,10 +637,22 @@ export default {
       analyticsTable: {
         id: "analyticsTable",
         columnsList: [
-          "Количество проведенных экспертиз",
-          "Количество положительных результатов",
-          "Количество отрицательных результатов",
-          "Количество совпадений",
+          {
+            title: "Количество проведенных экспертиз",
+            name: "expertisesTotal",
+          },
+          {
+            title: "Количество положительных результатов",
+            name: "expertisesPositiveResults",
+          },
+          {
+            title: "Количество отрицательных результатов",
+            name: "expertisesNegativeResults",
+          },
+          {
+            title: "Количество совпадений",
+            name: "expertisesEqualResults",
+          },
         ],
         primaryColumn: "Количество проведенных экспертиз",
         rowsList: [["30", "5", "10", "15"]],
@@ -678,11 +713,11 @@ export default {
       logsTable: {
         id: "logsTable",
         columnsList: [
-          "Id записи",
-          "Дата события",
-          "Описание",
-          "Событие",
-          "Изменения",
+          { title: "Id записи", name: "id", sorted: true },
+          { title: "Дата события", name: "eventDate", sorted: true },
+          { title: "Описание", name: "eventDescription", sorted: true },
+          { title: "Событие", name: "eventName", sorted: true },
+          { title: "Изменения", name: "eventChanges", sorted: true },
         ],
         primaryColumn: "Id записи",
         rowsList: [
@@ -1669,11 +1704,11 @@ export default {
 
     // Получение списка заявлений пользователя
     getApps(
-      page,
-      pageSize,
+      page = this.appsTable.pagination.pageSize,
+      pageSize = this.appsTable.pagination.pageSize,
       servId = this.appsServiceId,
-      sortCol = "id",
-      sortDesc = true,
+      sortCol = this.appsTable.sortColumn,
+      sortDesc = !this.appsTable.ascendingSortOrder,
       userList = true,
       active = false
     ) {
@@ -1725,11 +1760,11 @@ export default {
 
     // Получение списка заявлений пользователя
     getMessages(
-      page,
-      pageSize,
+      page = this.messagesTable.pagination.pageSize,
+      pageSize = this.messagesTable.pagination.pageSize,
       servId = this.messagesServiceId,
-      sortCol = "id",
-      sortDesc = true,
+      sortCol = this.messagesTable.sortColumn,
+      sortDesc = !this.messagesTable.ascendingSortOrder,
       userList = true,
       active = false
     ) {
@@ -1760,7 +1795,7 @@ export default {
           );
           this.messagesTable.pagination.itemsTotal =
             response.data.totalElements;
-          console.groupCollapsed("Список заявлений");
+          console.groupCollapsed("Список сообщений");
           console.log(response.data.content);
           console.groupEnd();
         });
@@ -1879,7 +1914,7 @@ export default {
 
     validateForm() {
       console.log("Проверка валидности формы");
-      console.log(this);
+      // console.log(this);
       return this.$children[3].$refs.vueForm.formio.checkValidity(
         this.$children[3].$refs.vueForm.formio.submission.data
       );
@@ -2065,6 +2100,8 @@ export default {
       setTimeout(this.loaderFinish, this.loadersDelay, this.messagesLoader);
     },
     openExistingMessage(appsServiceId, appId) {
+      console.log(appsServiceId);
+      console.log(appId);
       this.getStartForm(appsServiceId, appId);
       this.loaderStart(this.messagesLoader, "Загрузка сообщения");
       setTimeout(this.loaderFinish, this.loadersDelay, this.messagesLoader);
@@ -2323,6 +2360,35 @@ export default {
         this.openNotify();
       });
     },
+
+    sortTable(tableName, columnIndex) {
+      let table = this[tableName];
+      let columnSortName = table.columnsList[columnIndex].name;
+      table.pagination.page = 1;
+      if (table.sortColumn === columnSortName) {
+        table.ascendingSortOrder = !table.ascendingSortOrder;
+      } else {
+        table.ascendingSortOrder = true;
+        table.sortColumn = columnSortName;
+      }
+      if (table.service === this.appsServiceId) {
+        this.getApps(
+          table.pagination.page,
+          table.pagination.pageSize,
+          this.appsServiceId,
+          columnSortName,
+          !table.ascendingSortOrder
+        );
+      } else if (table.service === this.messagesServiceId) {
+        this.getMessages(
+          table.pagination.page,
+          table.pagination.pageSize,
+          this.messagesServiceId,
+          columnSortName,
+          !table.ascendingSortOrder
+        );
+      }
+    },
   },
 
   watch: {
@@ -2338,9 +2404,9 @@ export default {
           this.messagesTable.pagination.pageSize
         );
         this.getAudit();
-        this.authIntervalId = setInterval(this.checkAuth, 30000);
+        // this.authIntervalId = setInterval(this.checkAuth, 30000);
       } else {
-        clearInterval(this.authIntervalId);
+        // clearInterval(this.authIntervalId);
       }
     },
   },

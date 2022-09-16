@@ -89,7 +89,9 @@ export default {
     },
     primaryColumnIndex: function () {
       for (let i = 0; i < this.tableData.columnsList.length; i++) {
-        if (this.tableData.columnsList[i] === this.tableData.primaryColumn) {
+        if (
+          this.tableData.columnsList[i].title === this.tableData.primaryColumn
+        ) {
           return i;
         }
       }

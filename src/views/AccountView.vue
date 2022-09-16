@@ -394,7 +394,12 @@
               :page-size="appsTable.pagination.pageSize"
               :items-per-page="appsTable.pagination.itemsPerPage"
               @row-click="openExistingApp('Детали заявления', $event)"
-              @sort-table="sortTable(appsTable, $event)"
+              @sort-table="
+                $emit('sort-table', {
+                  tableName: 'appsTable',
+                  sortedColumnIndex: $event,
+                })
+              "
               @change-page-size="$emit('change-apps-page-size', $event)"
               @change-page="$emit('change-apps-page', $event)"
             />
@@ -423,7 +428,12 @@
               :page-size="messagesTable.pagination.pageSize"
               :items-per-page="messagesTable.pagination.itemsPerPage"
               @row-click="openExistingMessage('Детали сообщения', $event)"
-              @sort-table="sortTable(messagesTable, $event)"
+              @sort-table="
+                $emit('sort-table', {
+                  tableName: 'messagesTable',
+                  sortedColumnIndex: $event,
+                })
+              "
               @change-page-size="$emit('change-message-page-size', $event)"
               @change-page="$emit('change-message-page', $event)"
             />
