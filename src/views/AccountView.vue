@@ -163,7 +163,7 @@
                         />
                         <SelectBootstrapCustomBS46
                           label="Пол"
-                          id="subjectArea"
+                          id="gender"
                           :itemsList="dictionaries.gender"
                           :value="teacherProfile.gender"
                           :width-group="12"
@@ -186,8 +186,10 @@
                           :itemsList="dictionaries.subjectArea"
                           :value="teacherProfile.subjectArea"
                           :width-group="12"
-                          :responsive="'col-sm-6 col-md-4 col-lg-3'"
+                          :responsive="'col-sm-6 col-md-5 col-lg-4'"
                           :disabled="!editableProfile"
+                          multiple
+                          badges
                           @change="teacherProfile.subjectArea = $event"
                         />
                       </form>
@@ -612,7 +614,7 @@
                   :itemsList="dictionaries.subjectArea"
                   :value="expertProfile.subjectArea"
                   :width-group="12"
-                  :responsive="'col-sm-6 col-md-4 col-lg-3'"
+                  :responsive="'col-sm-6 col-md-5 col-lg-4'"
                   :disabled="!editableProfile"
                   @change="expertProfile.subjectArea = $event"
                 />

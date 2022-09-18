@@ -2168,6 +2168,7 @@ export default {
         })
         .then((response) => {
           this.teacherInfo = response.data;
+          this.teacherInfo.subjectArea = JSON.parse(response.data.subjectArea);
           console.groupCollapsed("Личные данные педагога");
           console.log(response.data);
           console.groupEnd();
@@ -2175,6 +2176,9 @@ export default {
     },
     setTeacher() {
       this.loaderStart(this.profileLoader, "Сохранение личных данных");
+      this.teacherInfo.subjectArea = JSON.stringify(
+        this.teacherInfo.subjectArea
+      );
       axios
         .post(
           "https://teachers.coko38.ru/teachapp/api/teacher/edit",
@@ -2209,6 +2213,7 @@ export default {
           this.analyticsTable.rowsList.push(
             this.analyticsConvertToTable(response.data)
           );
+          this.expertInfo.subjectArea = JSON.parse(response.data.subjectArea);
           console.groupCollapsed("Личные данные эксперта");
           console.log(response.data);
           console.groupEnd();
@@ -2216,6 +2221,9 @@ export default {
     },
     setExpert() {
       this.loaderStart(this.profileLoader, "Сохранение личных данных");
+      this.expertInfo.subjectArea = JSON.stringify(
+        this.teacherInfo.subjectArea
+      );
       axios
         .post(
           "https://teachers.coko38.ru/teachapp/api/expert/edit",

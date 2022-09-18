@@ -119,6 +119,10 @@ footer {
   }
 }
 
+.accordion > .card {
+  overflow: unset;
+}
+
 //.tab-content,
 //.tab-pane {
 //  height: 100%;
