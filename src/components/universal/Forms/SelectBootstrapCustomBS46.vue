@@ -108,7 +108,6 @@ export default {
       this.$emit("change", this.selectedValue);
     },
     removeItemFromMultipleSelect(itemValue) {
-      console.log(itemValue);
       let indexOfRemovedItem = this.selectedValue.indexOf(itemValue);
       this.selectedValue.splice(indexOfRemovedItem, 1);
       this.$emit("change", this.selectedValue);
@@ -118,7 +117,6 @@ export default {
   created() {
     this.selectedValue = this.value;
     if (Number.isFinite(this.value)) {
-      console.log(this.value);
       let arr = [];
       arr.push(this.value);
       this.selectedValue = arr;

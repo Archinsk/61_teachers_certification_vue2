@@ -72,7 +72,7 @@ export default {
   },
   computed: {
     tableClass: function () {
-      let tableStyleClass = "table";
+      let tableStyleClass = "table mb-0";
       if (this.striped) {
         tableStyleClass += " table-striped";
       }

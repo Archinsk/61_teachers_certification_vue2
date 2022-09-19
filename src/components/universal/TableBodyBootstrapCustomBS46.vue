@@ -16,5 +16,3 @@ export default {
   props: ["rowsList", "primaryColumnIndex"],
 };
 </script>
-
-<style scoped></style>

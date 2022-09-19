@@ -1,5 +1,5 @@
 <template>
-  <div class="paginator d-flex justify-content-between align-items-center">
+  <div class="paginator d-flex justify-content-between align-items-center mt-3">
     <template v-if="itemsTotal > itemsPerPage[0]">
       <PaginationItemsPerPage
         :items-per-page="itemsPerPage"

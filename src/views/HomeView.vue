@@ -139,7 +139,9 @@
               <h5 class="text-uppercase mb-0">График проведения аттестации</h5>
             </template>
             <template v-slot:card-body>
-              <div v-html="expertisesSchedule"></div>
+              <div class="table-responsive">
+                <div v-html="expertisesSchedule"></div>
+              </div>
             </template>
           </CardBootstrapCustomBS46>
         </div>

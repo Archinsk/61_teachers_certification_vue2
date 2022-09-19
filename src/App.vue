@@ -68,6 +68,12 @@
         @change-message-page="
           changePage(messagesTable, $event, messagesServiceId)
         "
+        @change-expertises-page-size="
+          changePageSize(expertisesTable, $event, expertisesServiceId)
+        "
+        @change-expertises-page="
+          changePage(expertisesTable, $event, expertisesServiceId)
+        "
         @invoke-action="invokeAction($event)"
         @sort-table="sortTable($event.tableName, $event.sortedColumnIndex)"
       />
@@ -215,6 +221,7 @@ export default {
 
       // Заявления
       appsServiceId: 2,
+      appsResponse: [],
       appsTable: {
         id: "appsTable",
         service: 2,
@@ -339,6 +346,7 @@ export default {
 
       // Сообщения
       messagesServiceId: 1,
+      messagesResponse: [],
       messagesTable: {
         id: "messagesTable",
         service: 1,
@@ -472,35 +480,33 @@ export default {
       },
 
       // "Экспертизы"
-      expertisesServiceId: 2,
+      expertisesServiceId: 4,
+      expertisesResponse: [],
       expertisesTable: {
         id: "expertisesTable",
+        service: 4,
         columnsList: [
           { title: "№ заявления", name: "id", sorted: true },
           {
             title: "ФИО педагогического работника",
             name: "teacherFullname",
-            sorted: true,
           },
           {
             title: "Дата начала экспертизы",
-            name: "expertiseStartDate",
+            name: "startDate",
             sorted: true,
           },
           {
             title: "Срок окончания экспертизы",
             name: "expertiseLimit",
-            sorted: true,
           },
           {
             title: "Дата окончания экспертизы",
             name: "expertiseFinishDate",
-            sorted: true,
           },
           {
             title: "Результат экспертизы",
             name: "expertiseResult",
-            sorted: true,
           },
           { title: "Статус", name: "status", sorted: true },
         ],
@@ -534,7 +540,7 @@ export default {
             "Черновик",
           ],
         ],
-        sortColumn: "",
+        sortColumn: "id",
         ascendingSortOrder: false,
         filters: [
           {
@@ -1734,6 +1740,7 @@ export default {
           }
         )
         .then((response) => {
+          this.appsResponse = response.data.content;
           this.appsTable.rowsList = this.appsConvertToTable(
             response.data.content
           );
@@ -1747,7 +1754,7 @@ export default {
       let appsTable = [];
       apps.forEach(function (app) {
         let appsTableItem = [];
-        appsTableItem.push(app.id);
+        appsTableItem.push(app.externalId);
         appsTableItem.push(app.servName);
         appsTableItem.push(app.startDate.substring(0, 10));
         appsTableItem.push("---");
@@ -1790,6 +1797,7 @@ export default {
           }
         )
         .then((response) => {
+          this.messagesResponse = response.data.content;
           this.messagesTable.rowsList = this.messagesConvertToTable(
             response.data.content
           );
@@ -1804,7 +1812,7 @@ export default {
       let messagesTable = [];
       messages.forEach(function (message) {
         let messagesTableItem = [];
-        messagesTableItem.push(message.id);
+        messagesTableItem.push(message.externalId);
         messagesTableItem.push(message.startDate.substring(0, 10));
         messagesTableItem.push("---");
         messagesTableItem.push("---");
@@ -1815,6 +1823,65 @@ export default {
       return messagesTable;
     },
 
+    // Получение списка заявлений пользователя
+    getExpertises(
+      page = this.expertisesTable.pagination.pageSize,
+      pageSize = this.expertisesTable.pagination.pageSize,
+      servId = this.expertisesServiceId,
+      sortCol = this.expertisesTable.sortColumn,
+      sortDesc = !this.expertisesTable.ascendingSortOrder,
+      userList = true,
+      active = false
+    ) {
+      axios
+        .get(
+          this.url +
+            "app/get-apps?pageNum=" +
+            (page - 1) +
+            "&pageSize=" +
+            pageSize +
+            "&servId=" +
+            servId +
+            "&sortCol=" +
+            sortCol +
+            "&sortDesc=" +
+            sortDesc +
+            "&userList=" +
+            userList +
+            "&active=" +
+            active,
+          {
+            withCredentials: true,
+          }
+        )
+        .then((response) => {
+          this.expertisesResponse = response.data.content;
+          this.expertisesTable.rowsList = this.expertisesConvertToTable(
+            response.data.content
+          );
+          this.expertisesTable.pagination.itemsTotal =
+            response.data.totalElements;
+          console.groupCollapsed("Список экспертиз");
+          console.log(response.data.content);
+          console.groupEnd();
+        });
+    },
+    expertisesConvertToTable(expertises) {
+      let expertisesTable = [];
+      expertises.forEach(function (expertise) {
+        let expertisesTableItem = [];
+        expertisesTableItem.push(expertise.externalId);
+        expertisesTableItem.push("---");
+        expertisesTableItem.push(expertise.startDate.substring(0, 10));
+        expertisesTableItem.push("---");
+        expertisesTableItem.push("---");
+        expertisesTableItem.push("---");
+        expertisesTableItem.push(expertise.status);
+        expertisesTable.push(expertisesTableItem);
+      });
+      return expertisesTable;
+    },
+
     // Список записей журнала действий
     getAudit() {
       axios
@@ -1822,7 +1889,6 @@ export default {
           withCredentials: true,
         })
         .then((response) => {
-          console.log(response.data);
           let logsTableRows = this.logsConvertToTable(response.data);
           this.logsTable.rowsList = logsTableRows;
           this.logsTable.pagination.itemsTotal = logsTableRows.length;
@@ -1858,6 +1924,8 @@ export default {
         this.loaderStart(this.appsLoader, "Загрузка формы заявления");
       } else if (serviceId === this.messagesServiceId) {
         this.loaderStart(this.messagesLoader, "Загрузка формы сообщения");
+      } else if (serviceId === this.expertisesServiceId) {
+        this.loaderStart(this.expertisesLoader, "Загрузка формы экспертизы");
       }
       if (id) {
         setTimeout(this.getForm, 500, serviceId, id);
@@ -1872,6 +1940,8 @@ export default {
         if (serviceId === this.appsServiceId) {
           console.log("Запрос формы существующего заявления");
         } else if (serviceId === this.messagesServiceId) {
+          console.log("Запрос формы существующего сообщения");
+        } else if (serviceId === this.expertisesServiceId) {
           console.log("Запрос формы существующего сообщения");
         }
       } else {
@@ -1899,6 +1969,8 @@ export default {
             this.appForm = newForm;
           } else if (serviceId === this.messagesServiceId) {
             this.messageForm = newForm;
+          } else if (serviceId === this.expertisesServiceId) {
+            this.expertiseForm = newForm;
           }
         })
         .then(() => {
@@ -1906,9 +1978,9 @@ export default {
             this.loaderFinish(this.appsLoader);
           } else if (serviceId === this.messagesServiceId) {
             this.loaderFinish(this.messagesLoader);
+          } else if (serviceId === this.expertisesServiceId) {
+            this.loaderFinish(this.expertisesLoader);
           }
-          console.log("Опции стартовой формы");
-          console.log(this);
         });
     },
 
@@ -2049,7 +2121,6 @@ export default {
       }
     },
     changePage(list, page, serviceId) {
-      console.log(page);
       list.pagination.page = page;
       if (serviceId === this.appsServiceId) {
         this.getApps(
@@ -2087,7 +2158,10 @@ export default {
       this.loaderStart(this.appsLoader, "Загрузка формы заявления");
       setTimeout(this.loaderFinish, this.loadersDelay, this.appsLoader);
     },
-    openExistingApp(appsServiceId, appId) {
+    openExistingApp(appsServiceId, externalAppId) {
+      let appId = this.appsResponse.find(function (item) {
+        if (item.externalId === externalAppId) return true;
+      }).id;
       this.getStartForm(appsServiceId, appId);
       this.loaderStart(this.appsLoader, "Загрузка заявления");
       setTimeout(this.loaderFinish, this.loadersDelay, this.appsLoader);
@@ -2099,18 +2173,21 @@ export default {
       this.loaderStart(this.messagesLoader, "Загрузка формы сообщения");
       setTimeout(this.loaderFinish, this.loadersDelay, this.messagesLoader);
     },
-    openExistingMessage(appsServiceId, appId) {
-      console.log(appsServiceId);
-      console.log(appId);
+    openExistingMessage(appsServiceId, externalAppId) {
+      let appId = this.messagesResponse.find(function (item) {
+        if (item.externalId === externalAppId) return true;
+      }).id;
       this.getStartForm(appsServiceId, appId);
       this.loaderStart(this.messagesLoader, "Загрузка сообщения");
       setTimeout(this.loaderFinish, this.loadersDelay, this.messagesLoader);
     },
 
     // "Экспертизы"
-    openExistingExpertise(appsServiceId, appId) {
-      // this.getStartForm(appsServiceId, appId);
-      console.log(appsServiceId + " - " + appId);
+    openExistingExpertise(appsServiceId, externalAppId) {
+      let appId = this.expertisesResponse.find(function (item) {
+        if (item.externalId === externalAppId) return true;
+      }).id;
+      this.getStartForm(appsServiceId, appId);
       this.loaderStart(this.expertisesLoader, "Загрузка деталей экспертизы");
       setTimeout(this.loaderFinish, this.loadersDelay, this.expertisesLoader);
     },
@@ -2163,7 +2240,7 @@ export default {
     // Данные личного кабинета
     getTeacher() {
       axios
-        .get("https://teachers.coko38.ru/teachapp/api/teacher/get", {
+        .get("https://teachers.coko38.ru/api-teacher/api/teacher/get", {
           withCredentials: true,
         })
         .then((response) => {
@@ -2181,7 +2258,7 @@ export default {
       );
       axios
         .post(
-          "https://teachers.coko38.ru/teachapp/api/teacher/edit",
+          "https://teachers.coko38.ru/api-teacher/api/teacher/edit",
           this.teacherInfo,
           {
             withCredentials: true,
@@ -2204,7 +2281,7 @@ export default {
     },
     getExpert() {
       axios
-        .get("https://teachers.coko38.ru/teachapp/api/expert/get", {
+        .get("https://teachers.coko38.ru/api-teacher/api/expert/get", {
           withCredentials: true,
         })
         .then((response) => {
@@ -2226,7 +2303,7 @@ export default {
       );
       axios
         .post(
-          "https://teachers.coko38.ru/teachapp/api/expert/edit",
+          "https://teachers.coko38.ru/api-teacher/api/expert/edit",
           this.expertInfo,
           {
             withCredentials: true,
@@ -2395,6 +2472,14 @@ export default {
           columnSortName,
           !table.ascendingSortOrder
         );
+      } else if (table.service === this.expertisesServiceId) {
+        this.getExpertises(
+          table.pagination.page,
+          table.pagination.pageSize,
+          this.expertisesServiceId,
+          columnSortName,
+          !table.ascendingSortOrder
+        );
       }
     },
   },
@@ -2410,6 +2495,10 @@ export default {
         this.getMessages(
           this.messagesTable.pagination.page,
           this.messagesTable.pagination.pageSize
+        );
+        this.getExpertises(
+          this.expertisesTable.pagination.page,
+          this.expertisesTable.pagination.pageSize
         );
         this.getAudit();
         // this.authIntervalId = setInterval(this.checkAuth, 30000);

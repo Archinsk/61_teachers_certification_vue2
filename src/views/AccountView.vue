@@ -664,12 +664,24 @@
             tabindex="0"
           >
             <TableBootstrapCustomBS46
+              pagination
+              filter
               hover
               bordered
-              filter
               :table-data="expertisesTable"
-              @row-click="openExistingExpertise('Детали экспертизы')"
-              @sort-table="sortTable(expertisesTable, $event, $event)"
+              :items-total="expertisesTable.pagination.itemsTotal"
+              :page="expertisesTable.pagination.page"
+              :page-size="expertisesTable.pagination.pageSize"
+              :items-per-page="expertisesTable.pagination.itemsPerPage"
+              @row-click="openExistingExpertise('Детали экспертизы', $event)"
+              @sort-table="
+                $emit('sort-table', {
+                  tableName: 'expertisesTable',
+                  sortedColumnIndex: $event,
+                })
+              "
+              @change-page-size="$emit('change-expertises-page-size', $event)"
+              @change-page="$emit('change-expertises-page', $event)"
             />
           </div>
           <div
@@ -976,91 +988,66 @@
           />
           <template v-else>
             <!--          Заполненная форма экспертизы-->
-            <form v-if="modal.modalTitle === 'Детали экспертизы'">
-              <div class="row">
-                <div class="col-6">
-                  <label for="exp-form-view-number" class="form-label"
-                    >№ заявления</label
-                  >
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="exp-form-view-number"
-                    disabled
-                    value="0001"
+            <form
+              v-if="modal.modalTitle === 'Детали экспертизы'"
+              class="application-form"
+            >
+              <div v-if="expertiseForm.form.id" class="row">
+                <div class="col-10">
+                  <Form
+                    :form="expertiseForm.form.scheme"
+                    :submission="expertiseForm"
+                    language="ru"
+                    :options="{
+                      i18n: expertiseFormOptions,
+                      readOnly: !expertiseForm.active,
+                    }"
+                    ref="vueForm"
                   />
                 </div>
-                <div class="col-6">
-                  <label for="exp-form-view-fullName" class="form-label"
-                    >ФИО педагогического работника</label
-                  >
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="exp-form-view-fullName"
-                    disabled
-                    value="Иванов А.П."
-                  />
-                </div>
-                <div class="col-6">
-                  <label for="exp-form-view-startDate" class="form-label"
-                    >Дата начала экспертизы</label
-                  >
-                  <input
-                    type="date"
-                    class="form-control"
-                    id="exp-form-view-startDate"
-                    disabled
-                    value="2022-08-01"
-                  />
-                </div>
-                <div class="col-6">
-                  <label for="exp-form-view-deadlineDate" class="form-label"
-                    >Срок окончания экспертизы</label
-                  >
-                  <input
-                    type="date"
-                    class="form-control"
-                    id="exp-form-view-deadlineDate"
-                    disabled
-                    value="2022-10-01"
-                  />
-                </div>
-                <div class="col-6">
-                  <label for="exp-form-view-finishDate" class="form-label"
-                    >Дата окончания экспертизы</label
-                  >
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="exp-form-view-finishDate"
-                    disabled
-                    value="---"
-                  />
-                </div>
-                <div class="col-6">
-                  <label for="exp-form-view-result" class="form-label"
-                    >Результат</label
-                  >
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="exp-form-view-result"
-                    disabled
-                    value="---"
-                  />
-                </div>
-                <div class="col-6">
-                  <label for="exp-form-view-status" class="form-label"
-                    >Статус</label
-                  >
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="exp-form-view-status"
-                    disabled
-                    value="В работе"
-                  />
+                <div
+                  v-if="
+                    expertiseForm.form.actions &&
+                    expertiseForm.form.actions.length > 0
+                  "
+                  class="col-2 action-buttons"
+                >
+                  <template v-for="action of expertiseForm.form.actions">
+                    <template
+                      v-if="expertiseForm.active || action.alwaysActive"
+                    >
+                      <button
+                        v-if="action.backAction"
+                        :key="action.id"
+                        type="button"
+                        class="btn btn-block btn-primary"
+                        @click="
+                          $emit('invoke-action', {
+                            actionId: action.id,
+                            backAction: true,
+                            modelId: expertiseForm.modelId,
+                          })
+                        "
+                      >
+                        {{ action.name }}
+                      </button>
+                      <button
+                        v-else
+                        :key="action.id"
+                        type="button"
+                        class="btn btn-block btn-primary"
+                        @click="
+                          $emit('invoke-action', {
+                            actionId: action.id,
+                            backAction: false,
+                            modelId: expertiseForm.modelId,
+                          })
+                        "
+                      >
+                        {{ action.name }}
+                      </button>
+                    </template>
+                  </template>
                 </div>
               </div>
             </form>
@@ -1463,7 +1450,6 @@ export default {
       this.openModal(modalTitle);
     },
     openExistingExpertise(modalTitle, appId) {
-      console.log("openExistingExpertise");
       this.$emit("open-existing-expertise", appId);
       this.openModal(modalTitle);
     },
