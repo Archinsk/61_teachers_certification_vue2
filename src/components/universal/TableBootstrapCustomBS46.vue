@@ -65,6 +65,7 @@ export default {
     page: Number,
     pageSize: Number,
     itemsPerPage: Array,
+    dictionaries: Object,
     striped: Boolean,
     bordered: Boolean,
     borderless: Boolean,

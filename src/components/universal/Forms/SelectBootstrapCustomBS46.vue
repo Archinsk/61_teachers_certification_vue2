@@ -14,7 +14,7 @@
       v-model="selectedValue"
       @change="$emit('change', selectedValue)"
     >
-      <option disabled>Выберите...</option>
+      <option disabled :selected="!selectedValue">Выберите...</option>
       <template v-if="itemsList.length > 0">
         <option
           v-for="option of itemsList"

@@ -293,10 +293,10 @@ export default {
             label: "Статус",
             type: "select",
             itemsList: [
-              { id: 1, text: "Черновик" },
-              { id: 2, text: "В работе" },
-              { id: 3, text: "Обработано" },
-              { id: 4, text: "Архивная" },
+              { id: 1, value: 1, label: "Черновик" },
+              { id: 2, value: 2, label: "В работе" },
+              { id: 3, value: 3, label: "Обработано" },
+              { id: 4, value: 4, label: "Архивная" },
             ],
             width: 12,
             responsive: "col-sm-4 col-md-3 col-lg-2",
@@ -395,30 +395,43 @@ export default {
             subtype: "number",
             width: 12,
             responsive: "col-sm-4 col-md-3 col-lg-2",
+            value: null,
           },
           {
             id: "2",
             label: "Дата создания сообщения",
             type: "range",
             subtype: "date",
-            itemsList: [{ label: " c" }, { label: " по" }],
+            itemsList: [
+              { label: " c", value: null },
+              { label: " по", value: null },
+            ],
             width: 12,
             responsive: "col-sm-8 col-md-6 col-lg-4",
           },
           {
             id: "3",
             label: "Тема",
-            type: "input",
-            subtype: "Тема",
+            type: "select",
+            itemsList: [
+              { id: 1, value: 1, label: "Значение 1" },
+              { id: 2, value: 2, label: "Значение 2" },
+              { id: 3, value: 3, label: "Значение 3" },
+              { id: 4, value: 4, label: "Значение 4" },
+            ],
             width: 12,
             responsive: "col-sm-4 col-md-3 col-lg-2",
+            values: [],
           },
           {
             id: "4",
             label: "Дата входа в статус",
             type: "range",
             subtype: "date",
-            itemsList: [{ label: " с" }, { label: " по" }],
+            itemsList: [
+              { label: " с", value: null },
+              { label: " по", value: null },
+            ],
             width: 12,
             responsive: "col-sm-8 col-md-6 col-lg-4",
           },
@@ -427,13 +440,14 @@ export default {
             label: "Статус",
             type: "select",
             itemsList: [
-              { id: 1, text: "Черновик" },
-              { id: 2, text: "В работе" },
-              { id: 3, text: "Обработано" },
-              { id: 4, text: "Архивная" },
+              { id: 1, value: 1, label: "Черновик" },
+              { id: 2, value: 2, label: "В работе" },
+              { id: 3, value: 3, label: "Обработано" },
+              { id: 4, value: 4, label: "Архивная" },
             ],
             width: 12,
             responsive: "col-sm-4 col-md-3 col-lg-2",
+            values: [],
           },
           {
             id: "6",
@@ -443,6 +457,7 @@ export default {
             itemsList: [{ label: " с" }, { label: " по" }],
             width: 12,
             responsive: "col-sm-8 col-md-6 col-lg-4",
+            value: null,
           },
           {
             id: "7",
@@ -450,6 +465,7 @@ export default {
             type: "checkbox",
             width: 12,
             responsive: "col-sm-4 col-md-3 col-lg-2",
+            value: false,
           },
         ],
         pagination: {
@@ -590,9 +606,9 @@ export default {
             label: "Результат экспертизы",
             type: "select",
             itemsList: [
-              { id: 1, text: "Положительный" },
-              { id: 2, text: "Отрицательный" },
-              { id: 3, text: "Прекращена" },
+              { id: 1, value: 1, label: "Положительный" },
+              { id: 2, value: 2, label: "Отрицательный" },
+              { id: 3, value: 3, label: "Прекращена" },
             ],
             width: 12,
             responsive: "col-sm-4 col-md-3 col-lg-2",
@@ -602,10 +618,10 @@ export default {
             label: "Статус",
             type: "select",
             itemsList: [
-              { id: 1, text: "Черновик" },
-              { id: 2, text: "В работе" },
-              { id: 3, text: "Обработано" },
-              { id: 4, text: "Архивная" },
+              { id: 1, value: 1, label: "Черновик" },
+              { id: 2, value: 2, label: "В работе" },
+              { id: 3, value: 3, label: "Обработано" },
+              { id: 4, value: 4, label: "Архивная" },
             ],
             width: 12,
             responsive: "col-sm-4 col-md-3 col-lg-2",
@@ -1315,6 +1331,11 @@ export default {
         subjectArea: [],
         municipalEntityIrkutsk: [],
         DocumentPersonal: [],
+        statusModel_2: [],
+        statusModel_1: [],
+        statusModel_101: [],
+        resultExpert: [],
+        topic: [],
       },
 
       // Документы для работы с системой
@@ -1344,6 +1365,57 @@ export default {
         if (a.receiptDate < b.receiptDate) return -1; // если первое значение меньше второго
       });
       return sortedMessages.reverse();
+    },
+    messageRequestQuery: function () {
+      let messageRequestQuery = "app/messages?";
+      if (this.user.shortInfo.userId) {
+        messageRequestQuery += "userId=" + this.user.shortInfo.userId;
+      }
+      messageRequestQuery += "&archive=" + this.messagesTable.filters[6].value;
+      if (this.messagesTable.filters[1].itemsList[0].value) {
+        messageRequestQuery +=
+          "&createDate_start=" +
+          this.messagesTable.filters[1].itemsList[0].value;
+      }
+      if (this.messagesTable.filters[1].itemsList[1].value) {
+        messageRequestQuery +=
+          "&createDate_end=" + this.messagesTable.filters[1].itemsList[1].value;
+      }
+      if (this.messagesTable.filters[2].value) {
+        messageRequestQuery +=
+          "&epguNum=" + this.messagesTable.filters[2].value;
+      }
+      if (this.messagesTable.filters[3].itemsList[0].value) {
+        messageRequestQuery +=
+          "&changeStatusDate_start=" +
+          this.messagesTable.filters[3].itemsList[0].value;
+      }
+      if (this.messagesTable.filters[3].itemsList[1].value) {
+        messageRequestQuery +=
+          "&changeStatusDate_end=" +
+          this.messagesTable.filters[3].itemsList[1].value;
+      }
+      if (this.messagesTable.filters[4].value) {
+        messageRequestQuery += "&status=" + this.messagesTable.filters[4].value;
+      }
+      if (this.messagesTable.filters[5].itemsList[0].value) {
+        messageRequestQuery +=
+          "&sendDate_start=" + this.messagesTable.filters[5].itemsList[0].value;
+      }
+      if (this.messagesTable.filters[5].itemsList[1].value) {
+        messageRequestQuery +=
+          "&sendDate_end=" + this.messagesTable.filters[5].itemsList[1].value;
+      }
+
+      messageRequestQuery +=
+        "&pageNum=" + (this.messagesTable.pagination.page - 1);
+
+      messageRequestQuery +=
+        "&pageSize=" + this.messagesTable.pagination.pageSize;
+      messageRequestQuery += "&sortCol=" + this.messagesTable.sortColumn;
+      messageRequestQuery +=
+        "&sortDesc=" + this.messagesTable.ascendingSortOrder;
+      return messageRequestQuery;
     },
   },
 
@@ -1766,37 +1838,55 @@ export default {
     },
 
     // Получение списка заявлений пользователя
-    getMessages(
-      page = this.messagesTable.pagination.pageSize,
-      pageSize = this.messagesTable.pagination.pageSize,
-      servId = this.messagesServiceId,
-      sortCol = this.messagesTable.sortColumn,
-      sortDesc = !this.messagesTable.ascendingSortOrder,
-      userList = true,
-      active = false
-    ) {
+    // getMessages(
+    //   page = this.messagesTable.pagination.pageSize,
+    //   pageSize = this.messagesTable.pagination.pageSize,
+    //   servId = this.messagesServiceId,
+    //   sortCol = this.messagesTable.sortColumn,
+    //   sortDesc = !this.messagesTable.ascendingSortOrder,
+    //   userList = true,
+    //   active = false
+    // ) {
+    //   axios
+    //     .get(
+    //       this.url +
+    //         "app/get-apps?pageNum=" +
+    //         (page - 1) +
+    //         "&pageSize=" +
+    //         pageSize +
+    //         "&servId=" +
+    //         servId +
+    //         "&sortCol=" +
+    //         sortCol +
+    //         "&sortDesc=" +
+    //         sortDesc +
+    //         "&userList=" +
+    //         userList +
+    //         "&active=" +
+    //         active,
+    //       {
+    //         withCredentials: true,
+    //       }
+    //     )
+    //     .then((response) => {
+    //       this.messagesResponse = response.data.content;
+    //       this.messagesTable.rowsList = this.messagesConvertToTable(
+    //         response.data.content
+    //       );
+    //       this.messagesTable.pagination.itemsTotal =
+    //         response.data.totalElements;
+    //       console.groupCollapsed("Список сообщений");
+    //       console.log(response.data.content);
+    //       console.groupEnd();
+    //     });
+    // },
+    getMessages() {
       axios
-        .get(
-          this.url +
-            "app/get-apps?pageNum=" +
-            (page - 1) +
-            "&pageSize=" +
-            pageSize +
-            "&servId=" +
-            servId +
-            "&sortCol=" +
-            sortCol +
-            "&sortDesc=" +
-            sortDesc +
-            "&userList=" +
-            userList +
-            "&active=" +
-            active,
-          {
-            withCredentials: true,
-          }
-        )
+        .get(this.urlAdd + this.messageRequestQuery, {
+          withCredentials: true,
+        })
         .then((response) => {
+          console.log(response.data);
           this.messagesResponse = response.data.content;
           this.messagesTable.rowsList = this.messagesConvertToTable(
             response.data.content
@@ -1808,16 +1898,34 @@ export default {
           console.groupEnd();
         });
     },
+    // messagesConvertToTable(messages) {
+    //   let messagesTable = [];
+    //   messages.forEach(function (message) {
+    //     let messagesTableItem = [];
+    //     messagesTableItem.push(message.externalId);
+    //     messagesTableItem.push(message.startDate.substring(0, 10));
+    //     messagesTableItem.push("---");
+    //     messagesTableItem.push("---");
+    //     messagesTableItem.push(message.status);
+    //     messagesTableItem.push("---");
+    //     messagesTable.push(messagesTableItem);
+    //   });
+    //   return messagesTable;
+    // },
     messagesConvertToTable(messages) {
+      console.log(messages);
       let messagesTable = [];
+      let getDictionaryValueById = this.getDictionaryValueById;
       messages.forEach(function (message) {
         let messagesTableItem = [];
-        messagesTableItem.push(message.externalId);
-        messagesTableItem.push(message.startDate.substring(0, 10));
-        messagesTableItem.push("---");
-        messagesTableItem.push("---");
-        messagesTableItem.push(message.status);
-        messagesTableItem.push("---");
+        messagesTableItem.push(message.id);
+        messagesTableItem.push(message.createDate.substring(0, 10));
+        messagesTableItem.push(getDictionaryValueById("topic", message.theme));
+        messagesTableItem.push(message.dateEnterStatusStart.substring(0, 10));
+        messagesTableItem.push(
+          getDictionaryValueById("statusModel_1", message.status)
+        );
+        messagesTableItem.push(message.responseTime);
         messagesTable.push(messagesTableItem);
       });
       return messagesTable;
@@ -2345,6 +2453,11 @@ export default {
         "DocumentPersonal",
         '"Документы, удостоверяющие личность"'
       );
+      this.getDictionary("statusModel_2", '"Статусы заявлений"');
+      this.getDictionary("statusModel_1", '"Статусы сообщений"');
+      this.getDictionary("statusModel_101", '"Статусы экспертиз"');
+      this.getDictionary("resultExpert", '"Результаты экспертиз"');
+      this.getDictionary("topic", '"Темы сообщений"');
     },
     getDictionary(dictionaryCode, logComment) {
       axios
@@ -2358,6 +2471,9 @@ export default {
           console.groupCollapsed("Справочник" + logComment);
           console.log(response.data);
           console.groupEnd();
+        })
+        .then(() => {
+          this.setDictionaryToSelect(dictionaryCode);
         })
         .catch(() => {
           console.log(
@@ -2377,6 +2493,32 @@ export default {
         convertedDictionary.push(convertedItem);
       });
       return convertedDictionary;
+    },
+    getDictionaryValueById(dictionaryName, id) {
+      let dictionary = this.dictionaries[dictionaryName];
+      let dictionaryItem = dictionary.find((item) => item.value === id);
+      return dictionaryItem.label;
+    },
+    setDictionaryToSelect(dictionaryCode) {
+      if (dictionaryCode === "statusModel_2") {
+        this.messagesTable.filters[4].itemsList =
+          this.dictionaries.statusModel_2;
+      }
+      if (dictionaryCode === "statusModel_1") {
+        this.appsTable.filters[3].itemsList = this.dictionaries.statusModel_1;
+      }
+      if (dictionaryCode === "statusModel_101") {
+        this.expertisesTable.filters[5].itemsList =
+          this.dictionaries.statusModel_101;
+      }
+      if (dictionaryCode === "resultExpert") {
+        this.expertisesTable.filters[6].itemsList =
+          this.dictionaries.resultExpert;
+      }
+      if (dictionaryCode === "topic") {
+        this.messagesTable.filters[4].itemsList =
+          this.dictionaries.statusModel_2;
+      }
     },
 
     // Файлы для работы с системой
@@ -2492,10 +2634,11 @@ export default {
           this.appsTable.pagination.page,
           this.appsTable.pagination.pageSize
         );
-        this.getMessages(
-          this.messagesTable.pagination.page,
-          this.messagesTable.pagination.pageSize
-        );
+        // this.getMessages(
+        //   this.messagesTable.pagination.page,
+        //   this.messagesTable.pagination.pageSize
+        // );
+        this.getMessages();
         this.getExpertises(
           this.expertisesTable.pagination.page,
           this.expertisesTable.pagination.pageSize
@@ -2506,6 +2649,7 @@ export default {
         // clearInterval(this.authIntervalId);
       }
     },
+    // Заполнение селектов фильтров
   },
 
   mounted: function () {

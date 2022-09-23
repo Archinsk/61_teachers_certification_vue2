@@ -429,6 +429,7 @@
               :page="messagesTable.pagination.page"
               :page-size="messagesTable.pagination.pageSize"
               :items-per-page="messagesTable.pagination.itemsPerPage"
+              :dictionaries="dictionaries"
               @row-click="openExistingMessage('Детали сообщения', $event)"
               @sort-table="
                 $emit('sort-table', {
@@ -708,7 +709,6 @@
             <TableBootstrapCustomBS46
               hover
               bordered
-              filter
               :table-data="logsTable"
               @sort-table="sortTable(logsTable, $event)"
             />
