@@ -439,6 +439,9 @@
               "
               @change-page-size="$emit('change-message-page-size', $event)"
               @change-page="$emit('change-message-page', $event)"
+              @change-filter="$emit('change-messages-filter', $event)"
+              @apply-filter="$emit('apply-messages-filter')"
+              @clear-filter="$emit('clear-messages-filter')"
             />
           </div>
         </div>

@@ -8,7 +8,13 @@
         Фильтр
       </CollapseButtonBootstrapCustomBS46>
       <CollapseBootstrapCustomBS46 :id="tableData.id + 'Collapse'">
-        <FilterBootstrapCustomBS46 :filter-data="tableData.filters" />
+        <FilterBootstrapCustomBS46
+          :filter-data="tableData.filters"
+          @change-filter="$emit('change-filter', $event)"
+          @apply-filter="$emit('apply-filter')"
+          @clear-filter="$emit('clear-filter')"
+        />
+        <!--        @changeFilter="$emit('change-filter', $event)"-->
       </CollapseBootstrapCustomBS46>
     </template>
     <div class="table-responsive">
@@ -121,6 +127,11 @@ export default {
       } else {
         return rowsListCopy;
       }
+    },
+  },
+  methods: {
+    test(value) {
+      console.log("В таблице событие срабатывает: " + value);
     },
   },
 };

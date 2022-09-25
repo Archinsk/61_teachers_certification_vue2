@@ -11,6 +11,7 @@
         :readonly="filterData.readonly || filterData.itemsList[0].readonly"
         :disabled="filterData.disabled || filterData.itemsList[0].disabled"
         :width-group="6"
+        @input="$emit('input', { index: 0, value: $event })"
       />
       <InputBootstrapCustomBS46
         :id="filterData.id"
@@ -22,6 +23,7 @@
         :readonly="filterData.readonly || filterData.itemsList[1].readonly"
         :disabled="filterData.disabled || filterData.itemsList[1].disabled"
         :width-group="6"
+        @input="$emit('input', { index: 1, value: $event })"
       />
     </div>
   </div>

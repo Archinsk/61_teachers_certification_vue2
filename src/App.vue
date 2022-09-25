@@ -68,6 +68,9 @@
         @change-message-page="
           changePage(messagesTable, $event, messagesServiceId)
         "
+        @change-messages-filter="changeFilter(messagesTable.filters, $event)"
+        @apply-messages-filter="getMessages"
+        @clear-messages-filter="clearMessagesFilter"
         @change-expertises-page-size="
           changePageSize(expertisesTable, $event, expertisesServiceId)
         "
@@ -1372,6 +1375,9 @@ export default {
         messageRequestQuery += "userId=" + this.user.shortInfo.userId;
       }
       messageRequestQuery += "&archive=" + this.messagesTable.filters[6].value;
+      if (this.messagesTable.filters[0].value) {
+        messageRequestQuery += "&id=" + this.messagesTable.filters[0].value;
+      }
       if (this.messagesTable.filters[1].itemsList[0].value) {
         messageRequestQuery +=
           "&createDate_start=" +
@@ -1381,9 +1387,9 @@ export default {
         messageRequestQuery +=
           "&createDate_end=" + this.messagesTable.filters[1].itemsList[1].value;
       }
-      if (this.messagesTable.filters[2].value) {
+      if (this.messagesTable.filters[2].values[0]) {
         messageRequestQuery +=
-          "&epguNum=" + this.messagesTable.filters[2].value;
+          "&epguNum=" + this.messagesTable.filters[2].values[0];
       }
       if (this.messagesTable.filters[3].itemsList[0].value) {
         messageRequestQuery +=
@@ -1395,8 +1401,9 @@ export default {
           "&changeStatusDate_end=" +
           this.messagesTable.filters[3].itemsList[1].value;
       }
-      if (this.messagesTable.filters[4].value) {
-        messageRequestQuery += "&status=" + this.messagesTable.filters[4].value;
+      if (this.messagesTable.filters[4].values[0]) {
+        messageRequestQuery +=
+          "&status=" + this.messagesTable.filters[4].values[0];
       }
       if (this.messagesTable.filters[5].itemsList[0].value) {
         messageRequestQuery +=
@@ -1929,6 +1936,37 @@ export default {
         messagesTable.push(messagesTableItem);
       });
       return messagesTable;
+    },
+
+    // Изменения фильтра
+    changeFilter(filters, newFilterData) {
+      console.log("Изменяется фильтр");
+      console.log(filters);
+      console.log(newFilterData);
+      let filterItem = filters.find(function (item) {
+        if (item.id === newFilterData.id) return true;
+      });
+      console.log(filterItem);
+      if (filterItem.type === "select") {
+        filterItem.values = [newFilterData.value];
+      } else if (filterItem.type === "range") {
+        filterItem.itemsList[newFilterData.index].value = newFilterData.value;
+      } else {
+        filterItem.value = newFilterData.value;
+      }
+    },
+    clearMessagesFilter() {
+      this.messagesTable.filters[0].value = null;
+      this.messagesTable.filters[1].itemsList[0].value = null;
+      this.messagesTable.filters[1].itemsList[1].value = null;
+      this.messagesTable.filters[2].values = [];
+      this.messagesTable.filters[3].itemsList[0].value = null;
+      this.messagesTable.filters[3].itemsList[1].value = null;
+      this.messagesTable.filters[4].values = [];
+      this.messagesTable.filters[5].itemsList[0].value = null;
+      this.messagesTable.filters[5].itemsList[1].value = null;
+      this.messagesTable.filters[6].value = false;
+      this.getMessages();
     },
 
     // Получение списка заявлений пользователя
@@ -2516,8 +2554,7 @@ export default {
           this.dictionaries.resultExpert;
       }
       if (dictionaryCode === "topic") {
-        this.messagesTable.filters[4].itemsList =
-          this.dictionaries.statusModel_2;
+        this.messagesTable.filters[2].itemsList = this.dictionaries.topic;
       }
     },
 
