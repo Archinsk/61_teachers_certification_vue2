@@ -318,6 +318,7 @@ export default {
             label: "Показать архивные",
             type: "checkbox",
             width: 12,
+            value: false,
           },
         ],
         pagination: {
@@ -1381,25 +1382,34 @@ export default {
       if (this.messagesTable.filters[1].itemsList[0].value) {
         messageRequestQuery +=
           "&createDate_start=" +
-          this.messagesTable.filters[1].itemsList[0].value;
+          this.formatDateForRequest(
+            this.messagesTable.filters[1].itemsList[0].value
+          );
       }
       if (this.messagesTable.filters[1].itemsList[1].value) {
         messageRequestQuery +=
-          "&createDate_end=" + this.messagesTable.filters[1].itemsList[1].value;
+          "&createDate_end=" +
+          this.formatDateForRequest(
+            this.messagesTable.filters[1].itemsList[1].value
+          );
       }
       if (this.messagesTable.filters[2].values[0]) {
         messageRequestQuery +=
-          "&epguNum=" + this.messagesTable.filters[2].values[0];
+          "&theme=" + this.messagesTable.filters[2].values[0];
       }
       if (this.messagesTable.filters[3].itemsList[0].value) {
         messageRequestQuery +=
           "&changeStatusDate_start=" +
-          this.messagesTable.filters[3].itemsList[0].value;
+          this.formatDateForRequest(
+            this.messagesTable.filters[3].itemsList[0].value
+          );
       }
       if (this.messagesTable.filters[3].itemsList[1].value) {
         messageRequestQuery +=
           "&changeStatusDate_end=" +
-          this.messagesTable.filters[3].itemsList[1].value;
+          this.formatDateForRequest(
+            this.messagesTable.filters[3].itemsList[1].value
+          );
       }
       if (this.messagesTable.filters[4].values[0]) {
         messageRequestQuery +=
@@ -1407,11 +1417,17 @@ export default {
       }
       if (this.messagesTable.filters[5].itemsList[0].value) {
         messageRequestQuery +=
-          "&sendDate_start=" + this.messagesTable.filters[5].itemsList[0].value;
+          "&sendDate_start=" +
+          this.formatDateForRequest(
+            this.messagesTable.filters[5].itemsList[0].value
+          );
       }
       if (this.messagesTable.filters[5].itemsList[1].value) {
         messageRequestQuery +=
-          "&sendDate_end=" + this.messagesTable.filters[5].itemsList[1].value;
+          "&sendDate_end=" +
+          this.formatDateForRequest(
+            this.messagesTable.filters[5].itemsList[1].value
+          );
       }
 
       messageRequestQuery +=
@@ -1423,6 +1439,56 @@ export default {
       messageRequestQuery +=
         "&sortDesc=" + this.messagesTable.ascendingSortOrder;
       return messageRequestQuery;
+    },
+    appRequestQuery: function () {
+      let appRequestQuery = "app/teachers?";
+      if (this.user.shortInfo.userId) {
+        appRequestQuery += "userId=" + this.user.shortInfo.userId;
+      }
+      appRequestQuery += "&archive=" + this.appsTable.filters[5].value;
+      if (this.appsTable.filters[0].value) {
+        appRequestQuery += "&id=" + this.appsTable.filters[0].value;
+      }
+      if (this.appsTable.filters[1].itemsList[0].value) {
+        appRequestQuery +=
+          "&createDate_start=" +
+          this.formatDateForRequest(
+            this.appsTable.filters[1].itemsList[0].value
+          );
+      }
+      if (this.appsTable.filters[1].itemsList[1].value) {
+        appRequestQuery +=
+          "&createDate_end=" +
+          this.formatDateForRequest(
+            this.appsTable.filters[1].itemsList[1].value
+          );
+      }
+      if (this.appsTable.filters[2].value) {
+        appRequestQuery += "&epguNum=" + this.appsTable.filters[2].value;
+      }
+      if (this.appsTable.filters[3].values[0]) {
+        appRequestQuery += "&status=" + this.appsTable.filters[3].values[0];
+      }
+      if (this.appsTable.filters[4].itemsList[0].value) {
+        appRequestQuery +=
+          "&dateChangeStatus_start=" +
+          this.formatDateForRequest(
+            this.appsTable.filters[4].itemsList[0].value
+          );
+      }
+      if (this.appsTable.filters[4].itemsList[1].value) {
+        appRequestQuery +=
+          "&dateChangeStatus_end=" +
+          this.formatDateForRequest(
+            this.appsTable.filters[4].itemsList[1].value
+          );
+      }
+
+      appRequestQuery += "&pageNum=" + (this.appsTable.pagination.page - 1);
+      appRequestQuery += "&pageSize=" + this.appsTable.pagination.pageSize;
+      appRequestQuery += "&sortCol=" + this.appsTable.sortColumn;
+      appRequestQuery += "&sortDesc=" + this.appsTable.ascendingSortOrder;
+      return appRequestQuery;
     },
   },
 
@@ -1788,69 +1854,12 @@ export default {
     },
 
     // Получение списка заявлений пользователя
-    getApps(
-      page = this.appsTable.pagination.pageSize,
-      pageSize = this.appsTable.pagination.pageSize,
-      servId = this.appsServiceId,
-      sortCol = this.appsTable.sortColumn,
-      sortDesc = !this.appsTable.ascendingSortOrder,
-      userList = true,
-      active = false
-    ) {
-      axios
-        .get(
-          this.url +
-            "app/get-apps?pageNum=" +
-            (page - 1) +
-            "&pageSize=" +
-            pageSize +
-            "&servId=" +
-            servId +
-            "&sortCol=" +
-            sortCol +
-            "&sortDesc=" +
-            sortDesc +
-            "&userList=" +
-            userList +
-            "&active=" +
-            active,
-          {
-            withCredentials: true,
-          }
-        )
-        .then((response) => {
-          this.appsResponse = response.data.content;
-          this.appsTable.rowsList = this.appsConvertToTable(
-            response.data.content
-          );
-          this.appsTable.pagination.itemsTotal = response.data.totalElements;
-          console.groupCollapsed("Список заявлений");
-          console.log(response.data.content);
-          console.groupEnd();
-        });
-    },
-    appsConvertToTable(apps) {
-      let appsTable = [];
-      apps.forEach(function (app) {
-        let appsTableItem = [];
-        appsTableItem.push(app.externalId);
-        appsTableItem.push(app.servName);
-        appsTableItem.push(app.startDate.substring(0, 10));
-        appsTableItem.push("---");
-        appsTableItem.push(app.status);
-        appsTableItem.push("---");
-        appsTable.push(appsTableItem);
-      });
-      return appsTable;
-    },
-
-    // Получение списка заявлений пользователя
-    // getMessages(
-    //   page = this.messagesTable.pagination.pageSize,
-    //   pageSize = this.messagesTable.pagination.pageSize,
-    //   servId = this.messagesServiceId,
-    //   sortCol = this.messagesTable.sortColumn,
-    //   sortDesc = !this.messagesTable.ascendingSortOrder,
+    // getApps(
+    //   page = this.appsTable.pagination.pageSize,
+    //   pageSize = this.appsTable.pagination.pageSize,
+    //   servId = this.appsServiceId,
+    //   sortCol = this.appsTable.sortColumn,
+    //   sortDesc = !this.appsTable.ascendingSortOrder,
     //   userList = true,
     //   active = false
     // ) {
@@ -1876,24 +1885,69 @@ export default {
     //       }
     //     )
     //     .then((response) => {
-    //       this.messagesResponse = response.data.content;
-    //       this.messagesTable.rowsList = this.messagesConvertToTable(
+    //       this.appsResponse = response.data.content;
+    //       this.appsTable.rowsList = this.appsConvertToTable(
     //         response.data.content
     //       );
-    //       this.messagesTable.pagination.itemsTotal =
-    //         response.data.totalElements;
-    //       console.groupCollapsed("Список сообщений");
+    //       this.appsTable.pagination.itemsTotal = response.data.totalElements;
+    //       console.groupCollapsed("Список заявлений");
     //       console.log(response.data.content);
     //       console.groupEnd();
     //     });
     // },
+    getApps() {
+      axios
+        .get(this.urlAdd + this.appRequestQuery, {
+          withCredentials: true,
+        })
+        .then((response) => {
+          this.appsResponse = response.data.content;
+          this.appsTable.rowsList = this.appsConvertToTable(
+            response.data.content
+          );
+          this.appsTable.pagination.itemsTotal = response.data.totalElements;
+          console.groupCollapsed("Список заявлений");
+          console.log(response.data.content);
+          console.groupEnd();
+        });
+    },
+    // appsConvertToTable(apps) {
+    //   let appsTable = [];
+    //   apps.forEach(function (app) {
+    //     let appsTableItem = [];
+    //     appsTableItem.push(app.externalId);
+    //     appsTableItem.push(app.servName);
+    //     appsTableItem.push(app.startDate.substring(0, 10));
+    //     appsTableItem.push("---");
+    //     appsTableItem.push(app.status);
+    //     appsTableItem.push("---");
+    //     appsTable.push(appsTableItem);
+    //   });
+    //   return appsTable;
+    // },
+    appsConvertToTable(apps) {
+      let appsTable = [];
+      let getDictionaryValueById = this.getDictionaryValueById;
+      apps.forEach(function (app) {
+        let appsTableItem = [];
+        appsTableItem.push(app.id);
+        appsTableItem.push(app.createDate.substring(0, 10));
+        appsTableItem.push(getDictionaryValueById("topic", app.theme));
+        appsTableItem.push(app.dateEnterStatusStart.substring(0, 10));
+        appsTableItem.push(getDictionaryValueById("statusModel_1", app.status));
+        appsTableItem.push(app.responseTime);
+        appsTable.push(appsTableItem);
+      });
+      return appsTable;
+    },
+
+    // Получение списка заявлений пользователя
     getMessages() {
       axios
         .get(this.urlAdd + this.messageRequestQuery, {
           withCredentials: true,
         })
         .then((response) => {
-          console.log(response.data);
           this.messagesResponse = response.data.content;
           this.messagesTable.rowsList = this.messagesConvertToTable(
             response.data.content
@@ -1905,22 +1959,7 @@ export default {
           console.groupEnd();
         });
     },
-    // messagesConvertToTable(messages) {
-    //   let messagesTable = [];
-    //   messages.forEach(function (message) {
-    //     let messagesTableItem = [];
-    //     messagesTableItem.push(message.externalId);
-    //     messagesTableItem.push(message.startDate.substring(0, 10));
-    //     messagesTableItem.push("---");
-    //     messagesTableItem.push("---");
-    //     messagesTableItem.push(message.status);
-    //     messagesTableItem.push("---");
-    //     messagesTable.push(messagesTableItem);
-    //   });
-    //   return messagesTable;
-    // },
     messagesConvertToTable(messages) {
-      console.log(messages);
       let messagesTable = [];
       let getDictionaryValueById = this.getDictionaryValueById;
       messages.forEach(function (message) {
@@ -1954,6 +1993,12 @@ export default {
       } else {
         filterItem.value = newFilterData.value;
       }
+    },
+    formatDateForRequest(dateInputFormat) {
+      let arrayDateInput = dateInputFormat.split("-");
+      let requestFormatDate =
+        arrayDateInput[2] + "." + arrayDateInput[1] + "." + arrayDateInput[0];
+      return requestFormatDate;
     },
     clearMessagesFilter() {
       this.messagesTable.filters[0].value = null;
@@ -2538,12 +2583,12 @@ export default {
       return dictionaryItem.label;
     },
     setDictionaryToSelect(dictionaryCode) {
-      if (dictionaryCode === "statusModel_2") {
-        this.messagesTable.filters[4].itemsList =
-          this.dictionaries.statusModel_2;
-      }
       if (dictionaryCode === "statusModel_1") {
-        this.appsTable.filters[3].itemsList = this.dictionaries.statusModel_1;
+        this.messagesTable.filters[4].itemsList =
+          this.dictionaries.statusModel_1;
+      }
+      if (dictionaryCode === "statusModel_2") {
+        this.appsTable.filters[3].itemsList = this.dictionaries.statusModel_2;
       }
       if (dictionaryCode === "statusModel_101") {
         this.expertisesTable.filters[5].itemsList =
