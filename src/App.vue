@@ -62,6 +62,9 @@
           changePageSize(appsTable, $event, appsServiceId)
         "
         @change-apps-page="changePage(appsTable, $event, appsServiceId)"
+        @change-apps-filter="changeFilter(appsTable.filters, $event)"
+        @apply-apps-filter="getApps"
+        @clear-apps-filter="clearAppsFilter"
         @change-message-page-size="
           changePageSize(messagesTable, $event, messagesServiceId)
         "
@@ -77,6 +80,11 @@
         @change-expertises-page="
           changePage(expertisesTable, $event, expertisesServiceId)
         "
+        @change-expertises-filter="
+          changeFilter(expertisesTable.filters, $event)
+        "
+        @apply-expertises-filter="getExpertises"
+        @clear-expertises-filter="clearExpertisesFilter"
         @invoke-action="invokeAction($event)"
         @sort-table="sortTable($event.tableName, $event.sortedColumnIndex)"
       />
@@ -231,10 +239,14 @@ export default {
         columnsList: [
           { title: "№ заявления", name: "id", sorted: true },
           { title: "Наименование услуги", name: "service" },
-          { title: "Дата создания", name: "startDate", sorted: true },
-          { title: "Номер ЕПГУ", name: "epguNumber" },
+          { title: "Дата создания", name: "createDate", sorted: true },
+          { title: "Номер ЕПГУ", name: "epguNum", sorted: true },
           { title: "Статус", name: "status", sorted: true },
-          { title: "Дата изменения статуса", name: "statusLastUpdateDate" },
+          {
+            title: "Дата изменения статуса",
+            name: "changeDate",
+            sorted: true,
+          },
         ],
         primaryColumn: "№ заявления",
         rowsList: [
@@ -273,13 +285,17 @@ export default {
             subtype: "number",
             width: 12,
             responsive: "col-sm-4 col-md-3 col-lg-2",
+            value: null,
           },
           {
             id: "3",
             label: "Дата создания",
             type: "range",
             subtype: "date",
-            itemsList: [{ label: " с" }, { label: " по" }],
+            itemsList: [
+              { label: " c", value: null },
+              { label: " по", value: null },
+            ],
             width: 12,
             responsive: "col-sm-8 col-md-6 col-lg-4",
           },
@@ -290,6 +306,7 @@ export default {
             subtype: "number",
             width: 12,
             responsive: "col-sm-4 col-md-3 col-lg-2",
+            value: null,
           },
           {
             id: "5",
@@ -303,13 +320,17 @@ export default {
             ],
             width: 12,
             responsive: "col-sm-4 col-md-3 col-lg-2",
+            values: [],
           },
           {
             id: "6",
             label: "Дата изменения статуса",
             type: "range",
             subtype: "date",
-            itemsList: [{ label: " c" }, { label: " по" }],
+            itemsList: [
+              { label: " c", value: null },
+              { label: " по", value: null },
+            ],
             width: 12,
             responsive: "col-sm-8 col-md-6 col-lg-4",
           },
@@ -356,11 +377,22 @@ export default {
         service: 1,
         columnsList: [
           { title: "№ сообщения", name: "id", sorted: true },
-          { title: "Дата создания сообщения", name: "startDate", sorted: true },
-          { title: "Тема", name: "messageTitle" },
-          { title: "Дата входа в статус", name: "statusStartDate" },
+          {
+            title: "Дата создания сообщения",
+            name: "createDate",
+            sorted: true,
+          },
+          { title: "Тема", name: "theme" },
+          {
+            title: "Дата входа в статус",
+            name: "changeDate",
+            sorted: true,
+          },
           { title: "Статус", name: "status", sorted: true },
-          { title: "Срок отправки ответа", name: "responseLimit" },
+          {
+            title: "Срок отправки ответа",
+            name: "responseLimit",
+          },
         ],
         primaryColumn: "№ сообщения",
         rowsList: [
@@ -514,7 +546,6 @@ export default {
           {
             title: "Дата начала экспертизы",
             name: "startDate",
-            sorted: true,
           },
           {
             title: "Срок окончания экспертизы",
@@ -570,6 +601,7 @@ export default {
             subtype: "number",
             width: 12,
             responsive: "col-sm-4 col-md-3 col-lg-2",
+            value: null,
           },
           {
             id: "2",
@@ -578,13 +610,17 @@ export default {
             subtype: "text",
             width: 12,
             responsive: "col-sm-4 col-md-3 col-lg-2",
+            value: null,
           },
           {
             id: "3",
             label: "Дата начала экспертизы",
             type: "range",
             subtype: "date",
-            itemsList: [{ label: " с" }, { label: " по" }],
+            itemsList: [
+              { label: " c", value: null },
+              { label: " по", value: null },
+            ],
             width: 12,
             responsive: "col-sm-8 col-md-6 col-lg-4",
           },
@@ -595,13 +631,17 @@ export default {
             subtype: "number",
             width: 12,
             responsive: "col-sm-4 col-md-3 col-lg-2",
+            value: null,
           },
           {
             id: "5",
             label: "Дата окончания экспертизы",
             type: "range",
             subtype: "date",
-            itemsList: [{ label: " с" }, { label: " по" }],
+            itemsList: [
+              { label: " c", value: null },
+              { label: " по", value: null },
+            ],
             width: 12,
             responsive: "col-sm-8 col-md-6 col-lg-4",
           },
@@ -616,6 +656,7 @@ export default {
             ],
             width: 12,
             responsive: "col-sm-4 col-md-3 col-lg-2",
+            values: [],
           },
           {
             id: "7",
@@ -629,6 +670,7 @@ export default {
             ],
             width: 12,
             responsive: "col-sm-4 col-md-3 col-lg-2",
+            values: [],
           },
         ],
         pagination: {
@@ -739,11 +781,11 @@ export default {
       logsTable: {
         id: "logsTable",
         columnsList: [
-          { title: "Id записи", name: "id", sorted: true },
-          { title: "Дата события", name: "eventDate", sorted: true },
-          { title: "Описание", name: "eventDescription", sorted: true },
-          { title: "Событие", name: "eventName", sorted: true },
-          { title: "Изменения", name: "eventChanges", sorted: true },
+          { title: "Id записи", name: "id" },
+          { title: "Дата события", name: "eventDate" },
+          { title: "Описание", name: "eventDescription" },
+          { title: "Событие", name: "eventName" },
+          { title: "Изменения", name: "eventChanges" },
         ],
         primaryColumn: "Id записи",
         rowsList: [
@@ -769,7 +811,7 @@ export default {
             "Отрицательный результат аттестации",
           ],
         ],
-        sortColumn: "",
+        sortColumn: "id",
         ascendingSortOrder: false,
         filters: [
           {
@@ -1399,14 +1441,14 @@ export default {
       }
       if (this.messagesTable.filters[3].itemsList[0].value) {
         messageRequestQuery +=
-          "&changeStatusDate_start=" +
+          "&enterStatusDate_start=" +
           this.formatDateForRequest(
             this.messagesTable.filters[3].itemsList[0].value
           );
       }
       if (this.messagesTable.filters[3].itemsList[1].value) {
         messageRequestQuery +=
-          "&changeStatusDate_end=" +
+          "&enterStatusDate_end=" +
           this.formatDateForRequest(
             this.messagesTable.filters[3].itemsList[1].value
           );
@@ -1471,14 +1513,14 @@ export default {
       }
       if (this.appsTable.filters[4].itemsList[0].value) {
         appRequestQuery +=
-          "&dateChangeStatus_start=" +
+          "&changeStatusDate_start=" +
           this.formatDateForRequest(
             this.appsTable.filters[4].itemsList[0].value
           );
       }
       if (this.appsTable.filters[4].itemsList[1].value) {
         appRequestQuery +=
-          "&dateChangeStatus_end=" +
+          "&changeStatusDate_end=" +
           this.formatDateForRequest(
             this.appsTable.filters[4].itemsList[1].value
           );
@@ -1489,6 +1531,70 @@ export default {
       appRequestQuery += "&sortCol=" + this.appsTable.sortColumn;
       appRequestQuery += "&sortDesc=" + this.appsTable.ascendingSortOrder;
       return appRequestQuery;
+    },
+    expertiseRequestQuery: function () {
+      let expertiseRequestQuery = "app/expertise?";
+      if (this.user.shortInfo.userId) {
+        expertiseRequestQuery += "userId=" + this.user.shortInfo.userId;
+      }
+      // expertiseRequestQuery +=
+      //   "&archive=" + this.expertisesTable.filters[6].value;
+      if (this.expertisesTable.filters[0].value) {
+        expertiseRequestQuery += "&id=" + this.expertisesTable.filters[0].value;
+      }
+      if (this.expertisesTable.filters[1].value) {
+        expertiseRequestQuery +=
+          "&teacherFIO=" + this.expertisesTable.filters[1].value;
+      }
+      if (this.expertisesTable.filters[2].itemsList[0].value) {
+        expertiseRequestQuery +=
+          "&createDate_start=" +
+          this.formatDateForRequest(
+            this.expertisesTable.filters[2].itemsList[0].value
+          );
+      }
+      if (this.expertisesTable.filters[2].itemsList[1].value) {
+        expertiseRequestQuery +=
+          "&createDate_end=" +
+          this.formatDateForRequest(
+            this.expertisesTable.filters[2].itemsList[1].value
+          );
+      }
+      if (this.expertisesTable.filters[3].value) {
+        expertiseRequestQuery +=
+          "&timeToEnd=" + this.expertisesTable.filters[3].value;
+      }
+      // if (this.expertisesTable.filters[4].itemsList[0].value) {
+      //   expertiseRequestQuery +=
+      //     "&???_start=" +
+      //     this.formatDateForRequest(
+      //       this.expertisesTable.filters[4].itemsList[0].value
+      //     );
+      // }
+      // if (this.expertisesTable.filters[4].itemsList[1].value) {
+      //   expertiseRequestQuery +=
+      //     "&???_end=" +
+      //     this.formatDateForRequest(
+      //       this.expertisesTable.filters[4].itemsList[1].value
+      //     );
+      // }
+      if (this.expertisesTable.filters[5].values[0]) {
+        expertiseRequestQuery +=
+          "&expertiseResult=" + this.expertisesTable.filters[5].values[0];
+      }
+      if (this.expertisesTable.filters[6].values[0]) {
+        expertiseRequestQuery +=
+          "&status=" + this.expertisesTable.filters[6].values[0];
+      }
+
+      expertiseRequestQuery +=
+        "&pageNum=" + (this.expertisesTable.pagination.page - 1);
+      expertiseRequestQuery +=
+        "&pageSize=" + this.expertisesTable.pagination.pageSize;
+      expertiseRequestQuery += "&sortCol=" + this.expertisesTable.sortColumn;
+      expertiseRequestQuery +=
+        "&sortDesc=" + this.expertisesTable.ascendingSortOrder;
+      return expertiseRequestQuery;
     },
   },
 
@@ -1931,14 +2037,34 @@ export default {
       apps.forEach(function (app) {
         let appsTableItem = [];
         appsTableItem.push(app.id);
+        appsTableItem.push(app.serviceName);
         appsTableItem.push(app.createDate.substring(0, 10));
-        appsTableItem.push(getDictionaryValueById("topic", app.theme));
-        appsTableItem.push(app.dateEnterStatusStart.substring(0, 10));
-        appsTableItem.push(getDictionaryValueById("statusModel_1", app.status));
-        appsTableItem.push(app.responseTime);
+        if (app.epguNum) {
+          appsTableItem.push(app.epguNum);
+        } else {
+          appsTableItem.push("");
+        }
+        appsTableItem.push(getDictionaryValueById("statusModel_2", app.status));
+        if (app.changeStatusDate) {
+          appsTableItem.push(app.changeStatusDate.substring(0, 10));
+        } else {
+          appsTableItem.push("");
+        }
+
         appsTable.push(appsTableItem);
       });
       return appsTable;
+    },
+    clearAppsFilter() {
+      this.appsTable.filters[0].value = null;
+      this.appsTable.filters[1].itemsList[0].value = null;
+      this.appsTable.filters[1].itemsList[1].value = null;
+      this.appsTable.filters[2].value = null;
+      this.appsTable.filters[3].values = [];
+      this.appsTable.filters[4].itemsList[0].value = null;
+      this.appsTable.filters[4].itemsList[1].value = null;
+      this.appsTable.filters[5].value = false;
+      this.getApps();
     },
 
     // Получение списка заявлений пользователя
@@ -1967,11 +2093,19 @@ export default {
         messagesTableItem.push(message.id);
         messagesTableItem.push(message.createDate.substring(0, 10));
         messagesTableItem.push(getDictionaryValueById("topic", message.theme));
-        messagesTableItem.push(message.dateEnterStatusStart.substring(0, 10));
+        if (message.dateEnterStatusStart) {
+          messagesTableItem.push(message.dateEnterStatusStart.substring(0, 10));
+        } else {
+          messagesTableItem.push("");
+        }
         messagesTableItem.push(
           getDictionaryValueById("statusModel_1", message.status)
         );
-        messagesTableItem.push(message.responseTime);
+        if (message.responseTime) {
+          messagesTableItem.push(message.responseTime);
+        } else {
+          messagesTableItem.push("");
+        }
         messagesTable.push(messagesTableItem);
       });
       return messagesTable;
@@ -2015,36 +2149,53 @@ export default {
     },
 
     // Получение списка заявлений пользователя
-    getExpertises(
-      page = this.expertisesTable.pagination.pageSize,
-      pageSize = this.expertisesTable.pagination.pageSize,
-      servId = this.expertisesServiceId,
-      sortCol = this.expertisesTable.sortColumn,
-      sortDesc = !this.expertisesTable.ascendingSortOrder,
-      userList = true,
-      active = false
-    ) {
+    // getExpertises(
+    //   page = this.expertisesTable.pagination.pageSize,
+    //   pageSize = this.expertisesTable.pagination.pageSize,
+    //   servId = this.expertisesServiceId,
+    //   sortCol = this.expertisesTable.sortColumn,
+    //   sortDesc = !this.expertisesTable.ascendingSortOrder,
+    //   userList = true,
+    //   active = false
+    // ) {
+    //   axios
+    //     .get(
+    //       this.url +
+    //         "app/get-apps?pageNum=" +
+    //         (page - 1) +
+    //         "&pageSize=" +
+    //         pageSize +
+    //         "&servId=" +
+    //         servId +
+    //         "&sortCol=" +
+    //         sortCol +
+    //         "&sortDesc=" +
+    //         sortDesc +
+    //         "&userList=" +
+    //         userList +
+    //         "&active=" +
+    //         active,
+    //       {
+    //         withCredentials: true,
+    //       }
+    //     )
+    //     .then((response) => {
+    //       this.expertisesResponse = response.data.content;
+    //       this.expertisesTable.rowsList = this.expertisesConvertToTable(
+    //         response.data.content
+    //       );
+    //       this.expertisesTable.pagination.itemsTotal =
+    //         response.data.totalElements;
+    //       console.groupCollapsed("Список экспертиз");
+    //       console.log(response.data.content);
+    //       console.groupEnd();
+    //     });
+    // },
+    getExpertises() {
       axios
-        .get(
-          this.url +
-            "app/get-apps?pageNum=" +
-            (page - 1) +
-            "&pageSize=" +
-            pageSize +
-            "&servId=" +
-            servId +
-            "&sortCol=" +
-            sortCol +
-            "&sortDesc=" +
-            sortDesc +
-            "&userList=" +
-            userList +
-            "&active=" +
-            active,
-          {
-            withCredentials: true,
-          }
-        )
+        .get(this.urlAdd + this.expertiseRequestQuery, {
+          withCredentials: true,
+        })
         .then((response) => {
           this.expertisesResponse = response.data.content;
           this.expertisesTable.rowsList = this.expertisesConvertToTable(
@@ -2059,18 +2210,58 @@ export default {
     },
     expertisesConvertToTable(expertises) {
       let expertisesTable = [];
+      let getDictionaryValueById = this.getDictionaryValueById;
       expertises.forEach(function (expertise) {
         let expertisesTableItem = [];
-        expertisesTableItem.push(expertise.externalId);
-        expertisesTableItem.push("---");
-        expertisesTableItem.push(expertise.startDate.substring(0, 10));
-        expertisesTableItem.push("---");
-        expertisesTableItem.push("---");
-        expertisesTableItem.push("---");
-        expertisesTableItem.push(expertise.status);
+        expertisesTableItem.push(expertise.id);
+        expertisesTableItem.push(expertise.teacherFIO);
+        if (expertise.dateExpertiseStart) {
+          expertisesTableItem.push(
+            expertise.dateExpertiseStart.substring(0, 10)
+          );
+        } else {
+          expertisesTableItem.push("");
+        }
+        if (expertise.timeToEnd) {
+          expertisesTableItem.push(expertise.timeToEnd);
+        } else {
+          expertisesTableItem.push("");
+        }
+        if (expertise.dateExpertiseEnd) {
+          expertisesTableItem.push(expertise.dateExpertiseEnd.substring(0, 10));
+        } else {
+          expertisesTableItem.push("");
+        }
+        if (expertise.resultExpertise) {
+          expertisesTableItem.push(
+            getDictionaryValueById("resultExpert", expertise.resultExpertise)
+          );
+        } else {
+          expertisesTableItem.push("");
+        }
+        if (expertise.status) {
+          expertisesTableItem.push(
+            getDictionaryValueById("statusModel_101", expertise.status)
+          );
+        } else {
+          expertisesTableItem.push("");
+        }
+
         expertisesTable.push(expertisesTableItem);
       });
       return expertisesTable;
+    },
+    clearExpertisesFilter() {
+      this.expertisesTable.filters[0].value = null;
+      this.expertisesTable.filters[1].value = null;
+      this.expertisesTable.filters[2].itemsList[0].value = null;
+      this.expertisesTable.filters[2].itemsList[1].value = null;
+      this.expertisesTable.filters[3].value = null;
+      this.expertisesTable.filters[4].itemsList[0].value = null;
+      this.expertisesTable.filters[4].itemsList[1].value = null;
+      this.expertisesTable.filters[5].values = [];
+      this.expertisesTable.filters[6].value = false;
+      this.getExpertises();
     },
 
     // Список записей журнала действий
@@ -2080,7 +2271,7 @@ export default {
           withCredentials: true,
         })
         .then((response) => {
-          let logsTableRows = this.logsConvertToTable(response.data);
+          let logsTableRows = this.logsConvertToTable(response.data).reverse();
           this.logsTable.rowsList = logsTableRows;
           this.logsTable.pagination.itemsTotal = logsTableRows.length;
           console.groupCollapsed("Список записей журнала");
@@ -2217,6 +2408,9 @@ export default {
       } else if (modelId === this.messagesServiceId) {
         formId = this.messageForm.id;
         formData = JSON.stringify(this.messageForm.data);
+      } else if (modelId === this.expertisesServiceId) {
+        formId = this.expertiseForm.id;
+        formData = JSON.stringify(this.expertiseForm.data);
       }
       const request = {
         actionId: actionId,
@@ -2255,9 +2449,14 @@ export default {
         })
         .then(() => {
           if (modelId === this.appsServiceId) {
+            this.getApps();
             this.loaderFinish(this.appsLoader);
           } else if (modelId === this.messagesServiceId) {
+            this.getMessages();
             this.loaderFinish(this.messagesLoader);
+          } else if (modelId === this.expertisesServiceId) {
+            this.getExpertises();
+            this.loaderFinish(this.expertisesLoader);
           }
           this.isFirstLoad = true;
         });
@@ -2351,8 +2550,8 @@ export default {
     },
     openExistingApp(appsServiceId, externalAppId) {
       let appId = this.appsResponse.find(function (item) {
-        if (item.externalId === externalAppId) return true;
-      }).id;
+        if (item.id === externalAppId) return true;
+      }).appId;
       this.getStartForm(appsServiceId, appId);
       this.loaderStart(this.appsLoader, "Загрузка заявления");
       setTimeout(this.loaderFinish, this.loadersDelay, this.appsLoader);
@@ -2366,8 +2565,8 @@ export default {
     },
     openExistingMessage(appsServiceId, externalAppId) {
       let appId = this.messagesResponse.find(function (item) {
-        if (item.externalId === externalAppId) return true;
-      }).id;
+        if (item.id === externalAppId) return true;
+      }).appId;
       this.getStartForm(appsServiceId, appId);
       this.loaderStart(this.messagesLoader, "Загрузка сообщения");
       setTimeout(this.loaderFinish, this.loadersDelay, this.messagesLoader);
@@ -2376,8 +2575,8 @@ export default {
     // "Экспертизы"
     openExistingExpertise(appsServiceId, externalAppId) {
       let appId = this.expertisesResponse.find(function (item) {
-        if (item.externalId === externalAppId) return true;
-      }).id;
+        if (item.id === externalAppId) return true;
+      }).appId;
       this.getStartForm(appsServiceId, appId);
       this.loaderStart(this.expertisesLoader, "Загрузка деталей экспертизы");
       setTimeout(this.loaderFinish, this.loadersDelay, this.expertisesLoader);
@@ -2591,11 +2790,11 @@ export default {
         this.appsTable.filters[3].itemsList = this.dictionaries.statusModel_2;
       }
       if (dictionaryCode === "statusModel_101") {
-        this.expertisesTable.filters[5].itemsList =
+        this.expertisesTable.filters[6].itemsList =
           this.dictionaries.statusModel_101;
       }
       if (dictionaryCode === "resultExpert") {
-        this.expertisesTable.filters[6].itemsList =
+        this.expertisesTable.filters[5].itemsList =
           this.dictionaries.resultExpert;
       }
       if (dictionaryCode === "topic") {
@@ -2681,13 +2880,7 @@ export default {
         table.sortColumn = columnSortName;
       }
       if (table.service === this.appsServiceId) {
-        this.getApps(
-          table.pagination.page,
-          table.pagination.pageSize,
-          this.appsServiceId,
-          columnSortName,
-          !table.ascendingSortOrder
-        );
+        this.getApps();
       } else if (table.service === this.messagesServiceId) {
         this.getMessages(
           table.pagination.page,
@@ -2712,19 +2905,9 @@ export default {
     // Получение заявлений
     isAuthUser: function () {
       if (this.isAuthUser) {
-        this.getApps(
-          this.appsTable.pagination.page,
-          this.appsTable.pagination.pageSize
-        );
-        // this.getMessages(
-        //   this.messagesTable.pagination.page,
-        //   this.messagesTable.pagination.pageSize
-        // );
         this.getMessages();
-        this.getExpertises(
-          this.expertisesTable.pagination.page,
-          this.expertisesTable.pagination.pageSize
-        );
+        this.getApps();
+        this.getExpertises();
         this.getAudit();
         // this.authIntervalId = setInterval(this.checkAuth, 30000);
       } else {

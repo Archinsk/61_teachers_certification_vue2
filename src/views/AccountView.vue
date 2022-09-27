@@ -404,6 +404,9 @@
               "
               @change-page-size="$emit('change-apps-page-size', $event)"
               @change-page="$emit('change-apps-page', $event)"
+              @change-filter="$emit('change-apps-filter', $event)"
+              @apply-filter="$emit('apply-apps-filter')"
+              @clear-filter="$emit('clear-apps-filter')"
             />
           </div>
           <div
@@ -686,6 +689,9 @@
               "
               @change-page-size="$emit('change-expertises-page-size', $event)"
               @change-page="$emit('change-expertises-page', $event)"
+              @change-filter="$emit('change-expertises-filter', $event)"
+              @apply-filter="$emit('apply-expertises-filter')"
+              @clear-filter="$emit('clear-expertises-filter')"
             />
           </div>
           <div
@@ -708,7 +714,6 @@
             aria-labelledby="actions-expert-tab"
             tabindex="0"
           >
-            <!--            @row-click="openExistingLog('Детали действия', $event)"-->
             <TableBootstrapCustomBS46
               hover
               bordered
