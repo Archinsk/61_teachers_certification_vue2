@@ -334,13 +334,6 @@ export default {
             width: 12,
             responsive: "col-sm-8 col-md-6 col-lg-4",
           },
-          {
-            id: "7",
-            label: "Показать архивные",
-            type: "checkbox",
-            width: 12,
-            value: false,
-          },
         ],
         pagination: {
           itemsTotal: 0,
@@ -494,14 +487,6 @@ export default {
             width: 12,
             responsive: "col-sm-8 col-md-6 col-lg-4",
             value: null,
-          },
-          {
-            id: "7",
-            label: "Показать только архивные",
-            type: "checkbox",
-            width: 12,
-            responsive: "col-sm-4 col-md-3 col-lg-2",
-            value: false,
           },
         ],
         pagination: {
@@ -1417,7 +1402,6 @@ export default {
       if (this.user.shortInfo.userId) {
         messageRequestQuery += "userId=" + this.user.shortInfo.userId;
       }
-      messageRequestQuery += "&archive=" + this.messagesTable.filters[6].value;
       if (this.messagesTable.filters[0].value) {
         messageRequestQuery += "&id=" + this.messagesTable.filters[0].value;
       }
@@ -1487,7 +1471,6 @@ export default {
       if (this.user.shortInfo.userId) {
         appRequestQuery += "userId=" + this.user.shortInfo.userId;
       }
-      appRequestQuery += "&archive=" + this.appsTable.filters[5].value;
       if (this.appsTable.filters[0].value) {
         appRequestQuery += "&id=" + this.appsTable.filters[0].value;
       }
@@ -2036,15 +2019,33 @@ export default {
       let getDictionaryValueById = this.getDictionaryValueById;
       apps.forEach(function (app) {
         let appsTableItem = [];
-        appsTableItem.push(app.id);
-        appsTableItem.push(app.serviceName);
-        appsTableItem.push(app.createDate.substring(0, 10));
+        if (app.id) {
+          appsTableItem.push(app.id);
+        } else {
+          appsTableItem.push("");
+        }
+        if (app.serviceName) {
+          appsTableItem.push(app.serviceName);
+        } else {
+          appsTableItem.push("");
+        }
+        if (app.createDate) {
+          appsTableItem.push(app.createDate.substring(0, 10));
+        } else {
+          appsTableItem.push("");
+        }
         if (app.epguNum) {
           appsTableItem.push(app.epguNum);
         } else {
           appsTableItem.push("");
         }
-        appsTableItem.push(getDictionaryValueById("statusModel_2", app.status));
+        if (app.status) {
+          appsTableItem.push(
+            getDictionaryValueById("statusModel_2", app.status)
+          );
+        } else {
+          appsTableItem.push("");
+        }
         if (app.changeStatusDate) {
           appsTableItem.push(app.changeStatusDate.substring(0, 10));
         } else {
@@ -2090,17 +2091,35 @@ export default {
       let getDictionaryValueById = this.getDictionaryValueById;
       messages.forEach(function (message) {
         let messagesTableItem = [];
-        messagesTableItem.push(message.id);
-        messagesTableItem.push(message.createDate.substring(0, 10));
-        messagesTableItem.push(getDictionaryValueById("topic", message.theme));
+        if (message.id) {
+          messagesTableItem.push(message.id);
+        } else {
+          messagesTableItem.push("");
+        }
+        if (message.createDate) {
+          messagesTableItem.push(message.createDate.substring(0, 10));
+        } else {
+          messagesTableItem.push("");
+        }
+        if (message.dateEnterStatusStart) {
+          messagesTableItem.push(
+            getDictionaryValueById("topic", message.theme)
+          );
+        } else {
+          messagesTableItem.push("");
+        }
         if (message.dateEnterStatusStart) {
           messagesTableItem.push(message.dateEnterStatusStart.substring(0, 10));
         } else {
           messagesTableItem.push("");
         }
-        messagesTableItem.push(
-          getDictionaryValueById("statusModel_1", message.status)
-        );
+        if (message.status) {
+          messagesTableItem.push(
+            getDictionaryValueById("statusModel_1", message.status)
+          );
+        } else {
+          messagesTableItem.push("");
+        }
         if (message.responseTime) {
           messagesTableItem.push(message.responseTime);
         } else {
@@ -2213,8 +2232,16 @@ export default {
       let getDictionaryValueById = this.getDictionaryValueById;
       expertises.forEach(function (expertise) {
         let expertisesTableItem = [];
-        expertisesTableItem.push(expertise.id);
-        expertisesTableItem.push(expertise.teacherFIO);
+        if (expertise.id) {
+          expertisesTableItem.push(expertise.id);
+        } else {
+          expertisesTableItem.push("");
+        }
+        if (expertise.teacherFIO) {
+          expertisesTableItem.push(expertise.teacherFIO);
+        } else {
+          expertisesTableItem.push("");
+        }
         if (expertise.dateExpertiseStart) {
           expertisesTableItem.push(
             expertise.dateExpertiseStart.substring(0, 10)
@@ -2635,6 +2662,15 @@ export default {
         })
         .then((response) => {
           this.teacherInfo = response.data;
+          if (!response.data.birthday) {
+            this.teacherInfo.birthday = "";
+          }
+          if (!response.data.issueDate) {
+            this.teacherInfo.issueDate = "";
+          }
+          if (!response.data.docValidate) {
+            this.teacherInfo.docValidate = "";
+          }
           this.teacherInfo.subjectArea = JSON.parse(response.data.subjectArea);
           console.groupCollapsed("Личные данные педагога");
           console.log(response.data);
