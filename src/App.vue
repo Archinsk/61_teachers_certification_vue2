@@ -2523,32 +2523,27 @@ export default {
 
     // Пагинация
     changePageSize(list, newPageInfo, serviceId) {
+      console.log(list);
+      console.log(newPageInfo);
+      console.log(serviceId);
       list.pagination.page = newPageInfo[0];
       list.pagination.pageSize = newPageInfo[1];
       if (serviceId === this.appsServiceId) {
-        this.getApps(
-          this.appsTable.pagination.page,
-          this.appsTable.pagination.pageSize
-        );
+        this.getApps();
       } else if (serviceId === this.messagesServiceId) {
-        this.getMessages(
-          this.messagesTable.pagination.page,
-          this.messagesTable.pagination.pageSize
-        );
+        this.getMessages();
+      } else if (serviceId === this.expertisesServiceId) {
+        this.getExpertises();
       }
     },
     changePage(list, page, serviceId) {
       list.pagination.page = page;
       if (serviceId === this.appsServiceId) {
-        this.getApps(
-          this.appsTable.pagination.page,
-          this.appsTable.pagination.pageSize
-        );
+        this.getApps();
       } else if (serviceId === this.messagesServiceId) {
-        this.getMessages(
-          this.messagesTable.pagination.page,
-          this.messagesTable.pagination.pageSize
-        );
+        this.getMessages();
+      } else if (serviceId === this.expertisesServiceId) {
+        this.getExpertises();
       }
     },
 
