@@ -517,11 +517,11 @@ export default {
       },
 
       // "Экспертизы"
-      expertisesServiceId: 4,
+      expertisesServiceId: 101,
       expertisesResponse: [],
       expertisesTable: {
         id: "expertisesTable",
-        service: 4,
+        service: 101,
         columnsList: [
           { title: "№ заявления", name: "id", sorted: true },
           {
@@ -2351,7 +2351,7 @@ export default {
         } else if (serviceId === this.messagesServiceId) {
           console.log("Запрос формы существующего сообщения");
         } else if (serviceId === this.expertisesServiceId) {
-          console.log("Запрос формы существующего сообщения");
+          console.log("Запрос формы существующей экспертизы");
         }
       } else {
         requestUrl =
@@ -2413,6 +2413,11 @@ export default {
           this.loaderStart(
             this.messagesLoader,
             "Выполнение действия по сообщению"
+          );
+        } else if (action.modelId === this.expertisesServiceId) {
+          this.loaderStart(
+            this.expertisesLoader,
+            "Выполнение действия по экспертизе"
           );
         }
         setTimeout(
@@ -2500,6 +2505,8 @@ export default {
         this.appForm = nextForm;
       } else if (modelId === this.messagesServiceId) {
         this.messageForm = nextForm;
+      } else if (modelId === this.expertisesServiceId) {
+        this.expertiseForm = nextForm;
       }
       this.successComment = "Заявление отправлено!";
       console.log(this.$children[3].$refs.vueForm);

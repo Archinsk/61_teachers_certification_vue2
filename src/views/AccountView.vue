@@ -724,7 +724,12 @@
         </div>
       </template>
 
-      <ModalBootstrapCustom46 :modal-id="modal.modalId" header size="xl">
+      <ModalBootstrapCustom46
+        :modal-id="modal.modalId"
+        header
+        size="xl"
+        scrollable
+      >
         <template v-slot:modal-title>
           {{ modal.modalTitle }}
         </template>
