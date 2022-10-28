@@ -96,6 +96,14 @@ main {
     .banner {
       background-color: #003399;
     }
+
+    .table-responsive {
+      table {
+        th, td {
+          padding: 0.5rem;
+        }
+      }
+    }
   }
 
   #account {
