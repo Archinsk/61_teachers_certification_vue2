@@ -595,16 +595,26 @@
                   :disabled="!editableProfile"
                   @change="expertProfile.municipality = $event"
                 />
-                <InputBootstrapCustomBS46
+                <SelectBootstrapCustomBS46
                   label="Должность"
                   id="ex-position"
+                  :itemsList="dictionaries.jobGroups"
                   :value="expertProfile.position"
-                  type="text"
                   :width-group="12"
                   :responsive="'col-sm-4 col-md-3 col-lg-2'"
                   :disabled="!editableProfile"
-                  @input="expertProfile.position = $event"
+                  @change="expertProfile.position = $event"
                 />
+                <!--                <InputBootstrapCustomBS46-->
+                <!--                  label="Должность"-->
+                <!--                  id="ex-position"-->
+                <!--                  :value="expertProfile.position"-->
+                <!--                  type="text"-->
+                <!--                  :width-group="12"-->
+                <!--                  :responsive="'col-sm-4 col-md-3 col-lg-2'"-->
+                <!--                  :disabled="!editableProfile"-->
+                <!--                  @input="expertProfile.position = $event"-->
+                <!--                />-->
                 <InputBootstrapCustomBS46
                   label="Организация"
                   id="ex-organization"
@@ -623,6 +633,8 @@
                   :width-group="12"
                   :responsive="'col-sm-6 col-md-5 col-lg-4'"
                   :disabled="!editableProfile"
+                  multiple
+                  badges
                   @change="expertProfile.subjectArea = $event"
                 />
                 <InputBootstrapCustomBS46

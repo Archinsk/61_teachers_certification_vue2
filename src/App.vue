@@ -1239,20 +1239,45 @@ export default {
         },
         {
           id: 2,
-          title:
-            "Адрес: 664025, Иркутская область, город Иркутск, Российская ул, д. 21",
+          title: "Адрес: 664027, Россия, г. Иркутск, ул. Российская, д. 21",
           type: "text",
           link: "/",
         },
         {
           id: 3,
-          title: "Телефон: +7 (999) 999-99 99",
+          title: "Приемная:  8 (3952) 33-13-33, Канцелярия: 8 (3952) 24-09-72",
           type: "text",
           link: "/",
         },
         {
           id: 4,
-          title: "Электронная почта: test@mail.ru",
+          title: "E-mail: obraz@38edu.ru",
+          type: "text",
+          link: "/",
+        },
+        {
+          id: 5,
+          title:
+            "Государственное автономное учреждение Иркутской области «Центр оценки профессионального мастерства, квалификаций педагогов и мониторинга качества образования»",
+          type: "text",
+          link: "/",
+        },
+        {
+          id: 6,
+          title:
+            "Адрес: 664023, Иркутская область, город Иркутск, улица Лыткина, дом 75 «а»",
+          type: "text",
+          link: "/",
+        },
+        {
+          id: 7,
+          title: "Телефон: +7 (3952) 500-287",
+          type: "text",
+          link: "/",
+        },
+        {
+          id: 8,
+          title: "Email: info@coko38.ru",
           type: "text",
           link: "/",
         },
@@ -1360,6 +1385,7 @@ export default {
       dictionaries: {
         gender: [],
         subjectArea: [],
+        jobGroups: [],
         municipalEntityIrkutsk: [],
         DocumentPersonal: [],
         statusModel_2: [],
@@ -2726,9 +2752,7 @@ export default {
     },
     setExpert() {
       this.loaderStart(this.profileLoader, "Сохранение личных данных");
-      this.expertInfo.subjectArea = JSON.stringify(
-        this.teacherInfo.subjectArea
-      );
+      this.expertInfo.subjectArea = JSON.stringify(this.expertInfo.subjectArea);
       axios
         .post(
           "https://teachers.coko38.ru/api-teacher/api/expert/edit",
@@ -2765,6 +2789,7 @@ export default {
     getAllDictionaries() {
       this.getDictionary("gender", '"Пол"');
       this.getDictionary("subjectArea", '"Предметная область"');
+      this.getDictionary("jobGroups", '"Должность"');
       this.getDictionary(
         "municipalEntityIrkutsk",
         '"Муниципальные образования"'
