@@ -249,32 +249,7 @@ export default {
           },
         ],
         primaryColumn: "№ заявления",
-        rowsList: [
-          [
-            "0001",
-            "Аттестация педагогических работников",
-            "01.08.2022",
-            "540118",
-            "В работе",
-            "05.08.2022",
-          ],
-          [
-            "0002",
-            "Аттестация педагогических работников",
-            "05.08.2022",
-            "540115",
-            "В работе",
-            "05.08.2022",
-          ],
-          [
-            "0003",
-            "Аттестация педагогических работников",
-            "09.08.2022",
-            "540120",
-            "Черновик",
-            "10.08.2022",
-          ],
-        ],
+        rowsList: [],
         sortColumn: "id",
         ascendingSortOrder: false,
         filters: [
@@ -1940,7 +1915,7 @@ export default {
           this.user.fullInfo = {
             roles: [],
           };
-          this.signOutEsia();
+          location.href = response.data.url;
         })
         .catch((error) => {
           console.log("Ошибка выхода есиа");
@@ -1949,15 +1924,6 @@ export default {
         .then(() => {
           this.$router.push("/");
         });
-    },
-    signOutEsia() {
-      axios(this.esiaLogoutLink, {
-        withCredentials: true,
-      }).then((response) => {
-        // this.$refs["nav-sidebar"].hide();
-        console.log("Ответ на запрос о выходе из ЕСИА");
-        console.log(response);
-      });
     },
 
     // Очистка ошибок

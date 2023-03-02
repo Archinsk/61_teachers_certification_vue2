@@ -7,20 +7,6 @@
           <li class="nav-item" role="presentation">
             <button
               class="nav-link active"
-              id="profile-teacher-tab"
-              data-toggle="tab"
-              data-target="#profile-teacher-tab-pane"
-              type="button"
-              role="tab"
-              aria-controls="profile-teacher-tab-pane"
-              aria-selected="true"
-            >
-              Личная информация
-            </button>
-          </li>
-          <li class="nav-item" role="presentation">
-            <button
-              class="nav-link"
               id="app-teacher-tab"
               data-toggle="tab"
               data-target="#app-teacher-tab-pane"
@@ -46,6 +32,20 @@
               Мои сообщения
             </button>
           </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="profile-teacher-tab"
+              data-toggle="tab"
+              data-target="#profile-teacher-tab-pane"
+              type="button"
+              role="tab"
+              aria-controls="profile-teacher-tab-pane"
+              aria-selected="true"
+            >
+              Личная информация
+            </button>
+          </li>
         </ul>
         <div
           class="tab-content flex-grow-1 position-relative"
@@ -53,6 +53,81 @@
         >
           <div
             class="tab-pane fade show active pt-3"
+            id="app-teacher-tab-pane"
+            role="tabpanel"
+            aria-labelledby="app-teacher-tab"
+            tabindex="0"
+          >
+            <button
+              class="btn btn-primary mb-3"
+              @click="createNewApp('Новое заявление')"
+            >
+              Подать заявление
+            </button>
+            <TableBootstrapCustomBS46
+              hover
+              bordered
+              pagination
+              filter
+              :table-data="appsTable"
+              :items-total="appsTable.pagination.itemsTotal"
+              :page="appsTable.pagination.page"
+              :page-size="appsTable.pagination.pageSize"
+              :items-per-page="appsTable.pagination.itemsPerPage"
+              @row-click="openExistingApp('Детали заявления', $event)"
+              @sort-table="
+                $emit('sort-table', {
+                  tableName: 'appsTable',
+                  sortedColumnIndex: $event,
+                })
+              "
+              @change-page-size="$emit('change-apps-page-size', $event)"
+              @change-page="$emit('change-apps-page', $event)"
+              @change-filter="$emit('change-apps-filter', $event)"
+              @apply-filter="$emit('apply-apps-filter')"
+              @clear-filter="$emit('clear-apps-filter')"
+            />
+          </div>
+          <div
+            class="tab-pane fade pt-3"
+            id="messages-teacher-tab-pane"
+            role="tabpanel"
+            aria-labelledby="messages-teacher-tab"
+            tabindex="0"
+          >
+            <button
+              class="btn btn-primary mb-3"
+              @click="createNewMessage('Новое сообщение')"
+            >
+              Отправить сообщение
+            </button>
+            <TableBootstrapCustomBS46
+              pagination
+              filter
+              hover
+              bordered
+              :table-data="messagesTable"
+              :items-total="messagesTable.pagination.itemsTotal"
+              :page="messagesTable.pagination.page"
+              :page-size="messagesTable.pagination.pageSize"
+              :items-per-page="messagesTable.pagination.itemsPerPage"
+              :dictionaries="dictionaries"
+              @row-click="openExistingMessage('Детали сообщения', $event)"
+              @sort-table="
+                $emit('sort-table', {
+                  tableName: 'messagesTable',
+                  sortedColumnIndex: $event,
+                })
+              "
+              @change-page-size="$emit('change-message-page-size', $event)"
+              @change-page="$emit('change-message-page', $event)"
+              @change-filter="$emit('change-messages-filter', $event)"
+              @apply-filter="$emit('apply-messages-filter')"
+              @clear-filter="$emit('clear-messages-filter')"
+            />
+          </div>
+          <div
+            class="tab-pane fade pt-3"
             id="profile-teacher-tab-pane"
             role="tabpanel"
             aria-labelledby="profile-teacher-tab"
@@ -65,6 +140,10 @@
               class="position-absolute"
             />
             <template v-else>
+              <div class="alert alert-danger mb-3" role="alert">
+                Данный раздел находится в разработке. Просьба изменения не
+                вносить!
+              </div>
               <div class="accordion" id="accordionTeacherInfo">
                 <div class="card">
                   <div class="card-header p-0" id="teacherBasicInfoHeader">
@@ -371,81 +450,6 @@
                 Сохранить профиль
               </button>
             </template>
-          </div>
-          <div
-            class="tab-pane fade pt-3"
-            id="app-teacher-tab-pane"
-            role="tabpanel"
-            aria-labelledby="app-teacher-tab"
-            tabindex="0"
-          >
-            <button
-              class="btn btn-primary mb-3"
-              @click="createNewApp('Новое заявление')"
-            >
-              Подать заявление
-            </button>
-            <TableBootstrapCustomBS46
-              hover
-              bordered
-              pagination
-              filter
-              :table-data="appsTable"
-              :items-total="appsTable.pagination.itemsTotal"
-              :page="appsTable.pagination.page"
-              :page-size="appsTable.pagination.pageSize"
-              :items-per-page="appsTable.pagination.itemsPerPage"
-              @row-click="openExistingApp('Детали заявления', $event)"
-              @sort-table="
-                $emit('sort-table', {
-                  tableName: 'appsTable',
-                  sortedColumnIndex: $event,
-                })
-              "
-              @change-page-size="$emit('change-apps-page-size', $event)"
-              @change-page="$emit('change-apps-page', $event)"
-              @change-filter="$emit('change-apps-filter', $event)"
-              @apply-filter="$emit('apply-apps-filter')"
-              @clear-filter="$emit('clear-apps-filter')"
-            />
-          </div>
-          <div
-            class="tab-pane fade pt-3"
-            id="messages-teacher-tab-pane"
-            role="tabpanel"
-            aria-labelledby="messages-teacher-tab"
-            tabindex="0"
-          >
-            <button
-              class="btn btn-primary mb-3"
-              @click="createNewMessage('Новое сообщение')"
-            >
-              Отправить сообщение
-            </button>
-            <TableBootstrapCustomBS46
-              pagination
-              filter
-              hover
-              bordered
-              :table-data="messagesTable"
-              :items-total="messagesTable.pagination.itemsTotal"
-              :page="messagesTable.pagination.page"
-              :page-size="messagesTable.pagination.pageSize"
-              :items-per-page="messagesTable.pagination.itemsPerPage"
-              :dictionaries="dictionaries"
-              @row-click="openExistingMessage('Детали сообщения', $event)"
-              @sort-table="
-                $emit('sort-table', {
-                  tableName: 'messagesTable',
-                  sortedColumnIndex: $event,
-                })
-              "
-              @change-page-size="$emit('change-message-page-size', $event)"
-              @change-page="$emit('change-message-page', $event)"
-              @change-filter="$emit('change-messages-filter', $event)"
-              @apply-filter="$emit('apply-messages-filter')"
-              @clear-filter="$emit('clear-messages-filter')"
-            />
           </div>
         </div>
       </template>
