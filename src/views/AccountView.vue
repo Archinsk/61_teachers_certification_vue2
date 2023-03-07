@@ -211,15 +211,15 @@
                           :responsive="'col-sm-4 col-md-3 col-lg-2'"
                           disabled
                         />
-                        <InputBootstrapCustomBS46
-                          label="Гражданство"
-                          id="citizenship"
-                          :value="teacherProfile.citizenship"
-                          type="text"
-                          :width-group="12"
-                          :responsive="'col-sm-6 col-md-4 col-lg-3'"
-                          disabled
-                        />
+                        <!--                        <InputBootstrapCustomBS46-->
+                        <!--                          label="Гражданство"-->
+                        <!--                          id="citizenship"-->
+                        <!--                          :value="teacherProfile.citizenship"-->
+                        <!--                          type="text"-->
+                        <!--                          :width-group="12"-->
+                        <!--                          :responsive="'col-sm-6 col-md-4 col-lg-3'"-->
+                        <!--                          disabled-->
+                        <!--                        />-->
                         <InputBootstrapCustomBS46
                           label="Электронная почта"
                           id="mail"
@@ -240,42 +240,42 @@
                           :disabled="!editableProfile"
                           @input="teacherProfile.phone = $event"
                         />
-                        <SelectBootstrapCustomBS46
-                          label="Пол"
-                          id="gender"
-                          :itemsList="dictionaries.gender"
-                          :value="teacherProfile.gender"
-                          :width-group="12"
-                          :responsive="'col-sm-4 col-md-3 col-lg-2'"
-                          disabled
-                        />
-                        <SelectBootstrapCustomBS46
-                          label="Муниципальное образование"
-                          id="municipality"
-                          :itemsList="dictionaries.municipalEntityIrkutsk"
-                          :value="teacherProfile.municipality"
-                          :width-group="12"
-                          :responsive="'col-sm-6 col-md-5 col-lg-4'"
-                          :disabled="!editableProfile"
-                          @change="teacherProfile.municipality = $event"
-                        />
-                        <SelectBootstrapCustomBS46
-                          label="Предметная область"
-                          id="subjectArea"
-                          :itemsList="dictionaries.subjectArea"
-                          :value="teacherProfile.subjectArea"
-                          :width-group="12"
-                          :responsive="'col-sm-6 col-md-5 col-lg-4'"
-                          :disabled="!editableProfile"
-                          multiple
-                          badges
-                          @change="teacherProfile.subjectArea = $event"
-                        />
+                        <!--                        <SelectBootstrapCustomBS46-->
+                        <!--                          label="Пол"-->
+                        <!--                          id="gender"-->
+                        <!--                          :itemsList="dictionaries.gender"-->
+                        <!--                          :value="teacherProfile.gender"-->
+                        <!--                          :width-group="12"-->
+                        <!--                          :responsive="'col-sm-4 col-md-3 col-lg-2'"-->
+                        <!--                          disabled-->
+                        <!--                        />-->
+                        <!--                        <SelectBootstrapCustomBS46-->
+                        <!--                          label="Муниципальное образование"-->
+                        <!--                          id="municipality"-->
+                        <!--                          :itemsList="dictionaries.municipalEntityIrkutsk"-->
+                        <!--                          :value="teacherProfile.municipality"-->
+                        <!--                          :width-group="12"-->
+                        <!--                          :responsive="'col-sm-6 col-md-5 col-lg-4'"-->
+                        <!--                          :disabled="!editableProfile"-->
+                        <!--                          @change="teacherProfile.municipality = $event"-->
+                        <!--                        />-->
+                        <!--                        <SelectBootstrapCustomBS46-->
+                        <!--                          label="Предметная область"-->
+                        <!--                          id="subjectArea"-->
+                        <!--                          :itemsList="dictionaries.subjectArea"-->
+                        <!--                          :value="teacherProfile.subjectArea"-->
+                        <!--                          :width-group="12"-->
+                        <!--                          :responsive="'col-sm-6 col-md-5 col-lg-4'"-->
+                        <!--                          :disabled="!editableProfile"-->
+                        <!--                          multiple-->
+                        <!--                          badges-->
+                        <!--                          @change="teacherProfile.subjectArea = $event"-->
+                        <!--                        />-->
                       </form>
                     </div>
                   </div>
                 </div>
-                <div class="card">
+                <div class="card d-none">
                   <div class="card-header p-0" id="teacherAddressHeader">
                     <button
                       class="btn btn-link btn-block p-3 text-left"
@@ -320,7 +320,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="card">
+                <div class="card d-none">
                   <div class="card-header p-0" id="teacherDocsHeader">
                     <button
                       class="btn btn-link btn-block p-3 text-left"
@@ -460,20 +460,6 @@
           <li class="nav-item" role="presentation">
             <button
               class="nav-link active"
-              id="profile-expert-tab"
-              data-toggle="tab"
-              data-target="#profile-expert-tab-pane"
-              type="button"
-              role="tab"
-              aria-controls="profile-expert-tab-pane"
-              aria-selected="true"
-            >
-              Личная информация
-            </button>
-          </li>
-          <li class="nav-item" role="presentation">
-            <button
-              class="nav-link"
               id="expertises-expert-tab"
               data-toggle="tab"
               data-target="#expertises-expert-tab-pane"
@@ -483,6 +469,20 @@
               aria-selected="false"
             >
               Мои экспертизы
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="profile-expert-tab"
+              data-toggle="tab"
+              data-target="#profile-expert-tab-pane"
+              type="button"
+              role="tab"
+              aria-controls="profile-expert-tab-pane"
+              aria-selected="true"
+            >
+              Личная информация
             </button>
           </li>
           <li class="nav-item" role="presentation">
@@ -520,6 +520,37 @@
         >
           <div
             class="tab-pane fade show active pt-3"
+            id="expertises-expert-tab-pane"
+            role="tabpanel"
+            aria-labelledby="expertises-expert-tab"
+            tabindex="0"
+          >
+            <TableBootstrapCustomBS46
+              pagination
+              filter
+              hover
+              bordered
+              :table-data="expertisesTable"
+              :items-total="expertisesTable.pagination.itemsTotal"
+              :page="expertisesTable.pagination.page"
+              :page-size="expertisesTable.pagination.pageSize"
+              :items-per-page="expertisesTable.pagination.itemsPerPage"
+              @row-click="openExistingExpertise('Детали экспертизы', $event)"
+              @sort-table="
+                $emit('sort-table', {
+                  tableName: 'expertisesTable',
+                  sortedColumnIndex: $event,
+                })
+              "
+              @change-page-size="$emit('change-expertises-page-size', $event)"
+              @change-page="$emit('change-expertises-page', $event)"
+              @change-filter="$emit('change-expertises-filter', $event)"
+              @apply-filter="$emit('apply-expertises-filter')"
+              @clear-filter="$emit('clear-expertises-filter')"
+            />
+          </div>
+          <div
+            class="tab-pane fade pt-3"
             id="profile-expert-tab-pane"
             role="tabpanel"
             aria-labelledby="profile-expert-tab"
@@ -679,37 +710,7 @@
               </button>
             </template>
           </div>
-          <div
-            class="tab-pane fade pt-3"
-            id="expertises-expert-tab-pane"
-            role="tabpanel"
-            aria-labelledby="expertises-expert-tab"
-            tabindex="0"
-          >
-            <TableBootstrapCustomBS46
-              pagination
-              filter
-              hover
-              bordered
-              :table-data="expertisesTable"
-              :items-total="expertisesTable.pagination.itemsTotal"
-              :page="expertisesTable.pagination.page"
-              :page-size="expertisesTable.pagination.pageSize"
-              :items-per-page="expertisesTable.pagination.itemsPerPage"
-              @row-click="openExistingExpertise('Детали экспертизы', $event)"
-              @sort-table="
-                $emit('sort-table', {
-                  tableName: 'expertisesTable',
-                  sortedColumnIndex: $event,
-                })
-              "
-              @change-page-size="$emit('change-expertises-page-size', $event)"
-              @change-page="$emit('change-expertises-page', $event)"
-              @change-filter="$emit('change-expertises-filter', $event)"
-              @apply-filter="$emit('apply-expertises-filter')"
-              @clear-filter="$emit('clear-expertises-filter')"
-            />
-          </div>
+
           <div
             class="tab-pane fade pt-3"
             id="analitics-expert-tab-pane"

@@ -13,6 +13,8 @@
       <router-view
         :news-list="newsList"
         :url="url"
+        :app-loaded="appLoaded"
+        :esia-link="esiaLink"
         :user="user"
         :user-selected-role-id="userSelectedRoleId"
         :teacher-info="teacherInfo"
@@ -206,6 +208,7 @@ export default {
       },
       userSelectedRoleId: "",
       isFirstLoad: true,
+      appLoaded: false,
       loadersDelay: 1000,
 
       // Авторизация
@@ -363,32 +366,7 @@ export default {
           },
         ],
         primaryColumn: "№ сообщения",
-        rowsList: [
-          [
-            "0123",
-            "01.08.2022",
-            "Детали аттестации",
-            "07.08.2022",
-            "В работе",
-            "05.08.2022",
-          ],
-          [
-            "0125",
-            "05.08.2022",
-            "Аттестация педагогических работников",
-            "05.08.2022",
-            "В работе",
-            "07.08.2022",
-          ],
-          [
-            "0128",
-            "09.08.2022",
-            "Аттестация педагогических работников",
-            "03.08.2022",
-            "Черновик",
-            "10.08.2022",
-          ],
-        ],
+        rowsList: [],
         sortColumn: "id",
         ascendingSortOrder: false,
         filters: [
@@ -416,16 +394,11 @@ export default {
           {
             id: "3",
             label: "Тема",
-            type: "select",
-            itemsList: [
-              { id: 1, value: 1, label: "Значение 1" },
-              { id: 2, value: 2, label: "Значение 2" },
-              { id: 3, value: 3, label: "Значение 3" },
-              { id: 4, value: 4, label: "Значение 4" },
-            ],
+            type: "input",
+            subtype: "text",
             width: 12,
             responsive: "col-sm-4 col-md-3 col-lg-2",
-            values: [],
+            value: "",
           },
           {
             id: "4",
@@ -1420,9 +1393,8 @@ export default {
             this.messagesTable.filters[1].itemsList[1].value
           );
       }
-      if (this.messagesTable.filters[2].values[0]) {
-        messageRequestQuery +=
-          "&theme=" + this.messagesTable.filters[2].values[0];
+      if (this.messagesTable.filters[2].value) {
+        messageRequestQuery += "&theme=" + this.messagesTable.filters[2].value;
       }
       if (this.messagesTable.filters[3].itemsList[0].value) {
         messageRequestQuery +=
@@ -1584,19 +1556,21 @@ export default {
 
   methods: {
     // Косвенная проверка авторизованности пользователя, получение ссылки на вход через ЕСИА (переход на страницу авторизации ЕСИА - вынести во внешний метод)
-    getLogin() {
-      axios(this.url + "auth/get-login", {
+    async getLogin() {
+      await axios(this.url + "auth/get-login", {
         withCredentials: true,
       })
         .then((response) => {
           if (this.isFirstLoad) {
             this.isFirstLoad = false;
+            this.esiaLink = response.data.url;
             console.groupCollapsed("Ссылка на авторизацию ЕСИА");
             console.log(response.data);
             console.groupEnd();
           } else {
             console.log(response);
             location.href = response.data.url;
+            this.esiaLink = "";
           }
         })
         .catch((error) => {
@@ -2093,10 +2067,8 @@ export default {
         } else {
           messagesTableItem.push("");
         }
-        if (message.dateEnterStatusStart) {
-          messagesTableItem.push(
-            getDictionaryValueById("topic", message.theme)
-          );
+        if (message.theme && message.theme) {
+          messagesTableItem.push(message.theme);
         } else {
           messagesTableItem.push("");
         }
@@ -2149,13 +2121,12 @@ export default {
       this.messagesTable.filters[0].value = null;
       this.messagesTable.filters[1].itemsList[0].value = null;
       this.messagesTable.filters[1].itemsList[1].value = null;
-      this.messagesTable.filters[2].values = [];
+      this.messagesTable.filters[2].value = "";
       this.messagesTable.filters[3].itemsList[0].value = null;
       this.messagesTable.filters[3].itemsList[1].value = null;
       this.messagesTable.filters[4].values = [];
       this.messagesTable.filters[5].itemsList[0].value = null;
       this.messagesTable.filters[5].itemsList[1].value = null;
-      this.messagesTable.filters[6].value = false;
       this.getMessages();
     },
 
@@ -2612,8 +2583,8 @@ export default {
     },
 
     // Получение списка мер
-    getServises() {
-      axios
+    async getServises() {
+      await axios
         .get(
           this.url +
             "serv/get-services?pageNum=0&pageSize=100&sortCol=id&sortDesc=false&active=true",
@@ -2752,26 +2723,30 @@ export default {
     },
 
     // Словари
-    getAllDictionaries() {
-      this.getDictionary("gender", '"Пол"');
-      this.getDictionary("subjectArea", '"Предметная область"');
-      this.getDictionary("jobGroups", '"Должность"');
-      this.getDictionary(
-        "municipalEntityIrkutsk",
-        '"Муниципальные образования"'
-      );
-      this.getDictionary(
-        "DocumentPersonal",
-        '"Документы, удостоверяющие личность"'
-      );
-      this.getDictionary("statusModel_2", '"Статусы заявлений"');
-      this.getDictionary("statusModel_1", '"Статусы сообщений"');
-      this.getDictionary("statusModel_101", '"Статусы экспертиз"');
-      this.getDictionary("resultExpert", '"Результаты экспертиз"');
-      this.getDictionary("topic", '"Темы сообщений"');
+    async getAllDictionaries() {
+      Promise.all([
+        this.getDictionary("gender", '"Пол"'),
+        this.getDictionary("subjectArea", '"Предметная область"'),
+        this.getDictionary("jobGroups", '"Должность"'),
+        this.getDictionary(
+          "municipalEntityIrkutsk",
+          '"Муниципальные образования"'
+        ),
+        this.getDictionary(
+          "DocumentPersonal",
+          '"Документы, удостоверяющие личность"'
+        ),
+        this.getDictionary("statusModel_2", '"Статусы заявлений"'),
+        this.getDictionary("statusModel_1", '"Статусы сообщений"'),
+        this.getDictionary("statusModel_101", '"Статусы экспертиз"'),
+        this.getDictionary("resultExpert", '"Результаты экспертиз"'),
+      ]).then(() => {
+        console.log("Справочники загружены");
+      });
+      // this.getDictionary("topic", '"Темы сообщений"'),
     },
-    getDictionary(dictionaryCode, logComment) {
-      axios
+    async getDictionary(dictionaryCode, logComment) {
+      await axios
         .get(this.url + "core/get-dictdata?code=" + dictionaryCode, {
           withCredentials: true,
         })
@@ -2826,14 +2801,14 @@ export default {
         this.expertisesTable.filters[5].itemsList =
           this.dictionaries.resultExpert;
       }
-      if (dictionaryCode === "topic") {
-        this.messagesTable.filters[2].itemsList = this.dictionaries.topic;
-      }
+      // if (dictionaryCode === "topic") {
+      //   this.messagesTable.filters[2].itemsList = this.dictionaries.topic;
+      // }
     },
 
     // Файлы для работы с системой
-    getFileResources() {
-      axios
+    async getFileResources() {
+      await axios
         .get(this.urlAdd + "data/getFileResources", {
           withCredentials: true,
         })
@@ -2850,8 +2825,8 @@ export default {
         });
     },
     // График аттестации
-    getGakJournal() {
-      axios
+    async getGakJournal() {
+      await axios
         .get(this.urlAdd + "data/getGakJournal", {
           withCredentials: true,
         })
@@ -2946,24 +2921,36 @@ export default {
     // Заполнение селектов фильтров
   },
 
-  mounted: function () {
+  mounted: async function () {
     // Событие при закрытии модального окна
     $("#notify").on("hidden.bs.modal", this.afterCloseNotify);
 
     // Запрос информации о пользователе
-    this.getLogin();
+    // this.getLogin();
 
     // Получение файлов для работы
-    this.getFileResources();
+    // this.getFileResources();
 
     // Получение расписания аттестации
-    this.getGakJournal();
+    // this.getGakJournal();
 
     // Получение справочников
-    this.getAllDictionaries();
+    // this.getAllDictionaries();
 
     // Получение бизнес-процессов (для справки)
-    this.getServises();
+    // this.getServises();
+
+    // Получение общих сведений
+    Promise.all([
+      this.getLogin(),
+      this.getFileResources(),
+      this.getGakJournal(),
+      this.getAllDictionaries(),
+      this.getServises(),
+    ]).then(() => {
+      console.log("Приложение загружено");
+      this.appLoaded = true;
+    });
   },
 };
 </script>
