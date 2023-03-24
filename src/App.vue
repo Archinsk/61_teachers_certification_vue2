@@ -2291,7 +2291,7 @@ export default {
     },
 
     // Стартовая форма заявления
-    getStartForm(serviceId, id) {
+    async getStartForm(serviceId, id) {
       if (serviceId === this.appsServiceId) {
         this.loaderStart(this.appsLoader, "Загрузка формы заявления");
       } else if (serviceId === this.messagesServiceId) {
@@ -2300,12 +2300,12 @@ export default {
         this.loaderStart(this.expertisesLoader, "Загрузка формы экспертизы");
       }
       if (id) {
-        setTimeout(this.getForm, 500, serviceId, id);
+        await this.getForm(serviceId, id);
       } else {
-        setTimeout(this.getForm, 500, serviceId);
+        await this.getForm(serviceId);
       }
     },
-    getForm(serviceId, appId) {
+    async getForm(serviceId, appId) {
       let requestUrl;
       if (appId) {
         requestUrl = this.url + "app/get-appData?id=" + appId;
@@ -2326,7 +2326,7 @@ export default {
           console.log("Запрос стартовой формы сообщения");
         }
       }
-      axios
+      await axios
         .get(requestUrl, {
           withCredentials: true,
         })
@@ -2535,43 +2535,43 @@ export default {
     },
 
     // Заявления
-    createNewApp(appsServiceId) {
-      this.getStartForm(appsServiceId);
+    async createNewApp(appsServiceId) {
       this.loaderStart(this.appsLoader, "Загрузка формы заявления");
-      setTimeout(this.loaderFinish, this.loadersDelay, this.appsLoader);
+      await this.getStartForm(appsServiceId);
+      this.loaderFinish(this.appsLoader);
     },
-    openExistingApp(appsServiceId, externalAppId) {
+    async openExistingApp(appsServiceId, externalAppId) {
+      this.loaderStart(this.appsLoader, "Загрузка заявления");
       let appId = this.appsResponse.find(function (item) {
         if (item.id === externalAppId) return true;
       }).appId;
-      this.getStartForm(appsServiceId, appId);
-      this.loaderStart(this.appsLoader, "Загрузка заявления");
-      setTimeout(this.loaderFinish, this.loadersDelay, this.appsLoader);
+      await this.getStartForm(appsServiceId, appId);
+      this.loaderFinish(this.appsLoader);
     },
 
     // Сообщения
-    createNewMessage(appsServiceId) {
-      this.getStartForm(appsServiceId);
+    async createNewMessage(appsServiceId) {
       this.loaderStart(this.messagesLoader, "Загрузка формы сообщения");
-      setTimeout(this.loaderFinish, this.loadersDelay, this.messagesLoader);
+      await this.getStartForm(appsServiceId);
+      this.loaderFinish(this.messagesLoader);
     },
-    openExistingMessage(appsServiceId, externalAppId) {
+    async openExistingMessage(appsServiceId, externalAppId) {
+      this.loaderStart(this.messagesLoader, "Загрузка сообщения");
       let appId = this.messagesResponse.find(function (item) {
         if (item.id === externalAppId) return true;
       }).appId;
-      this.getStartForm(appsServiceId, appId);
-      this.loaderStart(this.messagesLoader, "Загрузка сообщения");
-      setTimeout(this.loaderFinish, this.loadersDelay, this.messagesLoader);
+      await this.getStartForm(appsServiceId, appId);
+      this.loaderFinish(this.messagesLoader);
     },
 
     // "Экспертизы"
-    openExistingExpertise(appsServiceId, externalAppId) {
+    async openExistingExpertise(appsServiceId, externalAppId) {
+      this.loaderStart(this.expertisesLoader, "Загрузка деталей экспертизы");
       let appId = this.expertisesResponse.find(function (item) {
         if (item.id === externalAppId) return true;
       }).appId;
-      this.getStartForm(appsServiceId, appId);
-      this.loaderStart(this.expertisesLoader, "Загрузка деталей экспертизы");
-      setTimeout(this.loaderFinish, this.loadersDelay, this.expertisesLoader);
+      await this.getStartForm(appsServiceId, appId);
+      this.loaderFinish(this.expertisesLoader);
     },
 
     // Журнал сообщений
