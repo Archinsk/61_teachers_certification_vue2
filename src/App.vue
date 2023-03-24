@@ -2259,7 +2259,7 @@ export default {
     // Список записей журнала действий
     getAudit() {
       axios
-        .get("https://teachers.coko38.ru/api-teacher/api/data/getAudit", {
+        .get(this.urlAdd + "data/getAudit", {
           withCredentials: true,
         })
         .then((response) => {
@@ -2624,7 +2624,7 @@ export default {
     // Данные личного кабинета
     getTeacher() {
       axios
-        .get("https://teachers.coko38.ru/api-teacher/api/teacher/get", {
+        .get(this.urlAdd + "teacher/get", {
           withCredentials: true,
         })
         .then((response) => {
@@ -2650,13 +2650,9 @@ export default {
         this.teacherInfo.subjectArea
       );
       axios
-        .post(
-          "https://teachers.coko38.ru/api-teacher/api/teacher/edit",
-          this.teacherInfo,
-          {
-            withCredentials: true,
-          }
-        )
+        .post(this.urlAdd + "teacher/edit", this.teacherInfo, {
+          withCredentials: true,
+        })
         .then((response) => {
           this.getTeacher();
           console.groupCollapsed("Ответ на редактирование данных педагога");
@@ -2674,7 +2670,7 @@ export default {
     },
     getExpert() {
       axios
-        .get("https://teachers.coko38.ru/api-teacher/api/expert/get", {
+        .get(this.urlAdd + "expert/get", {
           withCredentials: true,
         })
         .then((response) => {
@@ -2693,13 +2689,9 @@ export default {
       this.loaderStart(this.profileLoader, "Сохранение личных данных");
       this.expertInfo.subjectArea = JSON.stringify(this.expertInfo.subjectArea);
       axios
-        .post(
-          "https://teachers.coko38.ru/api-teacher/api/expert/edit",
-          this.expertInfo,
-          {
-            withCredentials: true,
-          }
-        )
+        .post(this.urlAdd + "expert/edit", this.expertInfo, {
+          withCredentials: true,
+        })
         .then((response) => {
           this.getExpert();
           console.groupCollapsed("Ответ на редактирование данных эксперта");
