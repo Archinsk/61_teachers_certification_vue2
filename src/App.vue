@@ -151,8 +151,10 @@ export default {
 
   data() {
     return {
-      url: "https://teachers.coko38.ru/api/",
-      urlAdd: "https://teachers.coko38.ru/api-teacher/api/",
+      // url: "https://teachers.coko38.ru/api/",
+      url: "http://192.168.17.59:8180/api/",
+      // urlAdd: "https://teachers.coko38.ru/api-teacher/api/",
+      urlAdd: "http://192.168.17.59:8180/api-teacher/api/",
       user: {
         signInData: {
           login: "",
