@@ -757,15 +757,16 @@
             :comment="appsLoader.comment"
             :theme="appsLoader.theme"
           />
-          <template v-else>
+          <div v-show="!appsLoader.isLoading && appsLoader.isResponse">
             <!--          Форма нового заявления-->
             <form
               v-if="modal.modalTitle === 'Новое заявление'"
               class="application-form"
             >
-              <div v-if="appForm.form.id" class="row">
+              <!--              <div v-if="appForm.form.id" class="row">-->
+              <div class="row">
                 <div class="col-10">
-                  <Form
+                  <!--<Form
                     :form="appForm.form.scheme"
                     :submission="appForm"
                     language="ru"
@@ -774,7 +775,9 @@
                       readOnly: !appForm.active,
                     }"
                     ref="vueForm"
-                  />
+                  />-->
+                  <!--suppress XmlDuplicatedId -->
+                  <div id="formio" ref="vueForm"></div>
                 </div>
 
                 <div
@@ -825,7 +828,7 @@
             >
               <div v-if="appForm.form.id" class="row">
                 <div class="col-10">
-                  <Form
+                  <!--<Form
                     :form="appForm.form.scheme"
                     :submission="appForm"
                     language="ru"
@@ -834,7 +837,9 @@
                       readOnly: !appForm.active,
                     }"
                     ref="vueForm"
-                  />
+                  />-->
+                  <!--suppress XmlDuplicatedId -->
+                  <div id="formio" ref="vueForm"></div>
                 </div>
                 <div
                   v-if="appForm.form.actions && appForm.form.actions.length > 0"
@@ -877,7 +882,7 @@
                 </div>
               </div>
             </form>
-          </template>
+          </div>
 
           <LoaderBootstrapCustomBS46
             v-if="messagesLoader.isLoading && !messagesLoader.isResponse"
@@ -892,7 +897,7 @@
             >
               <div v-if="messageForm.form.id" class="row">
                 <div class="col-10">
-                  <Form
+                  <!--<Form
                     :form="messageForm.form.scheme"
                     :submission="messageForm"
                     language="ru"
@@ -901,7 +906,9 @@
                       readOnly: !messageForm.active,
                     }"
                     ref="vueForm"
-                  />
+                  />-->
+                  <!--suppress XmlDuplicatedId -->
+                  <div id="formio" ref="vueForm"></div>
                 </div>
                 <div
                   v-if="
@@ -954,7 +961,7 @@
             >
               <div v-if="messageForm.form.id" class="row">
                 <div class="col-10">
-                  <Form
+                  <!--<Form
                     :form="messageForm.form.scheme"
                     :submission="messageForm"
                     language="ru"
@@ -963,7 +970,9 @@
                       readOnly: !messageForm.active,
                     }"
                     ref="vueForm"
-                  />
+                  />-->
+                  <!--suppress XmlDuplicatedId -->
+                  <div id="formio" ref="vueForm"></div>
                 </div>
                 <div
                   v-if="
@@ -1024,7 +1033,7 @@
             >
               <div v-if="expertiseForm.form.id" class="row">
                 <div class="col-10">
-                  <Form
+                  <!--<Form
                     :form="expertiseForm.form.scheme"
                     :submission="expertiseForm"
                     language="ru"
@@ -1033,7 +1042,9 @@
                       readOnly: !expertiseForm.active,
                     }"
                     ref="vueForm"
-                  />
+                  />-->
+                  <!--suppress XmlDuplicatedId -->
+                  <div id="formio" ref="vueForm"></div>
                 </div>
                 <div
                   v-if="
@@ -1162,10 +1173,11 @@
 </template>
 
 <script>
+// import $ from "jquery";
 import { Modal } from "bootstrap";
 import ModalBootstrapCustom46 from "../components/universal/ModalBootstrapCustomBS46";
 import TableBootstrapCustomBS46 from "../components/universal/TableBootstrapCustomBS46";
-import { Form } from "vue-formio";
+// import { Form } from "vue-formio";
 import LoaderBootstrapCustomBS46 from "../components/universal/LoaderBootstrapCustomBS46";
 import InputBootstrapCustomBS46 from "../components/universal/Forms/InputBootstrapCustomBS46";
 import CheckboxBootstrapCustomBS46 from "../components/universal/Forms/CheckboxBootstrapCustomBS46";
@@ -1180,7 +1192,7 @@ export default {
     LoaderBootstrapCustomBS46,
     TableBootstrapCustomBS46,
     ModalBootstrapCustom46,
-    Form,
+    // Form,
   },
   props: [
     "user",
@@ -1209,6 +1221,9 @@ export default {
     "logFormOptions",
     "logsLoader",
     "dictionaries",
+    // From 72
+    "service",
+    "loadedServiceForm",
   ],
   data() {
     return {
@@ -1447,6 +1462,59 @@ export default {
         { id: 3, text: "Русский язык" },
       ],
       testValue: "Русский язык",
+
+      // From 72
+      formCreationCompleted: false,
+      validatedForm: false,
+      changedForm: false,
+      formInstance: null,
+      currentAction: {
+        info: {
+          alwaysActive: false,
+          backAction: false,
+          confirmData: null,
+          downloadPrinted: false,
+          formId: null,
+          hidden: false,
+          id: null,
+          modelId: null,
+          name: "",
+          notRequiredAction: false,
+          onActionCode: "",
+          printAction: false,
+          roles: null,
+          signAction: false,
+          version: null,
+          visibility: 0,
+          weight: 0,
+        },
+        confirmData: {
+          cancelButton: "",
+          header: "",
+          message: "",
+          confirmButton: "",
+        },
+        confirmedAction: false,
+      },
+      cryptoProSignature: {
+        dataForStamp: {
+          thumbprint: null,
+          subject: null,
+          from: null,
+          validDue: null,
+        },
+        dataForSign: {
+          signature: null,
+          hashToSign: null,
+          filename: null,
+        },
+      },
+      loader: {
+        isLoading: false,
+        comment: "Загружается обращение",
+        startTimeStamp: null,
+      },
+      actionError: "",
     };
   },
 
@@ -1468,7 +1536,8 @@ export default {
       this.openModal(modalTitle);
     },
     createNewApp(modalTitle) {
-      this.$emit("create-new-app");
+      // this.$emit("create-new-app");
+      this.$emit("show-service-first-form", 2);
       this.openModal(modalTitle);
     },
     openExistingMessage(modalTitle, appId) {
@@ -1500,20 +1569,119 @@ export default {
       }
       table.sortColumn = table.columnsList[column];
     },
+
+    // From 72
+    // ----------Методы для формио из formio.full.min.js----------
+    createAppForm() {
+      console.log("Начало создания формы");
+      console.log(document.getElementById("formio"));
+      this.formInstance = window.Formio.createForm(
+        document.getElementById("formio"),
+        this.service.applicationDTO.form.scheme,
+        { readOnly: !this.service.applicationDTO.active, language: "ru" }
+      )
+        .then((form) => {
+          console.log("---Форма заполняется данными---");
+          console.log(this.service.applicationDTO);
+          form.submission = this.service.applicationDTO;
+          this.formInstance = form;
+          form.on("change", (submission) => {
+            console.log("Сработало событие change формы formio");
+            let applicationDTO = submission;
+            if (!this.validatedForm) {
+              console.log("первое изменение формы");
+              console.log(submission);
+              form.checkValidity(form.submission.data);
+              this.validatedForm = true;
+            } else if (this.isFirstLoad) {
+              console.log("Изменение формы связанное с валидацией");
+              console.log(submission);
+              this.isFirstLoad = false;
+              this.formCreationCompleted = true;
+            } else {
+              console.log("Настоящее изменение формы");
+              console.log(submission);
+              this.$emit("change-app-form", applicationDTO);
+              this.changedForm = true;
+            }
+          });
+        })
+        .then(() => {
+          window.formInstance = this.formInstance;
+          this.formCreationCompleted = true;
+          console.log("---Создание и наполнение формы formio завершено---");
+        });
+    },
   },
 
   created() {
-    // if (!this.isAuthUser) {
-    //   this.$router.push("/");
-    // }
+    console.log("Создан компонент AccountView");
+
     this.teacherProfile = this.teacherInfo;
     this.expertProfile = this.expertInfo;
+
+    // From 72
+    /*window.HAS_FORM = true;
+    window.errorDefaultHandler = this.errorDefaultHandler;
+    window.requestStartDefaultHandler = this.requestStartDefaultHandler;
+    window.makeRequest = this.makeRequest;
+    window.successDefaultHandler = this.successDefaultHandler;
+    window.handlePrintActionResponse = this.handlePrintActionResponse;
+    window.camundaAsyncFunctionInvoker = this.camundaAsyncFunctionInvoker;
+    window.invokeAction = this.invokeAction;
+    window.backUrl = this.backUrl;
+
+    // Фейковые заглушки
+    window.formSubmission = {};
+    window.applicationAdapter = { variables: {} };
+    window.discardSavedFormioFiles = this.discardSavedFormioFiles;
+
+    if (this.user.auth) {
+      if (!+this.$route.params.appId) {
+        if (!this.service.info.id) {
+          this.loader.comment = "Загрузка формы обращения";
+          console.log("Запрос загрузки первой формы из AppView");
+          this.$emit("show-service-first-form", this.$route.params.modelId);
+        }
+      } else {
+        this.loader.comment = "Загрузка обращения";
+        this.$emit("show-app-form", {
+          serviceId: this.$route.params.modelId,
+          appId: this.$route.params.appId,
+        });
+      }
+      this.showLoader();
+    } else {
+      this.$router.push("/");
+    }*/
   },
 
   mounted() {
+    console.log("Смонтирован компонент AccountView");
+
     this.modal.instance = new Modal(
       document.getElementById(this.modal.modalId)
     );
+
+    // From 72
+    // Загрузка файлов КриптоПро при открытии модального окна
+    /*$("#cryptoProSignatureModal").on("shown.bs.modal", function () {
+      var file6 = document.createElement("script");
+      file6.setAttribute("type", "text/javascript");
+      file6.setAttribute("src", "cryptopro/load_extension.js");
+      document.getElementsByTagName("body")[0].appendChild(file6);
+      var file7 = document.createElement("script");
+      file7.setAttribute("type", "text/javascript");
+      file7.setAttribute("src", "cryptopro/highlight.js");
+      document.getElementsByTagName("body")[0].appendChild(file7);
+    });*/
+    // Установка связи данных для печати с подписью с глобальной переменной
+    /*window.cryptoProSignature = this.cryptoProSignature;*/
+  },
+
+  destroyed() {
+    // From 72
+    /*this.$emit("disable-keep-alive");*/
   },
 
   watch: {
@@ -1527,6 +1695,25 @@ export default {
         this.expertProfile = this.expertInfo;
       }
     },
+
+    // From 72
+    loadedServiceForm: function () {
+      console.log("Изменен маркер загрузки формы");
+      this.createAppForm();
+      // this.hideLoader();
+    },
+    /*"cryptoProSignature.dataForSign": {
+      handler: function () {
+        if (
+          this.cryptoProSignature.dataForSign.signature &&
+          this.cryptoProSignature.dataForSign.hashToSign &&
+          this.cryptoProSignature.dataForSign.filename
+        ) {
+          this.signCryptoPro();
+        }
+      },
+      deep: true,
+    },*/
   },
 };
 </script>

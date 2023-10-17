@@ -45,6 +45,8 @@
         :dictionaries="dictionaries"
         :file-resources="fileResources"
         :expertises-schedule="expertisesSchedule"
+        :service="service"
+        :loaded-service-form="loadedServiceForm"
         @sign-in-local="signInLocal($event)"
         @sign-in-esia="getLogin"
         @sign-out="signOut"
@@ -89,6 +91,8 @@
         @clear-expertises-filter="clearExpertisesFilter"
         @invoke-action="invokeAction($event)"
         @sort-table="sortTable($event.tableName, $event.sortedColumnIndex)"
+        @show-service-first-form="showServiceFirstForm($event)"
+        @change-app-form="changeAppForm($event)"
       />
       <ModalBootstrapCustomBS46 modal-id="notify" header>
         <template v-slot:modal-title> Оповещение </template>
@@ -152,9 +156,9 @@ export default {
   data() {
     return {
       url: "https://teachers.coko38.ru/api/",
-      // url: "http://192.168.17.59:8180/api/",
+      // url: "http://192.168.18.102:8180/api/",
       urlAdd: "https://teachers.coko38.ru/api-teacher/api/",
-      // urlAdd: "http://192.168.17.59:8180/api-teacher/api/",
+      // urlAdd: "http://192.168.18.102:8180/api-teacher/api/",
       user: {
         signInData: {
           login: "",
@@ -1351,6 +1355,1090 @@ export default {
       expertisesSchedule: "",
 
       authIntervalId: null,
+
+      // From 72
+      config: {
+        // url: "/",
+        url: "https://teachers.coko38.ru/",
+        // url: "http://192.168.18.102:8180/",
+        esiaSignInUrl: "",
+        user: {
+          auth: false,
+          shortInfo: {
+            userId: null,
+            orgId: null,
+            roleId: null,
+            userName: "",
+            typeAuth: "",
+            redirectUrl: "",
+          },
+          fullInfo: {
+            userId: null,
+            shortUserName: "",
+            roles: [],
+            userOrganizations: [],
+            userData: {},
+            contacts: [],
+            addresses: null,
+            esiaDocuments: null,
+            other: {},
+          },
+          selectedRole: {
+            id: null,
+            key: "",
+            label: "",
+          },
+          selectedOrg: {
+            id: null,
+            key: "",
+            label: "",
+          },
+          roleSelector: {
+            id: "userRoleSelector",
+            label: "",
+            type: "select",
+            itemsList: [],
+            width: 4,
+            responsive: "col-sm-3 col-md-2 mb-0 p-0",
+            defaultValueLabel: "Выберите роль",
+            horizontal: false,
+            horizontalWidth: {
+              label: {
+                width: 4,
+                responsive: "col-sm-5",
+              },
+              field: {
+                width: 8,
+                responsive: "col-sm-7",
+              },
+            },
+            values: [],
+          },
+          orgSelector: {
+            id: "orgRoleSelector",
+            label: "",
+            type: "select",
+            itemsList: [
+              { id: 1, value: 1, label: "Свидетельство о браке" },
+              { id: 2, value: 2, label: "Водительское удостоверение" },
+            ],
+            width: 12,
+            responsive: "col-sm-9 col-md-6 mb-0 p-0",
+            defaultValueLabel: "Выберите организацию",
+            horizontal: false,
+            horizontalWidth: {
+              label: {
+                width: 4,
+                responsive: "col-sm-5",
+              },
+              field: {
+                width: 8,
+                responsive: "col-sm-7",
+              },
+            },
+            values: [],
+          },
+        },
+        authModalMode: "",
+        theme: "primary",
+        adminSettings: {
+          notification: {
+            publishNeed: false,
+            publicationImmediately: true,
+            publicationStartDate: "",
+            publicationFinishManual: true,
+            publicationFinishDate: "",
+            notificationText: "",
+            notificationFontSize: 1,
+            notificationColor: 4,
+          },
+          server: {
+            ownServer: true,
+            externalServerUrl: "",
+          },
+          logo: {
+            image: {
+              file: "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",
+              fileName: "iss_logo_white.png",
+            },
+            logoBrand: "Информационные системы и сервисы",
+          },
+          footer: {
+            contacts: {
+              phone: "8-383-354-1011",
+              email: "info@isands.ru",
+            },
+            links: [
+              {
+                name: "Новости",
+                url: "/news",
+              },
+              {
+                name: "Поддержка юридических лиц",
+                url: "/measures",
+              },
+              {
+                name: "Поддержка физических лиц",
+                url: "/measures",
+              },
+            ],
+            copyright: {
+              publication: true,
+              text: "© Информационные системы и сервисы, 2022",
+            },
+          },
+        },
+        keepAliveSession: false,
+      },
+      configLoaded: false,
+      authForm: {
+        login: "",
+        password: "",
+        passwordVisibility: false,
+        authError: {
+          type: "",
+          text: "",
+        },
+      },
+      /*messagesList: [
+        {
+          messageid: 1,
+          title: "<div>Информация по заявлению 62</div>",
+          body: '<div>Вы были допущены до участия в конкурсе "Предоставление субсидий некоммерческим организациям (за исключением государственных (муниципальных) учреждений)) из областного бюджета Новосибирской области на реализацию мероприятий по поддержке деятельности музеев боевой и трудовой славы в образовательных и общественных организациях"</div><div><a style="color: #0B5FFF;" href="https://grata-nso.isands.ru/web/guest/Реестр-заявлений?p_p_id=ru_isands_camunda_application&_ru_isands_camunda_application_app_id=62&_ru_isands_camunda_application_mvcPath=/jsp/application/action.jsp">Перейти к заявлению</a></div>',
+          timestamp: 1669104022014,
+          archived: false,
+          deleted: false,
+        },
+        {
+          messageid: 2,
+          title: "Заголовок уведомления #",
+          body: "Статус заявления обновлен. Подробная информация направлена на вашу электронную почту.",
+          timestamp: 1669092754881,
+          archived: false,
+          deleted: false,
+        },
+        {
+          messageid: 3,
+          title: "Заголовок уведомления #",
+          body: "Статус заявления обновлен. Подробная информация направлена на вашу электронную почту.",
+          timestamp: 1668695479553,
+          archived: false,
+          deleted: false,
+        },
+        {
+          messageid: 4,
+          title: "Заголовок уведомления #",
+          body: "Статус заявления обновлен. Подробная информация направлена на вашу электронную почту.",
+          timestamp: 1668695472753,
+          archived: false,
+          deleted: false,
+        },
+        {
+          messageid: 5,
+          title: "Заголовок уведомления #",
+          body: "Статус заявления обновлен. Подробная информация направлена на вашу электронную почту.",
+          timestamp: 1668505898435,
+          archived: false,
+          deleted: false,
+        },
+        {
+          messageid: 6,
+          title: "Заголовок уведомления #",
+          body: "Статус заявления обновлен. Подробная информация направлена на вашу электронную почту.",
+          timestamp: 1668504566894,
+          archived: false,
+          deleted: false,
+        },
+        {
+          messageid: 7,
+          title: "Заголовок уведомления #",
+          body: "Статус заявления обновлен. Подробная информация направлена на вашу электронную почту.",
+          timestamp: 1668504018311,
+          archived: false,
+          deleted: false,
+        },
+        {
+          messageid: 8,
+          title: "Заголовок уведомления #",
+          body: "Статус заявления обновлен. Подробная информация направлена на вашу электронную почту.",
+          timestamp: 1668502052338,
+          archived: false,
+          deleted: false,
+        },
+        {
+          messageid: 9,
+          title: "Заголовок уведомления #",
+          body: "Статус заявления обновлен. Подробная информация направлена на вашу электронную почту.",
+          timestamp: 1668502031287,
+          archived: false,
+          deleted: false,
+        },
+        {
+          messageid: 10,
+          title: "Заголовок уведомления #",
+          body: "Статус заявления обновлен. Подробная информация направлена на вашу электронную почту.",
+          timestamp: 1668499927927,
+          archived: false,
+          deleted: false,
+        },
+        {
+          messageid: 11,
+          title: "Заголовок уведомления #",
+          body: "Статус заявления обновлен. Подробная информация направлена на вашу электронную почту.",
+          timestamp: 1668499918337,
+          archived: false,
+          deleted: false,
+        },
+        {
+          messageid: 12,
+          title: "Заголовок уведомления #",
+          body: "Статус заявления обновлен. Подробная информация направлена на вашу электронную почту.",
+          timestamp: 1668499907386,
+          archived: false,
+          deleted: false,
+        },
+        {
+          messageid: 13,
+          title: "Заголовок уведомления #",
+          body: "Статус заявления обновлен. Подробная информация направлена на вашу электронную почту.",
+          timestamp: 1668425598313,
+          archived: false,
+          deleted: false,
+        },
+        {
+          messageid: 14,
+          title: "Заголовок уведомления #",
+          body: "Статус заявления обновлен. Подробная информация направлена на вашу электронную почту.",
+          timestamp: 1668425551460,
+          archived: false,
+          deleted: false,
+        },
+        {
+          messageid: 15,
+          title: "Заголовок уведомления #",
+          body: "Статус заявления обновлен. Подробная информация направлена на вашу электронную почту.",
+          timestamp: 1668423564411,
+          archived: false,
+          deleted: false,
+        },
+        {
+          messageid: 16,
+          title: "Заголовок уведомления #",
+          body: "Статус заявления обновлен. Подробная информация направлена на вашу электронную почту.",
+          timestamp: 1668423511774,
+          archived: false,
+          deleted: false,
+        },
+        {
+          messageid: 17,
+          title: "Заголовок уведомления #",
+          body: "Статус заявления обновлен. Подробная информация направлена на вашу электронную почту.",
+          timestamp: 1668423363590,
+          archived: false,
+          deleted: false,
+        },
+        {
+          messageid: 18,
+          title: "Заголовок уведомления #",
+          body: "Статус заявления обновлен. Подробная информация направлена на вашу электронную почту.",
+          timestamp: 1668421189429,
+          archived: false,
+          deleted: false,
+        },
+        {
+          messageid: 19,
+          title: "Заголовок уведомления #",
+          body: "Статус заявления обновлен. Подробная информация направлена на вашу электронную почту.",
+          timestamp: 1668421185015,
+          archived: false,
+          deleted: false,
+        },
+        {
+          messageid: 20,
+          title: "Заголовок уведомления #",
+          body: "Статус заявления обновлен. Подробная информация направлена на вашу электронную почту.",
+          timestamp: 1668421185010,
+          archived: false,
+          deleted: false,
+        },
+      ],*/
+      apps: {
+        id: "appsTable",
+        service: 2,
+        columnsList: [
+          { title: "№ заявления", name: "id", sorted: true },
+          { title: "Наименование услуги", name: "service" },
+          { title: "Дата создания", name: "createDate", sorted: true },
+          { title: "Номер ЕПГУ", name: "epguNum", sorted: true },
+          { title: "Статус", name: "status", sorted: true },
+          {
+            title: "Дата изменения статуса",
+            name: "changeDate",
+            sorted: true,
+          },
+        ],
+        primaryColumn: "№ заявления",
+        rowsList: [
+          [
+            "0001",
+            "Аттестация педагогических работников",
+            "01.08.2022",
+            "540118",
+            "В работе",
+            "05.08.2022",
+          ],
+          [
+            "0002",
+            "Аттестация педагогических работников",
+            "05.08.2022",
+            "540115",
+            "В работе",
+            "05.08.2022",
+          ],
+          [
+            "0003",
+            "Аттестация педагогических работников",
+            "09.08.2022",
+            "540120",
+            "Черновик",
+            "10.08.2022",
+          ],
+        ],
+        sortColumn: "id",
+        ascendingSortOrder: false,
+        applications: [],
+        filters: {
+          form: {
+            title: "Фильтр заявлений",
+            id: "apps-filter",
+            width: 12,
+            responsive: "",
+            horizontal: false,
+            horizontalWidth: {
+              label: {
+                width: 4,
+                responsive: "col-sm-5",
+              },
+              field: {
+                width: 8,
+                responsive: "col-sm-7",
+              },
+            },
+            disabled: false,
+            fields: [
+              {
+                id: "1",
+                label: "№ обращения",
+                type: "input",
+                subtype: "text",
+                width: 12,
+                responsive: "col-sm-4 col-md-3 col-lg-2",
+                value: null,
+              },
+              {
+                id: "2",
+                label: "Наименование бизнес-процесса",
+                type: "input",
+                subtype: "text",
+                width: 12,
+                responsive: "col-sm-8 col-md-6 col-lg-5",
+                value: null,
+              },
+              // {
+              //   id: "3",
+              //   label: "Дата создания",
+              //   type: "range",
+              //   subtype: "date",
+              //   itemsList: [
+              //     { label: " c", value: null },
+              //     { label: " по", value: null },
+              //   ],
+              //   width: 12,
+              //   responsive: "col-sm-8 col-md-6 col-lg-4",
+              // },
+              // {
+              //   id: "4",
+              //   label: "Статус",
+              //   type: "select",
+              //   itemsList: [
+              //     { id: 1, value: 1, label: "Черновик" },
+              //     { id: 2, value: 2, label: "В работе" },
+              //     { id: 3, value: 3, label: "Обработано" },
+              //     { id: 4, value: 4, label: "Архивная" },
+              //   ],
+              //   width: 12,
+              //   responsive: "col-sm-4 col-md-3 col-lg-2",
+              //   defaultValueLabel: "Выберите статус",
+              //   values: [],
+              // },
+              // {
+              //   id: "5",
+              //   label: "Показать архивные",
+              //   type: "checkbox",
+              //   width: 12,
+              //   responsive: "",
+              //   horizontal: false,
+              //   horizontalWidth: {
+              //     label: {
+              //       width: 4,
+              //       responsive: "col-sm-5",
+              //     },
+              //     field: {
+              //       width: 8,
+              //       responsive: "col-sm-7",
+              //     },
+              //   },
+              //   value: false,
+              // },
+            ],
+          },
+        },
+        pagination: {
+          itemsTotal: 0,
+          page: 1,
+          pageSize: 10,
+          itemsPerPage: [10, 25, 50],
+        },
+        refreshMethod: "getApps",
+      },
+      settingsForm: {
+        notification: {
+          form: {
+            title: "Настройки уведомления",
+            validity: false,
+            horizontal: true,
+            horizontalWidth: {
+              label: {
+                width: 4,
+                responsive: "col-sm-5",
+              },
+              field: {
+                width: 8,
+                responsive: "col-sm-7",
+              },
+            },
+            fields: [
+              {
+                id: "notification-need",
+                label: "Разместить уведомление",
+                type: "checkbox",
+                width: 12,
+                responsive: "",
+                required: false,
+                visibility: true,
+                defaultValueLabel: "Выберите",
+                horizontal: false,
+                horizontalWidth: {
+                  label: {
+                    width: 4,
+                    responsive: "col-sm-5",
+                  },
+                  field: {
+                    width: 8,
+                    responsive: "col-sm-7",
+                  },
+                },
+                value: false,
+              },
+              {
+                id: "notification-start-immediately",
+                label: "Начало публикации сразу после сохранения",
+                type: "checkbox",
+                width: 12,
+                responsive: "",
+                required: false,
+                disabled: false,
+                visibility: false,
+                defaultValueLabel: "Выберите",
+                horizontal: false,
+                horizontalWidth: {
+                  label: {
+                    width: 4,
+                    responsive: "col-sm-5",
+                  },
+                  field: {
+                    width: 8,
+                    responsive: "col-sm-7",
+                  },
+                },
+                value: false,
+              },
+              {
+                id: "notification-start-date",
+                label: "Дата публикации уведомления",
+                type: "input",
+                subtype: "datetime-local",
+                width: 12,
+                responsive: "",
+                required: true,
+                disabled: false,
+                visibility: false,
+                horizontal: true,
+                horizontalWidth: {
+                  label: {
+                    width: 4,
+                    responsive: "col-sm-5",
+                  },
+                  field: {
+                    width: 8,
+                    responsive: "col-sm-7",
+                  },
+                },
+                value: "",
+              },
+              {
+                id: "notification-finish-manual",
+                label: "Снятие с публикации вручную",
+                type: "checkbox",
+                width: 12,
+                responsive: "",
+                required: false,
+                disabled: false,
+                defaultValueLabel: "Выберите",
+                horizontal: false,
+                horizontalWidth: {
+                  label: {
+                    width: 4,
+                    responsive: "col-sm-5",
+                  },
+                  field: {
+                    width: 8,
+                    responsive: "col-sm-7",
+                  },
+                },
+                value: false,
+              },
+              {
+                id: "notification-finish-date",
+                label: "Дата снятия уведомления с публикации",
+                type: "input",
+                subtype: "datetime-local",
+                width: 12,
+                responsive: "",
+                required: true,
+                disabled: false,
+                visibility: false,
+                horizontal: true,
+                horizontalWidth: {
+                  label: {
+                    width: 4,
+                    responsive: "col-sm-5",
+                  },
+                  field: {
+                    width: 8,
+                    responsive: "col-sm-7",
+                  },
+                },
+                value: "",
+              },
+              {
+                id: "notification-text",
+                label: "Текст уведомления",
+                type: "textarea",
+                width: 12,
+                responsive: "",
+                required: true,
+                disabled: false,
+                visibility: false,
+                horizontal: true,
+                horizontalWidth: {
+                  label: {
+                    width: 4,
+                    responsive: "col-sm-5",
+                  },
+                  field: {
+                    width: 8,
+                    responsive: "col-sm-7",
+                  },
+                },
+                value: "",
+              },
+              {
+                id: "notification-font-size",
+                label: "Размер",
+                type: "select",
+                itemsList: [
+                  { id: 1, value: 1, label: "Нормальный" },
+                  { id: 2, value: 2, label: "Укрупненный" },
+                  { id: 3, value: 3, label: "Огромный" },
+                ],
+                width: 12,
+                responsive: "",
+                required: true,
+                disabled: false,
+                visibility: false,
+                defaultValueLabel: "Выберите размер",
+                horizontal: true,
+                horizontalWidth: {
+                  label: {
+                    width: 4,
+                    responsive: "col-sm-5",
+                  },
+                  field: {
+                    width: 8,
+                    responsive: "col-sm-7",
+                  },
+                },
+                values: [],
+              },
+              {
+                id: "notification-color",
+                label: "Цвет уведомления",
+                type: "select",
+                itemsList: [
+                  { id: 1, value: 1, label: "Синий" },
+                  { id: 2, value: 2, label: "Серый" },
+                  { id: 3, value: 3, label: "Зелёный" },
+                  { id: 4, value: 4, label: "Красный" },
+                  { id: 5, value: 5, label: "Жёлтый" },
+                  { id: 6, value: 6, label: "Голубой" },
+                  { id: 7, value: 7, label: "Светлый" },
+                  { id: 8, value: 8, label: "Тёмный" },
+                ],
+                width: 12,
+                responsive: "",
+                required: true,
+                disabled: false,
+                visibility: false,
+                defaultValueLabel: "Выберите цвет",
+                horizontal: true,
+                horizontalWidth: {
+                  label: {
+                    width: 4,
+                    responsive: "col-sm-5",
+                  },
+                  field: {
+                    width: 8,
+                    responsive: "col-sm-7",
+                  },
+                },
+                values: [],
+              },
+            ],
+          },
+        },
+        server: {
+          form: {
+            title: "Настройки уведомления",
+            validity: false,
+            horizontal: true,
+            horizontalWidth: {
+              label: {
+                width: 4,
+                responsive: "col-sm-5",
+              },
+              field: {
+                width: 8,
+                responsive: "col-sm-7",
+              },
+            },
+            fields: [
+              {
+                id: "server-internal",
+                label: "Интерфейс и серверная часть находятся на одном домене",
+                type: "checkbox",
+                width: 12,
+                responsive: "",
+                required: false,
+                // disabled: false,
+                disabled: true,
+                visibility: true,
+                defaultValueLabel: "Выберите",
+                horizontal: false,
+                horizontalWidth: {
+                  label: {
+                    width: 4,
+                    responsive: "col-sm-5",
+                  },
+                  field: {
+                    width: 8,
+                    responsive: "col-sm-7",
+                  },
+                },
+                value: true,
+              },
+              {
+                id: "server-external-address",
+                label: "Адрес сервера открытого контура",
+                type: "input",
+                subtype: "text",
+                width: 12,
+                responsive: "",
+                required: true,
+                // disabled: false,
+                disabled: true,
+                visibility: false,
+                horizontal: true,
+                horizontalWidth: {
+                  label: {
+                    width: 4,
+                    responsive: "col-sm-5",
+                  },
+                  field: {
+                    width: 8,
+                    responsive: "col-sm-7",
+                  },
+                },
+                value: "",
+              },
+            ],
+          },
+        },
+        logo: {
+          form: {
+            title: "Настройки уведомления",
+            validity: false,
+            horizontal: true,
+            horizontalWidth: {
+              label: {
+                width: 4,
+                responsive: "col-sm-5",
+              },
+              field: {
+                width: 8,
+                responsive: "col-sm-7",
+              },
+            },
+            fields: [
+              {
+                id: "logo-image-file",
+                label: "Прикрепленные документы",
+                type: "input",
+                subtype: "file",
+                comment: "Файл логотипа",
+                button: {
+                  text: "Добавить документ",
+                  icon: {
+                    url: "/icons/paperclip.svg",
+                  },
+                },
+                file: {
+                  name: "",
+                  base64: "",
+                },
+                width: 12,
+                responsive: "",
+                required: false,
+                visibility: true,
+                horizontal: true,
+                horizontalWidth: {
+                  label: {
+                    width: 4,
+                    responsive: "col-sm-5",
+                  },
+                  field: {
+                    width: 8,
+                    responsive: "col-sm-7",
+                  },
+                },
+                value: "",
+              },
+              {
+                id: "logo-brand",
+                label: "Наименование организации",
+                type: "input",
+                subtype: "text",
+                width: 12,
+                responsive: "",
+                required: false,
+                visibility: true,
+                horizontal: true,
+                horizontalWidth: {
+                  label: {
+                    width: 4,
+                    responsive: "col-sm-5",
+                  },
+                  field: {
+                    width: 8,
+                    responsive: "col-sm-7",
+                  },
+                },
+                value: "",
+              },
+            ],
+          },
+        },
+        footer: {
+          form: {
+            title: "Настройки футера",
+            validity: false,
+            horizontal: true,
+            horizontalWidth: {
+              label: {
+                width: 4,
+                responsive: "col-sm-5",
+              },
+              field: {
+                width: 8,
+                responsive: "col-sm-7",
+              },
+            },
+            fields: [
+              {
+                id: "footer-phone",
+                label: "Номер телефона",
+                type: "input",
+                subtype: "text",
+                width: 12,
+                responsive: "",
+                required: false,
+                visibility: true,
+                horizontal: true,
+                horizontalWidth: {
+                  label: {
+                    width: 4,
+                    responsive: "col-sm-5",
+                  },
+                  field: {
+                    width: 8,
+                    responsive: "col-sm-7",
+                  },
+                },
+                value: "",
+              },
+              {
+                id: "footer-email",
+                label: "Адрес электронной почты",
+                type: "input",
+                subtype: "text",
+                width: 12,
+                responsive: "",
+                required: false,
+                visibility: true,
+                horizontal: true,
+                horizontalWidth: {
+                  label: {
+                    width: 4,
+                    responsive: "col-sm-5",
+                  },
+                  field: {
+                    width: 8,
+                    responsive: "col-sm-7",
+                  },
+                },
+                value: "",
+              },
+              {
+                id: "footer-link-01-name",
+                label: "Наименование ссылки №1",
+                type: "input",
+                subtype: "text",
+                width: 12,
+                responsive: "",
+                required: false,
+                visibility: true,
+                horizontal: true,
+                horizontalWidth: {
+                  label: {
+                    width: 4,
+                    responsive: "col-sm-5",
+                  },
+                  field: {
+                    width: 8,
+                    responsive: "col-sm-7",
+                  },
+                },
+                value: "",
+              },
+              {
+                id: "footer-link-01-url",
+                label: "Адрес ссылки №1",
+                type: "input",
+                subtype: "text",
+                width: 12,
+                responsive: "",
+                required: true,
+                disabled: false,
+                visibility: false,
+                horizontal: true,
+                horizontalWidth: {
+                  label: {
+                    width: 4,
+                    responsive: "col-sm-5",
+                  },
+                  field: {
+                    width: 8,
+                    responsive: "col-sm-7",
+                  },
+                },
+                value: "",
+              },
+              {
+                id: "footer-link-02-name",
+                label: "Наименование ссылки №2",
+                type: "input",
+                subtype: "text",
+                width: 12,
+                responsive: "",
+                required: false,
+                visibility: true,
+                horizontal: true,
+                horizontalWidth: {
+                  label: {
+                    width: 4,
+                    responsive: "col-sm-5",
+                  },
+                  field: {
+                    width: 8,
+                    responsive: "col-sm-7",
+                  },
+                },
+                value: "",
+              },
+              {
+                id: "footer-link-02-url",
+                label: "Наименование структуры/организации",
+                type: "input",
+                subtype: "text",
+                width: 12,
+                responsive: "",
+                required: true,
+                disabled: false,
+                visibility: false,
+                horizontal: true,
+                horizontalWidth: {
+                  label: {
+                    width: 4,
+                    responsive: "col-sm-5",
+                  },
+                  field: {
+                    width: 8,
+                    responsive: "col-sm-7",
+                  },
+                },
+                value: "",
+              },
+              {
+                id: "footer-link-03-name",
+                label: "Наименование ссылки №3",
+                type: "input",
+                subtype: "text",
+                width: 12,
+                responsive: "",
+                required: false,
+                visibility: true,
+                horizontal: true,
+                horizontalWidth: {
+                  label: {
+                    width: 4,
+                    responsive: "col-sm-5",
+                  },
+                  field: {
+                    width: 8,
+                    responsive: "col-sm-7",
+                  },
+                },
+                value: "",
+              },
+              {
+                id: "footer-link-03-url",
+                label: "Адрес ссылки №3",
+                type: "input",
+                subtype: "text",
+                width: 12,
+                responsive: "",
+                required: true,
+                disabled: false,
+                visibility: false,
+                horizontal: true,
+                horizontalWidth: {
+                  label: {
+                    width: 4,
+                    responsive: "col-sm-5",
+                  },
+                  field: {
+                    width: 8,
+                    responsive: "col-sm-7",
+                  },
+                },
+                value: "",
+              },
+              {
+                id: "footer-copyright-need",
+                label: "Отображать копирайт",
+                type: "checkbox",
+                width: 12,
+                responsive: "",
+                required: false,
+                visibility: true,
+                defaultValueLabel: "Выберите",
+                horizontal: false,
+                horizontalWidth: {
+                  label: {
+                    width: 4,
+                    responsive: "col-sm-5",
+                  },
+                  field: {
+                    width: 8,
+                    responsive: "col-sm-7",
+                  },
+                },
+                value: false,
+              },
+              {
+                id: "footer-copyright-text",
+                label: "Текст копирайта",
+                type: "input",
+                subtype: "text",
+                width: 12,
+                responsive: "",
+                required: true,
+                disabled: false,
+                visibility: true,
+                horizontal: true,
+                horizontalWidth: {
+                  label: {
+                    width: 4,
+                    responsive: "col-sm-5",
+                  },
+                  field: {
+                    width: 8,
+                    responsive: "col-sm-7",
+                  },
+                },
+                value: "",
+              },
+            ],
+          },
+        },
+      },
+      service: {
+        info: {},
+        forms: [],
+        applicationDTO: {
+          active: false,
+          data: {},
+          form: {
+            actions: [],
+            id: 0,
+            modelId: 0,
+            scheme: {},
+          },
+          id: 0,
+          orderId: "",
+          status: "",
+          loader: {
+            isLoading: false,
+            isResponse: false,
+            comment: "",
+          },
+        },
+        applicationDTOJSONStamp: "",
+        form: {
+          keepAliveIntervalId: null,
+          lastChangeTimestamp: null,
+          logoutTimeMin: 1.5,
+        },
+        loader: {
+          loader: {
+            isLoading: false,
+            isResponse: false,
+            comment: "",
+          },
+        },
+      },
+      loadedServiceForm: false,
+      isLogoutNote: false,
     };
   },
 
@@ -1553,6 +2641,207 @@ export default {
       expertiseRequestQuery +=
         "&sortDesc=" + this.expertisesTable.ascendingSortOrder;
       return expertiseRequestQuery;
+    },
+
+    // From 72
+    authCompleted: function () {
+      let isAuthUser = this.config.user.auth;
+      let needSelectRole = !this.config.user.shortInfo.roleId;
+      let needSelectOrg =
+        !this.config.user.shortInfo.orgId &&
+        this.config.user.fullInfo.userOrganizations.length > 0;
+      return isAuthUser && !needSelectRole && !needSelectOrg;
+    },
+    authModalTitle: function () {
+      let authModalTitle = "";
+      if (!this.config.user.auth) {
+        authModalTitle = "Авторизация";
+      } else {
+        if (this.config.authModalMode === "select-role") {
+          authModalTitle = "Выбор роли";
+        }
+        if (this.config.authModalMode === "select-organization") {
+          authModalTitle = "Выбор организации";
+        }
+      }
+      return authModalTitle;
+    },
+    userFullName: function () {
+      let fullName = "";
+      if (
+        this.config.user.fullInfo.userData &&
+        this.config.user.fullInfo.userData.lastName
+      ) {
+        fullName += this.config.user.fullInfo.userData.lastName;
+      }
+      if (
+        this.config.user.fullInfo.userData &&
+        this.config.user.fullInfo.userData.firstName
+      ) {
+        fullName += " " + this.config.user.fullInfo.userData.firstName;
+      }
+      if (
+        this.config.user.fullInfo.userData &&
+        this.config.user.fullInfo.userData.middleName
+      ) {
+        fullName += " " + this.config.user.fullInfo.userData.middleName;
+      }
+      return fullName;
+    },
+    /*unreadMessages: function () {
+      return this.messagesList.filter((item) => !item.archived).length;
+    },
+    sortedMessagesList: function () {
+      let sortedMessages = [];
+      this.messagesList.forEach(function (item) {
+        sortedMessages.push(item);
+      });
+      sortedMessages.sort(function (a, b) {
+        if (a.timestamp > b.timestamp) return 1; // если первое значение больше второго
+        if (a.timestamp == b.timestamp) return 0; // если равны
+        if (a.timestamp < b.timestamp) return -1; // если первое значение меньше второго
+      });
+      return sortedMessages.reverse();
+    },*/
+    appsRequestQuery: function () {
+      let appsRequestQuery = "api/app/get-apps?";
+      if (this.apps.pagination.page) {
+        appsRequestQuery += "pageNum=" + (this.apps.pagination.page - 1);
+      }
+      if (this.apps.pagination.pageSize) {
+        appsRequestQuery += "&pageSize=" + this.apps.pagination.pageSize;
+      }
+      if (this.apps.sortColumn) {
+        appsRequestQuery += "&sortCol=" + this.apps.sortColumn;
+      }
+      appsRequestQuery += "&sortDesc=" + !this.apps.ascendingSortOrder;
+      appsRequestQuery += "&userList=true";
+      appsRequestQuery += "&active=false";
+      if (this.apps.filters.form.fields[0].value) {
+        appsRequestQuery += "&appId=" + this.apps.filters.form.fields[0].value;
+      }
+      if (this.apps.filters.form.fields[1].value) {
+        appsRequestQuery +=
+          "&servName=" + this.apps.filters.form.fields[1].value;
+      }
+      return appsRequestQuery;
+    },
+    setConfigRequest: function () {
+      let setConfigRequest = {
+        notification: {
+          publishNeed: false,
+          publicationImmediately: true,
+          publicationStartDate: "",
+          publicationFinishManual: true,
+          publicationFinishDate: "",
+          notificationText: "",
+          notificationFontSize: 1,
+          notificationColor: 4,
+        },
+        server: {
+          ownServer: true,
+          externalServerUrl: "",
+        },
+        logo: {
+          image: {
+            file: "/9j/4QR...eFz/2Q==",
+            type: "image/jpeg",
+            fileName: "Line_Screen.jpg",
+          },
+          logoBrand: "Информационные системы и сервисы",
+        },
+        footer: {
+          contacts: {
+            phone: "8-383-354-1011",
+            email: "info@isands.ru",
+          },
+          links: [
+            {
+              name: "Поддержка юридических лиц",
+              url: "/measures",
+            },
+            {
+              name: "Поддержка физических лиц",
+              url: "/measures",
+            },
+          ],
+          copyright: {
+            publication: true,
+            text: "© Информационные системы и сервисы, 2022",
+          },
+        },
+      };
+      if (this.settingsForm.notification.form.fields[0].value) {
+        setConfigRequest.notification.publishNeed = true;
+        if (this.settingsForm.notification.form.fields[1].value) {
+          // Заменить на получение текущей даты
+          setConfigRequest.notification.publicationStartDate =
+            this.convertDateToInputDateTime(new Date());
+        } else {
+          setConfigRequest.notification.publicationImmediately = false;
+          setConfigRequest.notification.publicationStartDate =
+            this.settingsForm.notification.form.fields[2].value;
+        }
+        if (!this.settingsForm.notification.form.fields[3].value) {
+          setConfigRequest.notification.publicationFinishManual = false;
+          setConfigRequest.notification.publicationFinishDate =
+            this.settingsForm.notification.form.fields[4].value;
+        }
+        setConfigRequest.notification.notificationText =
+          this.settingsForm.notification.form.fields[5].value;
+        setConfigRequest.notification.notificationFontSize =
+          this.settingsForm.notification.form.fields[6].values[0];
+        setConfigRequest.notification.notificationColor =
+          this.settingsForm.notification.form.fields[7].values[0];
+      }
+
+      setConfigRequest.server = {
+        ownServer: this.settingsForm.server.form.fields[0].value,
+        externalServerUrl: this.settingsForm.server.form.fields[1].value,
+      };
+      setConfigRequest.logo = {
+        image: {
+          file: this.settingsForm.logo.form.fields[0].file.base64,
+          type: this.settingsForm.logo.form.fields[0].file.type,
+          fileName: this.settingsForm.logo.form.fields[0].file.name,
+        },
+        logoBrand: this.settingsForm.logo.form.fields[1].value,
+      };
+
+      setConfigRequest.footer = {
+        contacts: {
+          phone: this.settingsForm.footer.form.fields[0].value,
+          email: this.settingsForm.footer.form.fields[1].value,
+        },
+        links: [
+          {
+            name: this.settingsForm.footer.form.fields[2].value,
+            url: this.settingsForm.footer.form.fields[3].value,
+          },
+          {
+            name: this.settingsForm.footer.form.fields[4].value,
+            url: this.settingsForm.footer.form.fields[5].value,
+          },
+          {
+            name: this.settingsForm.footer.form.fields[6].value,
+            url: this.settingsForm.footer.form.fields[7].value,
+          },
+        ],
+        copyright: {
+          publication: this.settingsForm.footer.form.fields[8].value,
+          text: this.settingsForm.footer.form.fields[9].value,
+        },
+      };
+      return setConfigRequest;
+    },
+    dynamicUrl: function () {
+      let dynamicUrl;
+      if (this.config.adminSettings.server.ownServer) {
+        dynamicUrl = this.config.url;
+      } else {
+        dynamicUrl = this.config.adminSettings.server.externalServerUrl + "/";
+      }
+      return dynamicUrl;
     },
   },
 
@@ -2897,42 +4186,139 @@ export default {
         );
       }
     },
-  },
 
-  watch: {
-    // Получение заявлений
-    isAuthUser: function () {
-      if (this.isAuthUser) {
-        this.getMessages();
-        this.getApps();
-        this.getExpertises();
-        this.getAudit();
-        // this.authIntervalId = setInterval(this.checkAuth, 30000);
-      } else {
-        // clearInterval(this.authIntervalId);
+    // From 72
+    // ----------Методы для формио из formio.full.min.js----------
+    // Первая форма обращения
+    // Детальная информация по сервису
+    async showServiceInfo(serviceId) {
+      await this.getServiceInfo(serviceId);
+      if (this.$route.params.serviceId !== serviceId) {
+        this.goToView("/service-info/" + serviceId);
       }
     },
-    // Заполнение селектов фильтров
+    async getServiceInfo(serviceId) {
+      await axios
+        .get(this.dynamicUrl + "api/serv/get-model?id=" + serviceId)
+        .then((response) => {
+          this.service.info = response.data;
+          this.service.info.newDescription = JSON.parse(
+            response.data.newDescription
+          );
+          console.groupCollapsed(
+            `Детальная информация по сервису "${response.data.name}"`
+          );
+          console.log(response.data);
+          console.groupEnd();
+        });
+    },
+    async showServiceFirstForm(serviceId) {
+      this.loaderStart(this.appsLoader, "Загрузка формы заявления");
+      console.log("Запуск массива запросов на получение первой формы");
+      Promise.all([
+        this.getServiceInfo(serviceId),
+        this.getServiceForms(serviceId),
+        this.getServiceForm(serviceId),
+      ]).then(() => {
+        this.loaderFinish(this.appsLoader);
+        this.loadedServiceForm = !this.loadedServiceForm;
+        console.log(
+          "Первая форма, детальная информация по сервису и формы сервиса загружены"
+        );
+      });
+    },
+    // Форма существующего заявления
+    async showAppForm({ serviceId, appId }) {
+      // console.log(
+      //   `Необходимо получить обращение ${appId} по сервису ${serviceId}`
+      // );
+      Promise.all([
+        this.getServiceInfo(serviceId),
+        this.getServiceForms(serviceId),
+        this.getServiceForm(serviceId, appId),
+      ]).then(() => {
+        this.loadedServiceForm = !this.loadedServiceForm;
+        console.log(
+          "Форма существующего обращения (не первая), детальная информация по сервису и формы сервиса загружены"
+        );
+      });
+      if (
+        this.$route.name !== "ApplicationView" ||
+        this.$route.params.modelId !== serviceId ||
+        this.$route.params.appId !== appId
+      ) {
+        this.goToView("/application_view/model/" + serviceId + "/app/" + appId);
+      }
+    },
+    async getServiceForms(serviceId) {
+      // console.log(`Запрос форм по БП - ${serviceId}`);
+      await axios
+        .get(this.dynamicUrl + "api/serv/get-forms?id=" + serviceId, {
+          withCredentials: true,
+        })
+        .then((response) => {
+          console.groupCollapsed("Формы по мере поддержки");
+          console.log(response.data);
+          console.groupEnd();
+          this.service.forms = response.data;
+        });
+    },
+    async getServiceForm(serviceId, appId) {
+      // console.log(`Запрос первой формы по БП - ${serviceId}`);
+      let requestUrl;
+      if (appId) {
+        requestUrl = this.dynamicUrl + "api/app/get-appData?id=" + appId;
+        // console.log(
+        //   `Запрос существующей (не первой) формы сервиса с id = ${serviceId}`
+        // );
+      } else {
+        requestUrl = this.dynamicUrl + "api/serv/get-appData?id=" + serviceId;
+        // console.log(`Запрос первой формы сервиса с id = ${serviceId}`);
+      }
+      await axios
+        .get(requestUrl, {
+          withCredentials: true,
+        })
+        .then((response) => {
+          if (appId) {
+            console.groupCollapsed("Не стартовая форма сервиса");
+          } else {
+            console.groupCollapsed("Стартовая форма сервиса");
+          }
+          console.log(response.data.applicationDTO);
+          console.groupEnd();
+          const serviceForm = response.data.applicationDTO;
+          serviceForm.data = JSON.parse(serviceForm.data);
+          serviceForm.form.scheme = JSON.parse(serviceForm.form.scheme);
+          this.service.applicationDTO = serviceForm;
+          this.service.applicationDTOJSONStamp = JSON.stringify(serviceForm);
+        });
+    },
+    changeAppForm(applicationDTO) {
+      // console.log(applicationDTO);
+      console.log("***Меняется форма");
+      this.service.applicationDTO = applicationDTO;
+      this.service.form.lastChangeTimestamp = Date.now();
+      this.config.keepAliveSession = true;
+    },
+    resetAppForm() {
+      this.service.applicationDTO = JSON.parse(
+        this.service.applicationDTOJSONStamp
+      );
+    },
+    setApplicationStamp(application) {
+      this.service.applicationDTOJSONStamp = JSON.stringify(application);
+    },
+  },
+
+  created() {
+    // From 72
+    window.applicationDTO = this.service.applicationDTO;
   },
 
   mounted: async function () {
     // Событие при закрытии модального окна
     $("#notify").on("hidden.bs.modal", this.afterCloseNotify);
-
-    // Запрос информации о пользователе
-    // this.getLogin();
-
-    // Получение файлов для работы
-    // this.getFileResources();
-
-    // Получение расписания аттестации
-    // this.getGakJournal();
-
-    // Получение справочников
-    // this.getAllDictionaries();
-
-    // Получение бизнес-процессов (для справки)
-    // this.getServises();
 
     // Получение общих сведений
     Promise.all([
@@ -2945,6 +4331,55 @@ export default {
       console.log("Приложение загружено");
       this.appLoaded = true;
     });
+
+    // From 72
+    /*await this.getAppConfig();
+    await this.checkAuth();
+    this.checkLogoutNote();
+    if (this.config.user.auth) {
+      await this.getUserShortInfo();
+      await this.getUserFullInfo();
+
+      if (
+        !this.config.user.shortInfo.roleId &&
+        this.config.user.fullInfo.roles.length > 0
+      ) {
+        await this.checkUserRole();
+      }
+      if (
+        this.config.user.shortInfo.roleId &&
+        !this.config.user.shortInfo.orgId &&
+        this.config.user.fullInfo.userOrganizations.length > 0
+      ) {
+        await this.checkUserOrg();
+      }
+      this.getApps();
+      this.getMessages();
+    }*/
+  },
+
+  watch: {
+    // Получение заявлений
+    isAuthUser: function () {
+      if (this.isAuthUser) {
+        this.getMessages();
+        this.getApps();
+        this.getExpertises();
+        this.getAudit();
+      }
+    },
+    // Заполнение селектов фильтров
+
+    // From 72
+    /*"config.keepAliveSession": async function () {
+      if (this.config.keepAliveSession) {
+        console.log("Запуск интервальных запросов");
+        this.service.form.keepAliveIntervalId = setInterval(
+          this.keepAliveSession,
+          30000
+        );
+      }
+    },*/
   },
 };
 </script>
