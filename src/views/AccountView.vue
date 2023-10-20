@@ -60,7 +60,9 @@
           >
             <button
               class="btn btn-primary mb-3"
-              @click="createNewApp('Новое заявление')"
+              @click="
+                showAppForm('Новое заявление', 'Загрузка формы заявления', 2)
+              "
             >
               Подать заявление
             </button>
@@ -74,7 +76,9 @@
               :page="appsTable.pagination.page"
               :page-size="appsTable.pagination.pageSize"
               :items-per-page="appsTable.pagination.itemsPerPage"
-              @row-click="openExistingApp('Детали заявления', $event)"
+              @row-click="
+                showAppForm('Детали заявления', 'Загрузка заявления', 2, $event)
+              "
               @sort-table="
                 $emit('sort-table', {
                   tableName: 'appsTable',
@@ -97,7 +101,9 @@
           >
             <button
               class="btn btn-primary mb-3"
-              @click="createNewMessage('Новое сообщение')"
+              @click="
+                showAppForm('Новое сообщение', 'Загрузка формы сообщения', 1)
+              "
             >
               Отправить сообщение
             </button>
@@ -112,7 +118,9 @@
               :page-size="messagesTable.pagination.pageSize"
               :items-per-page="messagesTable.pagination.itemsPerPage"
               :dictionaries="dictionaries"
-              @row-click="openExistingMessage('Детали сообщения', $event)"
+              @row-click="
+                showAppForm('Детали сообщения', 'Загрузка сообщения', 1, $event)
+              "
               @sort-table="
                 $emit('sort-table', {
                   tableName: 'messagesTable',
@@ -535,7 +543,14 @@
               :page="expertisesTable.pagination.page"
               :page-size="expertisesTable.pagination.pageSize"
               :items-per-page="expertisesTable.pagination.itemsPerPage"
-              @row-click="openExistingExpertise('Детали экспертизы', $event)"
+              @row-click="
+                showAppForm(
+                  'Детали экспертизы',
+                  'Загрузка деталей экспертизы',
+                  101,
+                  $event
+                )
+              "
               @sort-table="
                 $emit('sort-table', {
                   tableName: 'expertisesTable',
@@ -750,43 +765,45 @@
         <template v-slot:modal-title>
           {{ modal.modalTitle }}
         </template>
-
         <template v-slot:modal-body>
           <LoaderBootstrapCustomBS46
-            v-if="appsLoader.isLoading && !appsLoader.isResponse"
+            v-if="appsLoader.isLoading"
             :comment="appsLoader.comment"
             :theme="appsLoader.theme"
           />
           <div v-show="!appsLoader.isLoading && appsLoader.isResponse">
-            <!--          Форма нового заявления-->
-            <form
-              v-if="modal.modalTitle === 'Новое заявление'"
-              class="application-form"
-            >
-              <!--              <div v-if="appForm.form.id" class="row">-->
+            <form class="application-form">
               <div class="row">
                 <div class="col-10">
-                  <!--<Form
-                    :form="appForm.form.scheme"
-                    :submission="appForm"
-                    language="ru"
-                    :options="{
-                      i18n: appFormOptions,
-                      readOnly: !appForm.active,
-                    }"
-                    ref="vueForm"
-                  />-->
-                  <!--suppress XmlDuplicatedId -->
+                  <vb-alert v-if="actionError" type="danger" class="mb-4">
+                    <div>{{ actionError }}</div>
+                  </vb-alert>
                   <div id="formio" ref="vueForm"></div>
                 </div>
-
                 <div
-                  v-if="appForm.form.actions && appForm.form.actions.length > 0"
+                  v-if="
+                    service.applicationDTO.form.actions &&
+                    service.applicationDTO.form.actions.length > 0
+                  "
                   class="col-2 action-buttons"
                 >
-                  <template v-for="action of appForm.form.actions">
-                    <template v-if="appForm.active || action.alwaysActive">
+                  <template
+                    v-for="action of service.applicationDTO.form.actions"
+                  >
+                    <template
+                      v-if="
+                        service.applicationDTO.active || action.alwaysActive
+                      "
+                    >
                       <button
+                        :key="action.id"
+                        type="button"
+                        class="btn btn-block btn-primary"
+                        @click="invokeAction(action)"
+                      >
+                        {{ action.name }}
+                      </button>
+                      <!--<button
                         v-if="action.backAction"
                         :key="action.id"
                         type="button"
@@ -815,384 +832,78 @@
                         "
                       >
                         {{ action.name }}
-                      </button>
-                    </template>
-                  </template>
-                </div>
-              </div>
-            </form>
-            <!--          Заполненная форма заявления-->
-            <form
-              v-if="modal.modalTitle === 'Детали заявления'"
-              class="application-form"
-            >
-              <div v-if="appForm.form.id" class="row">
-                <div class="col-10">
-                  <!--<Form
-                    :form="appForm.form.scheme"
-                    :submission="appForm"
-                    language="ru"
-                    :options="{
-                      i18n: appFormOptions,
-                      readOnly: !appForm.active,
-                    }"
-                    ref="vueForm"
-                  />-->
-                  <!--suppress XmlDuplicatedId -->
-                  <div id="formio" ref="vueForm"></div>
-                </div>
-                <div
-                  v-if="appForm.form.actions && appForm.form.actions.length > 0"
-                  class="col-2 action-buttons"
-                >
-                  <template v-for="action of appForm.form.actions">
-                    <template v-if="appForm.active || action.alwaysActive">
-                      <button
-                        v-if="action.backAction"
-                        :key="action.id"
-                        type="button"
-                        class="btn btn-block btn-primary"
-                        @click="
-                          $emit('invoke-action', {
-                            actionId: action.id,
-                            backAction: true,
-                            modelId: appForm.modelId,
-                          })
-                        "
-                      >
-                        {{ action.name }}
-                      </button>
-                      <button
-                        v-else
-                        :key="action.id"
-                        type="button"
-                        class="btn btn-block btn-primary"
-                        @click="
-                          $emit('invoke-action', {
-                            actionId: action.id,
-                            backAction: false,
-                            modelId: appForm.modelId,
-                          })
-                        "
-                      >
-                        {{ action.name }}
-                      </button>
+                      </button>-->
                     </template>
                   </template>
                 </div>
               </div>
             </form>
           </div>
-
-          <LoaderBootstrapCustomBS46
-            v-if="messagesLoader.isLoading && !messagesLoader.isResponse"
-            :comment="messagesLoader.comment"
-            :theme="messagesLoader.theme"
-          />
-          <template v-else>
-            <!--          Форма нового сообщения-->
-            <form
-              v-if="modal.modalTitle === 'Новое сообщение'"
-              class="application-form"
-            >
-              <div v-if="messageForm.form.id" class="row">
-                <div class="col-10">
-                  <!--<Form
-                    :form="messageForm.form.scheme"
-                    :submission="messageForm"
-                    language="ru"
-                    :options="{
-                      i18n: messageFormOptions,
-                      readOnly: !messageForm.active,
-                    }"
-                    ref="vueForm"
-                  />-->
-                  <!--suppress XmlDuplicatedId -->
-                  <div id="formio" ref="vueForm"></div>
-                </div>
-                <div
-                  v-if="
-                    messageForm.form.actions &&
-                    messageForm.form.actions.length > 0
-                  "
-                  class="col-2 action-buttons"
-                >
-                  <template v-for="action of messageForm.form.actions">
-                    <template v-if="messageForm.active || action.alwaysActive">
-                      <button
-                        v-if="action.backAction"
-                        :key="action.id"
-                        type="button"
-                        class="btn btn-block btn-primary"
-                        @click="
-                          $emit('invoke-action', {
-                            actionId: action.id,
-                            backAction: true,
-                            modelId: messageForm.modelId,
-                          })
-                        "
-                      >
-                        {{ action.name }}
-                      </button>
-                      <button
-                        v-else
-                        :key="action.id"
-                        type="button"
-                        class="btn btn-block btn-primary"
-                        @click="
-                          $emit('invoke-action', {
-                            actionId: action.id,
-                            backAction: false,
-                            modelId: messageForm.modelId,
-                          })
-                        "
-                      >
-                        {{ action.name }}
-                      </button>
-                    </template>
-                  </template>
-                </div>
-              </div>
-            </form>
-            <!--          Заполненная форма сообщения-->
-            <form
-              v-if="modal.modalTitle === 'Детали сообщения'"
-              class="application-form"
-            >
-              <div v-if="messageForm.form.id" class="row">
-                <div class="col-10">
-                  <!--<Form
-                    :form="messageForm.form.scheme"
-                    :submission="messageForm"
-                    language="ru"
-                    :options="{
-                      i18n: messageFormOptions,
-                      readOnly: !messageForm.active,
-                    }"
-                    ref="vueForm"
-                  />-->
-                  <!--suppress XmlDuplicatedId -->
-                  <div id="formio" ref="vueForm"></div>
-                </div>
-                <div
-                  v-if="
-                    messageForm.form.actions &&
-                    messageForm.form.actions.length > 0
-                  "
-                  class="col-2 action-buttons"
-                >
-                  <template v-for="action of messageForm.form.actions">
-                    <template v-if="messageForm.active || action.alwaysActive">
-                      <button
-                        v-if="action.backAction"
-                        :key="action.id"
-                        type="button"
-                        class="btn btn-block btn-primary"
-                        @click="
-                          $emit('invoke-action', {
-                            actionId: action.id,
-                            backAction: true,
-                            modelId: messageForm.modelId,
-                          })
-                        "
-                      >
-                        {{ action.name }}
-                      </button>
-                      <button
-                        v-else
-                        :key="action.id"
-                        type="button"
-                        class="btn btn-block btn-primary"
-                        @click="
-                          $emit('invoke-action', {
-                            actionId: action.id,
-                            backAction: false,
-                            modelId: messageForm.modelId,
-                          })
-                        "
-                      >
-                        {{ action.name }}
-                      </button>
-                    </template>
-                  </template>
-                </div>
-              </div>
-            </form>
-          </template>
-
-          <LoaderBootstrapCustomBS46
-            v-if="expertisesLoader.isLoading && !expertisesLoader.isResponse"
-            :comment="expertisesLoader.comment"
-            :theme="expertisesLoader.theme"
-          />
-          <template v-else>
-            <!--          Заполненная форма экспертизы-->
-            <form
-              v-if="modal.modalTitle === 'Детали экспертизы'"
-              class="application-form"
-            >
-              <div v-if="expertiseForm.form.id" class="row">
-                <div class="col-10">
-                  <!--<Form
-                    :form="expertiseForm.form.scheme"
-                    :submission="expertiseForm"
-                    language="ru"
-                    :options="{
-                      i18n: expertiseFormOptions,
-                      readOnly: !expertiseForm.active,
-                    }"
-                    ref="vueForm"
-                  />-->
-                  <!--suppress XmlDuplicatedId -->
-                  <div id="formio" ref="vueForm"></div>
-                </div>
-                <div
-                  v-if="
-                    expertiseForm.form.actions &&
-                    expertiseForm.form.actions.length > 0
-                  "
-                  class="col-2 action-buttons"
-                >
-                  <template v-for="action of expertiseForm.form.actions">
-                    <template
-                      v-if="expertiseForm.active || action.alwaysActive"
-                    >
-                      <button
-                        v-if="action.backAction"
-                        :key="action.id"
-                        type="button"
-                        class="btn btn-block btn-primary"
-                        @click="
-                          $emit('invoke-action', {
-                            actionId: action.id,
-                            backAction: true,
-                            modelId: expertiseForm.modelId,
-                          })
-                        "
-                      >
-                        {{ action.name }}
-                      </button>
-                      <button
-                        v-else
-                        :key="action.id"
-                        type="button"
-                        class="btn btn-block btn-primary"
-                        @click="
-                          $emit('invoke-action', {
-                            actionId: action.id,
-                            backAction: false,
-                            modelId: expertiseForm.modelId,
-                          })
-                        "
-                      >
-                        {{ action.name }}
-                      </button>
-                    </template>
-                  </template>
-                </div>
-              </div>
-            </form>
-          </template>
-
-          <LoaderBootstrapCustomBS46
-            v-if="logsLoader.isLoading && !logsLoader.isResponse"
-            :comment="logsLoader.comment"
-            :theme="logsLoader.theme"
-          />
-          <template v-else>
-            <!--          Заполненная форма действия-->
-            <form v-if="modal.modalTitle === 'Детали действия'">
-              <div class="row">
-                <div class="col-6">
-                  <label for="logs-form-view-number" class="form-label"
-                    >Id записи</label
-                  >
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="logs-form-view-number"
-                    disabled
-                    value="0001"
-                  />
-                </div>
-                <div class="col-6">
-                  <label for="logs-form-view-date" class="form-label"
-                    >Дата события</label
-                  >
-                  <input
-                    type="date"
-                    class="form-control"
-                    id="logs-form-view-date"
-                    disabled
-                    value="2022-08-01"
-                  />
-                </div>
-                <div class="col-6">
-                  <label for="logs-form-view-description" class="form-label"
-                    >Описание</label
-                  >
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="logs-form-view-description"
-                    disabled
-                    value="Изменения ошибочной записи"
-                  />
-                </div>
-                <div class="col-6">
-                  <label for="logs-form-view-event" class="form-label"
-                    >Событие</label
-                  >
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="logs-form-view-event"
-                    disabled
-                    value="Изменение записи"
-                  />
-                </div>
-                <div class="col-6">
-                  <label for="logs-form-view-changes" class="form-label"
-                    >Изменения</label
-                  >
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="logs-form-view-changes"
-                    disabled
-                    value="Изменение даты рождения"
-                  />
-                </div>
-              </div>
-            </form>
-          </template>
         </template>
       </ModalBootstrapCustom46>
+      <crypto-pro-signature-modal
+        modal-id="cryptoProSignatureModal"
+        :crypto-pro-signature="cryptoProSignature"
+        @get-hash-to-sign="getHashToSign"
+      />
+      <vb-modal id="confirm-action-modal"
+        ><div class="confirm-modal-header">
+          {{ currentAction.confirmData.header }}
+        </div>
+        <div class="confirm-modal-body">
+          {{ currentAction.confirmData.message }}
+        </div>
+        <div class="row row-cols-2">
+          <div class="col">
+            <button
+              type="button"
+              class="btn btn-block btn-danger"
+              @click="confirmAction"
+            >
+              {{ currentAction.confirmData.confirmButton }}
+            </button>
+          </div>
+          <div class="col">
+            <button
+              type="button"
+              class="btn btn-block btn-outline-secondary"
+              @click="hideModalBS('confirm-action-modal')"
+            >
+              {{ currentAction.confirmData.cancelButton }}
+            </button>
+          </div>
+        </div></vb-modal
+      >
     </div>
   </div>
 </template>
 
 <script>
-// import $ from "jquery";
+import $ from "jquery";
+import axios from "axios";
 import { Modal } from "bootstrap";
 import ModalBootstrapCustom46 from "../components/universal/ModalBootstrapCustomBS46";
 import TableBootstrapCustomBS46 from "../components/universal/TableBootstrapCustomBS46";
-// import { Form } from "vue-formio";
 import LoaderBootstrapCustomBS46 from "../components/universal/LoaderBootstrapCustomBS46";
 import InputBootstrapCustomBS46 from "../components/universal/Forms/InputBootstrapCustomBS46";
 import CheckboxBootstrapCustomBS46 from "../components/universal/Forms/CheckboxBootstrapCustomBS46";
 import SelectBootstrapCustomBS46 from "../components/universal/Forms/SelectBootstrapCustomBS46";
+import VbAlert from "../components/universal/BS46Alert";
+import VbModal from "../components/universal/BS46Modal";
+import CryptoProSignatureModal from "../components/CryptoProSignatureModal";
 
 export default {
   name: "AccountView",
   components: {
+    CryptoProSignatureModal,
+    VbModal,
+    VbAlert,
     SelectBootstrapCustomBS46,
     CheckboxBootstrapCustomBS46,
     InputBootstrapCustomBS46,
     LoaderBootstrapCustomBS46,
     TableBootstrapCustomBS46,
     ModalBootstrapCustom46,
-    // Form,
   },
   props: [
     "user",
@@ -1222,6 +933,7 @@ export default {
     "logsLoader",
     "dictionaries",
     // From 72
+    "url",
     "service",
     "loadedServiceForm",
   ],
@@ -1464,6 +1176,7 @@ export default {
       testValue: "Русский язык",
 
       // From 72
+      isFirstLoad: true,
       formCreationCompleted: false,
       validatedForm: false,
       changedForm: false,
@@ -1509,13 +1222,16 @@ export default {
           filename: null,
         },
       },
-      loader: {
-        isLoading: false,
-        comment: "Загружается обращение",
-        startTimeStamp: null,
-      },
       actionError: "",
     };
+  },
+
+  computed: {
+    // From 72
+    // ----------Методы для формио из formio.full.min.js----------
+    backUrl() {
+      return this.url + "#/account";
+    },
   },
 
   methods: {
@@ -1531,31 +1247,15 @@ export default {
       this.editableProfile = false;
       this.$emit("set-expert");
     },
-    openExistingApp(modalTitle, appId) {
-      this.$emit("open-existing-app", appId);
+    showAppForm(modalTitle, loaderComment, serviceId, appId) {
+      if (appId) {
+        this.$emit("show-app-form", { serviceId, appId, loaderComment });
+      } else {
+        this.$emit("show-service-first-form", { serviceId, loaderComment });
+      }
       this.openModal(modalTitle);
     },
-    createNewApp(modalTitle) {
-      // this.$emit("create-new-app");
-      this.$emit("show-service-first-form", 2);
-      this.openModal(modalTitle);
-    },
-    openExistingMessage(modalTitle, appId) {
-      this.$emit("open-existing-message", appId);
-      this.openModal(modalTitle);
-    },
-    createNewMessage(modalTitle) {
-      this.$emit("create-new-message");
-      this.openModal(modalTitle);
-    },
-    openExistingExpertise(modalTitle, appId) {
-      this.$emit("open-existing-expertise", appId);
-      this.openModal(modalTitle);
-    },
-    openExistingLog(modalTitle, appId) {
-      this.$emit("open-existing-log", appId);
-      this.openModal(modalTitle);
-    },
+
     openModal(modalTitle) {
       console.log(modalTitle);
       this.modal.modalTitle = modalTitle;
@@ -1571,6 +1271,7 @@ export default {
     },
 
     // From 72
+    // ----------Методы для формио из formio.full.min.js----------
     // ----------Методы для формио из formio.full.min.js----------
     createAppForm() {
       console.log("Начало создания формы");
@@ -1612,6 +1313,355 @@ export default {
           console.log("---Создание и наполнение формы formio завершено---");
         });
     },
+    async invokeAction(action) {
+      console.groupCollapsed("Выполнение действия " + action.id);
+      console.log(action);
+      console.groupEnd();
+      this.currentAction.info = action;
+      window.currentAction = action;
+      if (action.confirmData && !this.currentAction.confirmedAction) {
+        this.currentAction.confirmData = action.confirmData;
+        this.showModalBS("confirm-action-modal");
+      } else {
+        this.currentAction.confirmedAction = false;
+        if (!action.version) {
+          console.log("Действие 1 версии");
+          if (action.signAction) {
+            try {
+              this.requestStartDefaultHandler();
+              await this.successDefaultHandler();
+              this.camundaAsyncFunctionInvoker(
+                this.currentAction.info,
+                this.formInstance
+              );
+            } catch (error) {
+              await this.errorDefaultHandler(error);
+            }
+            return;
+          }
+          if (!action.notRequiredAction) {
+            // console.log("Действие требует проверки");
+            if (
+              this.formInstance.checkValidity(this.formInstance.submission.data)
+            ) {
+              this.requestStartDefaultHandler();
+              let response = await this.makeRequest(true);
+              if (action.printAction) {
+                const printResponse = response.data.responseObject;
+                console.log("---handlePrintActionResponse");
+                console.log(printResponse);
+                this.handlePrintActionResponse(printResponse);
+              }
+              await this.successDefaultHandler(response);
+              if (action.backAction) {
+                window.location.href = this.backUrl;
+              }
+            } else {
+              this.formInstance.submit();
+            }
+          } else {
+            this.requestStartDefaultHandler();
+            let response = await this.makeRequest(true);
+            if (action.printAction) {
+              const printResponse = response.data.responseObject;
+              console.log("---handlePrintActionResponse");
+              console.log(printResponse);
+              this.handlePrintActionResponse(printResponse);
+            }
+            await this.successDefaultHandler(response);
+            if (action.backAction) {
+              window.location.href = this.backUrl;
+            }
+          }
+        } else if (action.version === 2) {
+          console.log("Действие 2 версии");
+          console.log(action.onActionCode);
+          window.invokeActionCode(action.onActionCode);
+          /*let actionV2 = function () {
+          console.log("Запуск actionV2");
+          action.onActionCode;
+        };
+        actionV2();*/
+          // await window.eval(action.onActionCode);
+          // await this.runOnCodeAction(action.onActionCode);
+
+          /*var AsyncFunction = Object.getPrototypeOf(
+          async function () {}
+        ).constructor;
+        var fn = AsyncFunction(action.onActionCode);
+        console.log(fn);
+        fn();*/
+        }
+      }
+    },
+    confirmAction() {
+      this.currentAction.confirmedAction = true;
+      this.invokeAction(this.currentAction.info);
+      this.hideModalBS("confirm-action-modal");
+    },
+
+    // Методы действий v2
+    async errorDefaultHandler(error) {
+      if (error?.response?.data?.errors) {
+        this.actionError = error.response.data.errors.join(". ");
+      } else {
+        this.actionError = "";
+      }
+      if (error.response) {
+        this.successDefaultHandler(error.response);
+      }
+    },
+    requestStartDefaultHandler() {
+      console.log("Начало выполнения действия");
+      this.$emit("show-app-loader", "Выполнение действия по обращению");
+    },
+    async makeRequest(v1 = false) {
+      console.log("Выполнение запроса");
+      const request = {
+        actionId: this.currentAction.info.id,
+        userId: 0,
+        roleId: 0,
+        orgId: 0,
+        appId: +this.$route.params.appId,
+        data: JSON.stringify(this.service.applicationDTO.data),
+      };
+      return await axios
+        .post(this.url + "api/app/action-invoke", request, {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        })
+        .then(async (response) => {
+          this.actionError = "";
+          if (response.data.responseObject) {
+            let responseObject = JSON.parse(response.data.responseObject);
+            if (v1) {
+              console.log("Распарсить объект v1");
+              if (responseObject) {
+                response.data.payload_response = responseObject;
+                console.log(response);
+              }
+              response.data.responseObject = responseObject;
+            } else {
+              if (responseObject.payload_response) {
+                response.data.payload_response =
+                  responseObject.payload_response;
+                console.log(response);
+              }
+            }
+          }
+          await this.$emit("update-registries");
+          return response;
+        });
+    },
+    async successDefaultHandler(response) {
+      console.log("Окончание выполнения действия");
+      console.log(response);
+      if (this.currentAction.info.backAction) {
+        window.location.href = this.backUrl;
+      } else if (response) {
+        console.groupCollapsed("Ответ на запрос выполнения действия");
+        console.log(response);
+        console.groupEnd();
+        if (response.data.applicationDTO) {
+          this.setFormResponse(response);
+        }
+      }
+      this.$emit("hide-app-loader");
+    },
+    async setFormResponse(response) {
+      let nextForm = response.data.applicationDTO;
+      nextForm.data = JSON.parse(nextForm.data);
+      nextForm.form.scheme = JSON.parse(nextForm.form.scheme);
+      this.$emit("set-application-stamp", nextForm);
+      await this.$emit("change-app-form", nextForm);
+      this.createAppForm();
+    },
+    discardSavedFormioFiles() {
+      console.log("Сброс значений формы к ранее полученным");
+      this.$emit("reset-app-form");
+    },
+    handlePrintActionResponse(printResponse) {
+      console.log("----------");
+      console.log(printResponse);
+      if (
+        ((printResponse.fileName && printResponse.fileName.endsWith(".pdf")) ||
+          (printResponse.name && printResponse.name.endsWith(".pdf"))) &&
+        !this.currentAction.info.downloadPrinted
+      ) {
+        const file = this.base64toFile(
+          printResponse.fileData,
+          "application/pdf",
+          printResponse.fileName
+        );
+        const fileUrl = URL.createObjectURL(file);
+        window.open(fileUrl, "_blank").focus();
+      } else {
+        let link = document.createElement("a");
+        if (printResponse.fileName) {
+          link.setAttribute("download", printResponse.fileName);
+        }
+        if (printResponse.name) {
+          link.setAttribute("download", printResponse.name);
+        }
+        link.setAttribute(
+          "href",
+          "data:application/octet-stream;base64," + printResponse.fileData
+        );
+        link.click();
+      }
+    },
+    base64toFile(b64Data, contentType = "", fileName, sliceSize = 512) {
+      const byteCharacters = atob(b64Data);
+      const byteArrays = [];
+
+      for (
+        let offset = 0;
+        offset < byteCharacters.length;
+        offset += sliceSize
+      ) {
+        const slice = byteCharacters.slice(offset, offset + sliceSize);
+
+        const byteNumbers = new Array(slice.length);
+        for (let i = 0; i < slice.length; i++) {
+          byteNumbers[i] = slice.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        byteArrays.push(byteArray);
+      }
+      let file = new File(byteArrays, fileName, { type: contentType });
+
+      return file;
+    },
+    camundaAsyncFunctionInvoker(currentAction, formInstance) {
+      console.log("camundaAsyncFunctionInvoker");
+      console.log(currentAction);
+      console.log(formInstance);
+      this.signActionId = currentAction.id;
+      this.showModalBS("cryptoProSignatureModal");
+    },
+    // Методы печати с подписью
+    async getHashToSign() {
+      this.hideModalBS("cryptoProSignatureModal");
+      this.$emit("show-app-loader", "Выполнение действия по обращению");
+      const request = {
+        certificate: {
+          thumbprint: this.cryptoProSignature.dataForStamp.thumbprint,
+          subject: this.cryptoProSignature.dataForStamp.subject,
+          from: this.cryptoProSignature.dataForStamp.from,
+          validDue: this.cryptoProSignature.dataForStamp.validDue,
+        },
+        actionPayloadDTO: {
+          actionId: this.currentAction.info.id,
+          userId: 0,
+          roleId: 0,
+          orgId: 0,
+          appId: this.service.applicationDTO.id,
+          data: JSON.stringify(this.service.applicationDTO.data),
+        },
+      };
+      console.log(request);
+      axios
+        .post(this.url + "api/app/action-pdfstamp", request, {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        })
+        .then((response) => {
+          console.log("Ответ на экшн");
+          console.log(response);
+          console.log("Содержимое data.applicationDTO.data");
+          console.log(JSON.parse(response.data.applicationDTO.data));
+          console.log("Содержимое data.responseObject");
+          console.log(JSON.parse(response.data.responseObject));
+          if (!this.currentAction.info.version) {
+            // Действие v1
+            this.cryptoProSignature.dataForSign.hashToSign = JSON.parse(
+              response.data.responseObject
+            ).hashToSign;
+            this.cryptoProSignature.dataForSign.filename = JSON.parse(
+              response.data.responseObject
+            ).fileName;
+            // Установка хеша для подписи в скрытое поле формы
+            document.getElementById("DataToSignTxtBox").innerHTML = JSON.parse(
+              response.data.responseObject
+            ).hashToSign;
+          } else {
+            // Действие v2 и выше
+            this.cryptoProSignature.dataForSign.hashToSign = JSON.parse(
+              response.data.responseObject
+            ).payload_response.hashToSign;
+            this.cryptoProSignature.dataForSign.filename = JSON.parse(
+              response.data.responseObject
+            ).payload_response.fileName;
+            // Установка хеша для подписи в скрытое поле формы
+            document.getElementById("DataToSignTxtBox").innerHTML = JSON.parse(
+              response.data.responseObject
+            ).payload_response.hashToSign;
+          }
+          window.Common_SignCadesBES("CertListBox");
+          let hashField = document.getElementById("DataToSignTxtBox");
+          console.log(hashField);
+        })
+        .catch((error) => this.errorDefaultHandler(error));
+    },
+    async signCryptoPro() {
+      console.log(window.dataToSign);
+      const request = {
+        applicationId: this.service.applicationDTO.id,
+        signature: this.cryptoProSignature.dataForSign.signature,
+        hashToSign: this.cryptoProSignature.dataForSign.hashToSign,
+        filename: this.cryptoProSignature.dataForSign.filename,
+        actionId: this.currentAction.info.id,
+      };
+      console.log("Данные отправляемые для подписанного файла");
+      console.log(request);
+      await axios
+        .post(this.url + "api/app/action-insert-signdata", request, {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        })
+        .then(async (response) => {
+          console.log(response);
+          if (response.data.fileData) {
+            console.log(response.data);
+            console.log("JSON подписанного файла");
+            console.log(JSON.stringify(response.data));
+            this.handlePrintActionResponse(response.data);
+            // Обнуление информации о сертификате и сведений о подписи
+            document.getElementById("cert_info").style.display = "none";
+            document.getElementById("DataToSignTxtBox").innerHTML = "";
+            document.getElementById("SignatureTxtBox").innerHTML = "";
+            await this.$emit("show-app-form", {
+              serviceId: this.$route.params.modelId,
+              appId: this.$route.params.appId,
+            });
+            this.cryptoProSignature = {
+              dataForStamp: {
+                thumbprint: null,
+                subject: null,
+                from: null,
+                validDue: null,
+              },
+              dataForSign: {
+                signature: null,
+                hashToSign: null,
+                filename: null,
+              },
+            };
+            this.$emit("hide-app-loader");
+          }
+        });
+    },
+
+    // Модальные окна Bootstrap
+    showModalBS(modalId) {
+      $(`#${modalId}`).modal({
+        backdrop: true,
+      });
+      $(`#${modalId}`).modal("show");
+    },
+    hideModalBS(modalId) {
+      $(`#${modalId}`).modal("hide");
+    },
   },
 
   created() {
@@ -1621,7 +1671,7 @@ export default {
     this.expertProfile = this.expertInfo;
 
     // From 72
-    /*window.HAS_FORM = true;
+    window.HAS_FORM = true;
     window.errorDefaultHandler = this.errorDefaultHandler;
     window.requestStartDefaultHandler = this.requestStartDefaultHandler;
     window.makeRequest = this.makeRequest;
@@ -1635,25 +1685,6 @@ export default {
     window.formSubmission = {};
     window.applicationAdapter = { variables: {} };
     window.discardSavedFormioFiles = this.discardSavedFormioFiles;
-
-    if (this.user.auth) {
-      if (!+this.$route.params.appId) {
-        if (!this.service.info.id) {
-          this.loader.comment = "Загрузка формы обращения";
-          console.log("Запрос загрузки первой формы из AppView");
-          this.$emit("show-service-first-form", this.$route.params.modelId);
-        }
-      } else {
-        this.loader.comment = "Загрузка обращения";
-        this.$emit("show-app-form", {
-          serviceId: this.$route.params.modelId,
-          appId: this.$route.params.appId,
-        });
-      }
-      this.showLoader();
-    } else {
-      this.$router.push("/");
-    }*/
   },
 
   mounted() {
@@ -1665,7 +1696,7 @@ export default {
 
     // From 72
     // Загрузка файлов КриптоПро при открытии модального окна
-    /*$("#cryptoProSignatureModal").on("shown.bs.modal", function () {
+    $("#cryptoProSignatureModal").on("shown.bs.modal", function () {
       var file6 = document.createElement("script");
       file6.setAttribute("type", "text/javascript");
       file6.setAttribute("src", "cryptopro/load_extension.js");
@@ -1674,9 +1705,9 @@ export default {
       file7.setAttribute("type", "text/javascript");
       file7.setAttribute("src", "cryptopro/highlight.js");
       document.getElementsByTagName("body")[0].appendChild(file7);
-    });*/
+    });
     // Установка связи данных для печати с подписью с глобальной переменной
-    /*window.cryptoProSignature = this.cryptoProSignature;*/
+    window.cryptoProSignature = this.cryptoProSignature;
   },
 
   destroyed() {
@@ -1702,7 +1733,7 @@ export default {
       this.createAppForm();
       // this.hideLoader();
     },
-    /*"cryptoProSignature.dataForSign": {
+    "cryptoProSignature.dataForSign": {
       handler: function () {
         if (
           this.cryptoProSignature.dataForSign.signature &&
@@ -1713,7 +1744,7 @@ export default {
         }
       },
       deep: true,
-    },*/
+    },
   },
 };
 </script>

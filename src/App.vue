@@ -92,7 +92,13 @@
         @invoke-action="invokeAction($event)"
         @sort-table="sortTable($event.tableName, $event.sortedColumnIndex)"
         @show-service-first-form="showServiceFirstForm($event)"
+        @show-app-form="showAppForm($event)"
         @change-app-form="changeAppForm($event)"
+        @reset-app-form="resetAppForm"
+        @show-app-loader="loaderStart(appsLoader, $event)"
+        @hide-app-loader="loaderFinish(appsLoader)"
+        @update-registries="updateRegistries"
+        @set-application-stamp="setApplicationStamp($event)"
       />
       <ModalBootstrapCustomBS46 modal-id="notify" header>
         <template v-slot:modal-title> Оповещение </template>
@@ -155,10 +161,10 @@ export default {
 
   data() {
     return {
-      url: "https://teachers.coko38.ru/api/",
-      // url: "http://192.168.18.102:8180/api/",
-      urlAdd: "https://teachers.coko38.ru/api-teacher/api/",
-      // urlAdd: "http://192.168.18.102:8180/api-teacher/api/",
+      // url: "https://teachers.coko38.ru/api/",
+      url: "http://192.168.18.102:8180/api/",
+      // urlAdd: "https://teachers.coko38.ru/api-teacher/api/",
+      urlAdd: "http://192.168.18.102:8180/api-teacher/api/",
       user: {
         signInData: {
           login: "",
@@ -3825,54 +3831,6 @@ export default {
       setTimeout(this.loaderFinish, this.loadersDelay, this.profileLoader);
     },
 
-    // Заявления
-    async createNewApp(appsServiceId) {
-      this.loaderStart(this.appsLoader, "Загрузка формы заявления");
-      await this.getStartForm(appsServiceId);
-      this.loaderFinish(this.appsLoader);
-    },
-    async openExistingApp(appsServiceId, externalAppId) {
-      this.loaderStart(this.appsLoader, "Загрузка заявления");
-      let appId = this.appsResponse.find(function (item) {
-        if (item.id === externalAppId) return true;
-      }).appId;
-      await this.getStartForm(appsServiceId, appId);
-      this.loaderFinish(this.appsLoader);
-    },
-
-    // Сообщения
-    async createNewMessage(appsServiceId) {
-      this.loaderStart(this.messagesLoader, "Загрузка формы сообщения");
-      await this.getStartForm(appsServiceId);
-      this.loaderFinish(this.messagesLoader);
-    },
-    async openExistingMessage(appsServiceId, externalAppId) {
-      this.loaderStart(this.messagesLoader, "Загрузка сообщения");
-      let appId = this.messagesResponse.find(function (item) {
-        if (item.id === externalAppId) return true;
-      }).appId;
-      await this.getStartForm(appsServiceId, appId);
-      this.loaderFinish(this.messagesLoader);
-    },
-
-    // "Экспертизы"
-    async openExistingExpertise(appsServiceId, externalAppId) {
-      this.loaderStart(this.expertisesLoader, "Загрузка деталей экспертизы");
-      let appId = this.expertisesResponse.find(function (item) {
-        if (item.id === externalAppId) return true;
-      }).appId;
-      await this.getStartForm(appsServiceId, appId);
-      this.loaderFinish(this.expertisesLoader);
-    },
-
-    // Журнал сообщений
-    openExistingLog(appsServiceId, appId) {
-      // this.getStartForm(appsServiceId, appId);
-      console.log(appsServiceId + " - " + appId);
-      this.loaderStart(this.logsLoader, "Загрузка записи журнала");
-      setTimeout(this.loaderFinish, this.loadersDelay, this.logsLoader);
-    },
-
     // Получение списка мер
     async getServises() {
       await axios
@@ -4212,12 +4170,12 @@ export default {
           console.groupEnd();
         });
     },
-    async showServiceFirstForm(serviceId) {
-      this.loaderStart(this.appsLoader, "Загрузка формы заявления");
+    async showServiceFirstForm({ serviceId, loaderComment }) {
+      this.loaderStart(this.appsLoader, loaderComment);
       console.log("Запуск массива запросов на получение первой формы");
       Promise.all([
-        this.getServiceInfo(serviceId),
-        this.getServiceForms(serviceId),
+        // this.getServiceInfo(serviceId),
+        // this.getServiceForms(serviceId),
         this.getServiceForm(serviceId),
       ]).then(() => {
         this.loaderFinish(this.appsLoader);
@@ -4228,27 +4186,22 @@ export default {
       });
     },
     // Форма существующего заявления
-    async showAppForm({ serviceId, appId }) {
-      // console.log(
-      //   `Необходимо получить обращение ${appId} по сервису ${serviceId}`
-      // );
+    async showAppForm({ serviceId, appId, loaderComment }) {
+      this.loaderStart(this.appsLoader, loaderComment);
+      console.log(
+        `Необходимо получить обращение ${appId} по сервису ${serviceId}`
+      );
       Promise.all([
-        this.getServiceInfo(serviceId),
-        this.getServiceForms(serviceId),
+        // this.getServiceInfo(serviceId),
+        // this.getServiceForms(serviceId),
         this.getServiceForm(serviceId, appId),
       ]).then(() => {
+        this.loaderFinish(this.appsLoader);
         this.loadedServiceForm = !this.loadedServiceForm;
         console.log(
           "Форма существующего обращения (не первая), детальная информация по сервису и формы сервиса загружены"
         );
       });
-      if (
-        this.$route.name !== "ApplicationView" ||
-        this.$route.params.modelId !== serviceId ||
-        this.$route.params.appId !== appId
-      ) {
-        this.goToView("/application_view/model/" + serviceId + "/app/" + appId);
-      }
     },
     async getServiceForms(serviceId) {
       // console.log(`Запрос форм по БП - ${serviceId}`);
@@ -4309,6 +4262,16 @@ export default {
     setApplicationStamp(application) {
       this.service.applicationDTOJSONStamp = JSON.stringify(application);
     },
+    async updateRegistries() {
+      Promise.all([
+        this.getMessages(),
+        this.getApps(),
+        this.getExpertises(),
+        this.getAudit(),
+      ]).then(() => {
+        console.log("Реестры обновлены");
+      });
+    },
   },
 
   created() {
@@ -4331,31 +4294,6 @@ export default {
       console.log("Приложение загружено");
       this.appLoaded = true;
     });
-
-    // From 72
-    /*await this.getAppConfig();
-    await this.checkAuth();
-    this.checkLogoutNote();
-    if (this.config.user.auth) {
-      await this.getUserShortInfo();
-      await this.getUserFullInfo();
-
-      if (
-        !this.config.user.shortInfo.roleId &&
-        this.config.user.fullInfo.roles.length > 0
-      ) {
-        await this.checkUserRole();
-      }
-      if (
-        this.config.user.shortInfo.roleId &&
-        !this.config.user.shortInfo.orgId &&
-        this.config.user.fullInfo.userOrganizations.length > 0
-      ) {
-        await this.checkUserOrg();
-      }
-      this.getApps();
-      this.getMessages();
-    }*/
   },
 
   watch: {
@@ -4368,7 +4306,6 @@ export default {
         this.getAudit();
       }
     },
-    // Заполнение селектов фильтров
 
     // From 72
     /*"config.keepAliveSession": async function () {
