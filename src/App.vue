@@ -1365,8 +1365,8 @@ export default {
       // From 72
       config: {
         // url: "/",
-        url: "https://teachers.coko38.ru/",
-        // url: "http://192.168.18.102:8180/",
+        // url: "https://teachers.coko38.ru/",
+        url: "http://192.168.18.102:8180/",
         esiaSignInUrl: "",
         user: {
           auth: false,
