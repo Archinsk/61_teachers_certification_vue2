@@ -14,7 +14,7 @@
     </div>
     <div class="container">
       <div class="row my-0 mb-4">
-        <div class="col-12">
+        <!--<div class="col-12">
           <div class="alert alert-danger mt-4 mb-0" role="alert">
             <h4>
               Уважаемые коллеги! Педагогические работники в соответствии с п.28
@@ -23,7 +23,7 @@
               подтверждающими результаты их профессиональной деятельности
             </h4>
           </div>
-        </div>
+        </div>-->
         <div class="col-12 col-sm-6 mt-4">
           <CardBootstrapCustomBS46 header class="h-100 shadow">
             <template v-slot:card-header>
