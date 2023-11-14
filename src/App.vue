@@ -716,6 +716,7 @@ export default {
 
       // "Журнал действий"
       logsServiceId: 2,
+      auditResponse: [],
       logsTable: {
         id: "logsTable",
         columnsList: [
@@ -2260,6 +2261,7 @@ export default {
           withCredentials: true,
         })
         .then((response) => {
+          this.auditResponse = response.data;
           let logsTableRows = this.logsConvertToTable(response.data).reverse();
           this.logsTable.rowsList = logsTableRows;
           this.logsTable.pagination.itemsTotal = logsTableRows.length;
@@ -2893,82 +2895,143 @@ export default {
     },
 
     async getHomeViewData() {
-      await Promise.all([this.getFileResources(), this.getGakJournal()]).then(
-        () => {
-          console.log(
-            "Получены общедоступные сведения, необходимые для главной страницы"
-          );
-        }
-      );
-      if (this.user.isAuth) {
-        await Promise.all([this.getUserId(), this.getUserInfo()]).then(() => {
-          console.log(
-            "Получены сведения авторизованного пользователя, необходимые для главной страницы"
-          );
-        });
+      if (!this.user.shortInfo.userId && !this.esiaLink) {
+        await this.getLogin();
       }
+      let homeViewRequests = [];
+      if (!this.fileResources.length) {
+        homeViewRequests.push(this.getFileResources());
+      }
+      if (!this.expertisesScheduleh) {
+        homeViewRequests.push(this.getGakJournal());
+      }
+      await Promise.all(homeViewRequests).then(() => {
+        console.log(
+          "Общедоступные сведения, необходимые для главной страницы, доступны"
+        );
+      });
+      let userDataRequests = [];
+      if (!this.user.shortInfo.userId && !this.esiaLink) {
+        userDataRequests.push(this.getUserId());
+      }
+      if (!this.user.shortInfo.userId && !this.esiaLink) {
+        userDataRequests.push(this.getUserInfo());
+      }
+      await Promise.all(userDataRequests).then(() => {
+        console.log(
+          "Сведения авторизованного пользователя, необходимые для главной страницы, доступны"
+        );
+      });
     },
     async getAccountViewData(tabName) {
-      console.log("getAccountViewData");
-      await Promise.all([this.getUserId(), this.getUserInfo()]).then(() => {
+      if (!this.user.shortInfo.userId && !this.esiaLink) {
+        await this.getLogin();
+      }
+      let userDataRequests = [];
+      if (!this.user.shortInfo.userId && !this.esiaLink) {
+        userDataRequests.push(this.getUserId());
+      }
+      if (!this.user.shortInfo.userId && !this.esiaLink) {
+        userDataRequests.push(this.getUserInfo());
+      }
+      await Promise.all(userDataRequests).then(() => {
         console.log(
-          "Получены сведения сведения о пользователе, необходимые для личного кабинета"
+          "Сведения авторизованного пользователя, необходимые для личного кабинета, доступны"
         );
       });
       if (tabName === "basic-tab") {
         if (this.user.shortInfo.roleId === this.teacherRoleId) {
-          await this.getDictionary("statusModel_2", '"Статусы заявлений"');
-          await this.getApps();
+          if (!this.dictionaries.statusModel_2.length) {
+            await this.getDictionary("statusModel_2", '"Статусы заявлений"');
+          }
+          if (!this.appsResponse.length) {
+            await this.getApps();
+          }
           console.log(
-            "Получены сведения для вкладки «Мои заявления» личного кабинета педагога"
+            "Сведения для вкладки «Мои заявления» личного кабинета педагога доступны"
           );
         } else if (this.user.shortInfo.roleId === this.expertRoleId) {
-          await Promise.all([
-            this.getDictionary("statusModel_101", '"Статусы экспертиз"'),
-            this.getDictionary("resultExpert", '"Результаты экспертиз"'),
-          ]);
-          await this.getExpertises();
+          let expertisesTabRequests = [];
+          if (!this.dictionaries.statusModel_101.length) {
+            expertisesTabRequests.push(
+              this.getDictionary("statusModel_101", '"Статусы экспертиз"')
+            );
+          }
+          if (!this.dictionaries.resultExpert.length) {
+            expertisesTabRequests.push(
+              this.getDictionary("resultExpert", '"Результаты экспертиз"')
+            );
+          }
+          await Promise.all([expertisesTabRequests]);
+          if (!this.expertisesResponse.length) {
+            await this.getExpertises();
+          }
           console.log(
-            "Получены сведения для вкладки «Мои экспертизы» личного кабинета эксперта"
+            "Cведения для вкладки «Мои экспертизы» личного кабинета эксперта доступны"
           );
         }
       }
       if (tabName === "messages-tab") {
-        await this.getDictionary("statusModel_1", '"Статусы сообщений"'),
+        if (!this.dictionaries.statusModel_1.length) {
+          await this.getDictionary("statusModel_1", '"Статусы сообщений"');
+        }
+        if (!this.messagesResponse.length) {
           await this.getMessages();
+        }
         console.log(
-          "Получены сведения для вкладки «Мои сообщения» личного кабинета педагога"
+          "Cведения для вкладки «Мои сообщения» личного кабинета педагога доступны"
         );
       }
       if (tabName === "teacher-info-tab") {
-        await this.getTeacher();
+        if (!this.teacherInfo.id) {
+          await this.getTeacher();
+        }
         console.log(
-          "Получены сведения для вкладки «Личная информация» личного кабинета педагога"
+          "Сведения для вкладки «Личная информация» личного кабинета педагога доступны"
         );
       }
       if (tabName === "expert-info-tab") {
-        await Promise.all([
-          this.getDictionary(
-            "municipalEntityIrkutsk",
-            '"Муниципальные образования"'
-          ),
-          this.getDictionary("jobGroups", '"Должность"'),
-          this.getDictionary("subjectArea", '"Предметная область"'),
-        ]);
-        await this.getExpert();
+        let expertInfoTabRequests = [];
+        if (!this.dictionaries.municipalEntityIrkutsk.length) {
+          expertInfoTabRequests.push(
+            this.getDictionary(
+              "municipalEntityIrkutsk",
+              '"Муниципальные образования"'
+            )
+          );
+        }
+        if (!this.dictionaries.jobGroups.length) {
+          expertInfoTabRequests.push(
+            this.getDictionary("jobGroups", '"Должность"')
+          );
+        }
+        if (!this.dictionaries.subjectArea.length) {
+          expertInfoTabRequests.push(
+            this.getDictionary("subjectArea", '"Предметная область"')
+          );
+          await Promise.all([expertInfoTabRequests]);
+          if (!this.expertInfo.id) {
+            await this.getExpert();
+          }
+        }
         console.log(
-          "Получены сведения для вкладки «Личная информация» личного кабинета эксперта"
+          "Cведения для вкладки «Личная информация» личного кабинета эксперта доступны"
         );
       }
       if (tabName === "analytics-tab") {
+        if (!this.expertInfo.id) {
+          await this.expertInfo();
+        }
         console.log(
-          "Получены сведения для вкладки «Аналитика» личного кабинета эксперта"
+          "Cведения для вкладки «Аналитика» личного кабинета эксперта доступны"
         );
       }
       if (tabName === "actions-journal-tab") {
-        await this.getAudit();
+        if (!this.auditResponse.length) {
+          await this.getAudit();
+        }
         console.log(
-          "Получены сведения для вкладки «Журнал действий» личного кабинета эксперта"
+          "Cведения для вкладки «Журнал действий» личного кабинета эксперта доступны"
         );
       }
     },
@@ -2985,12 +3048,6 @@ export default {
     //   }
     // },
     // Заполнение селектов фильтров
-  },
-
-  async created() {
-    await this.getLogin().then(() => {
-      this.appLoaded = true;
-    });
   },
 
   mounted: async function () {
