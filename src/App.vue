@@ -89,6 +89,8 @@
         @clear-expertises-filter="clearExpertisesFilter"
         @invoke-action="invokeAction($event)"
         @sort-table="sortTable($event.tableName, $event.sortedColumnIndex)"
+        @get-home-view-data="getHomeViewData"
+        @get-account-view-data="getAccountViewData($event)"
       />
       <ModalBootstrapCustomBS46 modal-id="notify" header>
         <template v-slot:modal-title> Оповещение </template>
@@ -156,6 +158,7 @@ export default {
       urlAdd: "https://teachers.coko38.ru/api-teacher/api/",
       // urlAdd: "http://192.168.17.59:8180/api-teacher/api/",
       user: {
+        isAuth: false,
         signInData: {
           login: "",
           password: "",
@@ -1579,8 +1582,7 @@ export default {
           if (error.response) {
             if (error.response.status === 406) {
               console.log("Пользователь уже авторизован");
-              this.getUserId();
-              this.getUserInfo();
+              this.user.isAuth = true;
             } else if (error.response.status === 404) {
               console.log(
                 "Проверка авторизованности пользователя не удалась. Ошибка при составлении ссылки на вход ЕСИА со стороны закрытой части"
@@ -1689,8 +1691,8 @@ export default {
     },
 
     // Получение информации о пользователе
-    getUserId() {
-      axios(this.url + "auth/get-user", {
+    async getUserId() {
+      await axios(this.url + "auth/get-user", {
         withCredentials: true,
       })
         .then((response) => {
@@ -1711,8 +1713,8 @@ export default {
           }
         });
     },
-    getUserInfo() {
-      axios(this.url + "core/get-user", {
+    async getUserInfo() {
+      await axios(this.url + "core/get-user", {
         withCredentials: true,
       })
         .then((response) => {
@@ -1755,11 +1757,6 @@ export default {
       console.groupCollapsed("Пользователь проинициализирован с ролью");
       console.log(role);
       console.groupEnd();
-      if (this.user.shortInfo.roleId === this.teacherRoleId) {
-        this.getTeacher();
-      } else if (this.user.shortInfo.roleId === this.expertRoleId) {
-        this.getExpert();
-      }
     },
 
     // Смена роли пользователя
@@ -1952,8 +1949,8 @@ export default {
     //       console.groupEnd();
     //     });
     // },
-    getApps() {
-      axios
+    async getApps() {
+      await axios
         .get(this.urlAdd + this.appRequestQuery, {
           withCredentials: true,
         })
@@ -2037,8 +2034,8 @@ export default {
     },
 
     // Получение списка заявлений пользователя
-    getMessages() {
-      axios
+    async getMessages() {
+      await axios
         .get(this.urlAdd + this.messageRequestQuery, {
           withCredentials: true,
         })
@@ -2175,8 +2172,8 @@ export default {
     //       console.groupEnd();
     //     });
     // },
-    getExpertises() {
-      axios
+    async getExpertises() {
+      await axios
         .get(this.urlAdd + this.expertiseRequestQuery, {
           withCredentials: true,
         })
@@ -2257,8 +2254,8 @@ export default {
     },
 
     // Список записей журнала действий
-    getAudit() {
-      axios
+    async getAudit() {
+      await axios
         .get(this.urlAdd + "data/getAudit", {
           withCredentials: true,
         })
@@ -2622,8 +2619,8 @@ export default {
     },
 
     // Данные личного кабинета
-    getTeacher() {
-      axios
+    async getTeacher() {
+      await axios
         .get(this.urlAdd + "teacher/get", {
           withCredentials: true,
         })
@@ -2668,8 +2665,8 @@ export default {
           setTimeout(this.loaderFinish, this.loadersDelay, this.profileLoader);
         });
     },
-    getExpert() {
-      axios
+    async getExpert() {
+      await axios
         .get(this.urlAdd + "expert/get", {
           withCredentials: true,
         })
@@ -2825,9 +2822,6 @@ export default {
           withCredentials: true,
         })
         .then((response) => {
-          // this.dictionaries[dictionaryCode] = this.convertDictionary(
-          //   response.data
-          // );
           this.expertisesSchedule = this.parseGakJournal(response.data);
           console.groupCollapsed("Расписание аттестации");
           console.log(response.data);
@@ -2897,45 +2891,114 @@ export default {
         );
       }
     },
+
+    async getHomeViewData() {
+      await Promise.all([this.getFileResources(), this.getGakJournal()]).then(
+        () => {
+          console.log(
+            "Получены общедоступные сведения, необходимые для главной страницы"
+          );
+        }
+      );
+      if (this.user.isAuth) {
+        await Promise.all([this.getUserId(), this.getUserInfo()]).then(() => {
+          console.log(
+            "Получены сведения авторизованного пользователя, необходимые для главной страницы"
+          );
+        });
+      }
+    },
+    async getAccountViewData(tabName) {
+      console.log("getAccountViewData");
+      await Promise.all([this.getUserId(), this.getUserInfo()]).then(() => {
+        console.log(
+          "Получены сведения сведения о пользователе, необходимые для личного кабинета"
+        );
+      });
+      if (tabName === "basic-tab") {
+        if (this.user.shortInfo.roleId === this.teacherRoleId) {
+          await this.getDictionary("statusModel_2", '"Статусы заявлений"');
+          await this.getApps();
+          console.log(
+            "Получены сведения для вкладки «Мои заявления» личного кабинета педагога"
+          );
+        } else if (this.user.shortInfo.roleId === this.expertRoleId) {
+          await Promise.all([
+            this.getDictionary("statusModel_101", '"Статусы экспертиз"'),
+            this.getDictionary("resultExpert", '"Результаты экспертиз"'),
+          ]);
+          await this.getExpertises();
+          console.log(
+            "Получены сведения для вкладки «Мои экспертизы» личного кабинета эксперта"
+          );
+        }
+      }
+      if (tabName === "messages-tab") {
+        await this.getDictionary("statusModel_1", '"Статусы сообщений"'),
+          await this.getMessages();
+        console.log(
+          "Получены сведения для вкладки «Мои сообщения» личного кабинета педагога"
+        );
+      }
+      if (tabName === "teacher-info-tab") {
+        await this.getTeacher();
+        console.log(
+          "Получены сведения для вкладки «Личная информация» личного кабинета педагога"
+        );
+      }
+      if (tabName === "expert-info-tab") {
+        await Promise.all([
+          this.getDictionary(
+            "municipalEntityIrkutsk",
+            '"Муниципальные образования"'
+          ),
+          this.getDictionary("jobGroups", '"Должность"'),
+          this.getDictionary("subjectArea", '"Предметная область"'),
+        ]);
+        await this.getExpert();
+        console.log(
+          "Получены сведения для вкладки «Личная информация» личного кабинета эксперта"
+        );
+      }
+      if (tabName === "analytics-tab") {
+        console.log(
+          "Получены сведения для вкладки «Аналитика» личного кабинета эксперта"
+        );
+      }
+      if (tabName === "actions-journal-tab") {
+        await this.getAudit();
+        console.log(
+          "Получены сведения для вкладки «Журнал действий» личного кабинета эксперта"
+        );
+      }
+    },
   },
 
   watch: {
     // Получение заявлений
-    isAuthUser: function () {
-      if (this.isAuthUser) {
-        this.getMessages();
-        this.getApps();
-        this.getExpertises();
-        this.getAudit();
-        // this.authIntervalId = setInterval(this.checkAuth, 30000);
-      } else {
-        // clearInterval(this.authIntervalId);
-      }
-    },
+    // isAuthUser: function () {
+    //   if (this.isAuthUser) {
+    //     this.getMessages();
+    //     this.getApps();
+    //     this.getExpertises();
+    //     this.getAudit();
+    //   }
+    // },
     // Заполнение селектов фильтров
+  },
+
+  async created() {
+    await this.getLogin().then(() => {
+      this.appLoaded = true;
+    });
   },
 
   mounted: async function () {
     // Событие при закрытии модального окна
     $("#notify").on("hidden.bs.modal", this.afterCloseNotify);
 
-    // Запрос информации о пользователе
-    // this.getLogin();
-
-    // Получение файлов для работы
-    // this.getFileResources();
-
-    // Получение расписания аттестации
-    // this.getGakJournal();
-
-    // Получение справочников
-    // this.getAllDictionaries();
-
-    // Получение бизнес-процессов (для справки)
-    // this.getServises();
-
     // Получение общих сведений
-    Promise.all([
+    /*Promise.all([
       this.getLogin(),
       this.getFileResources(),
       this.getGakJournal(),
@@ -2944,7 +3007,7 @@ export default {
     ]).then(() => {
       console.log("Приложение загружено");
       this.appLoaded = true;
-    });
+    });*/
   },
 };
 </script>

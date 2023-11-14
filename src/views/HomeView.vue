@@ -200,6 +200,10 @@ export default {
     },
   },
 
+  async created() {
+    await this.$emit("get-home-view-data");
+  },
+
   mounted: function () {
     this.userRoleIdSelected = this.userSelectedRoleId;
   },

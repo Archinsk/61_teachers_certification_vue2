@@ -14,6 +14,7 @@
               role="tab"
               aria-controls="app-teacher-tab-pane"
               aria-selected="false"
+              @click="$emit('get-account-view-data', 'apps-tab')"
             >
               Мои заявления
             </button>
@@ -28,6 +29,7 @@
               role="tab"
               aria-controls="messages-teacher-tab-pane"
               aria-selected="false"
+              @click="$emit('get-account-view-data', 'messages-tab')"
             >
               Мои сообщения
             </button>
@@ -42,6 +44,7 @@
               role="tab"
               aria-controls="profile-teacher-tab-pane"
               aria-selected="true"
+              @click="$emit('get-account-view-data', 'teacher-info-tab')"
             >
               Личная информация
             </button>
@@ -467,6 +470,7 @@
               role="tab"
               aria-controls="expertises-expert-tab-pane"
               aria-selected="false"
+              @click="$emit('get-account-view-data', 'expertises-tab')"
             >
               Мои экспертизы
             </button>
@@ -481,6 +485,7 @@
               role="tab"
               aria-controls="profile-expert-tab-pane"
               aria-selected="true"
+              @click="$emit('get-account-view-data', 'expert-info-tab')"
             >
               Личная информация
             </button>
@@ -495,6 +500,7 @@
               role="tab"
               aria-controls="analitics-expert-tab-pane"
               aria-selected="false"
+              @click="$emit('get-account-view-data', 'analytics-tab')"
             >
               Аналитика
             </button>
@@ -509,6 +515,7 @@
               role="tab"
               aria-controls="actions-expert-tab-pane"
               aria-selected="false"
+              @click="$emit('get-account-view-data', 'actions-journal-tab')"
             >
               Журнал действий
             </button>
@@ -1447,6 +1454,7 @@ export default {
         { id: 3, text: "Русский язык" },
       ],
       testValue: "Русский язык",
+      selectedTab: "basic-tab",
     };
   },
 
@@ -1502,10 +1510,8 @@ export default {
     },
   },
 
-  created() {
-    // if (!this.isAuthUser) {
-    //   this.$router.push("/");
-    // }
+  async created() {
+    await this.$emit("get-account-view-data", "basic-tab");
     this.teacherProfile = this.teacherInfo;
     this.expertProfile = this.expertInfo;
   },
