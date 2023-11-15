@@ -14,7 +14,6 @@
         :news-list="newsList"
         :url="url"
         :app-loaded="appLoaded"
-        :esia-link="esiaLink"
         :user="user"
         :user-selected-role-id="userSelectedRoleId"
         :teacher-info="teacherInfo"
@@ -217,7 +216,6 @@ export default {
       loadersDelay: 1000,
 
       // Авторизация
-      esiaLink: "",
       esiaLogoutLink: "",
       authError: {
         type: "",
@@ -1567,17 +1565,10 @@ export default {
         withCredentials: true,
       })
         .then((response) => {
-          if (this.isFirstLoad) {
-            this.isFirstLoad = false;
-            this.esiaLink = response.data.url;
-            console.groupCollapsed("Ссылка на авторизацию ЕСИА");
-            console.log(response.data);
-            console.groupEnd();
-          } else {
-            console.log(response);
-            location.href = response.data.url;
-            this.esiaLink = "";
-          }
+          console.groupCollapsed("Ссылка на авторизацию ЕСИА");
+          console.log(response.data);
+          console.groupEnd();
+          location.href = response.data.url;
         })
         .catch((error) => {
           if (error.response) {
@@ -2895,14 +2886,17 @@ export default {
     },
 
     async getHomeViewData() {
-      if (!this.user.shortInfo.userId && !this.esiaLink) {
-        await this.getLogin();
+      if (!this.user.shortInfo.userId) {
+        await this.getUserId();
+      }
+      if (this.user.shortInfo.userId && !this.user.fullInfo.userId) {
+        await this.getUserInfo();
       }
       let homeViewRequests = [];
       if (!this.fileResources.length) {
         homeViewRequests.push(this.getFileResources());
       }
-      if (!this.expertisesScheduleh) {
+      if (!this.expertisesSchedule) {
         homeViewRequests.push(this.getGakJournal());
       }
       await Promise.all(homeViewRequests).then(() => {
@@ -2910,35 +2904,14 @@ export default {
           "Общедоступные сведения, необходимые для главной страницы, доступны"
         );
       });
-      let userDataRequests = [];
-      if (!this.user.shortInfo.userId && !this.esiaLink) {
-        userDataRequests.push(this.getUserId());
-      }
-      if (!this.user.shortInfo.userId && !this.esiaLink) {
-        userDataRequests.push(this.getUserInfo());
-      }
-      await Promise.all(userDataRequests).then(() => {
-        console.log(
-          "Сведения авторизованного пользователя, необходимые для главной страницы, доступны"
-        );
-      });
     },
     async getAccountViewData(tabName) {
-      if (!this.user.shortInfo.userId && !this.esiaLink) {
-        await this.getLogin();
+      if (!this.user.shortInfo.userId) {
+        await this.getUserId();
       }
-      let userDataRequests = [];
-      if (!this.user.shortInfo.userId && !this.esiaLink) {
-        userDataRequests.push(this.getUserId());
+      if (this.user.shortInfo.userId && !this.user.fullInfo.userId) {
+        await this.getUserInfo();
       }
-      if (!this.user.shortInfo.userId && !this.esiaLink) {
-        userDataRequests.push(this.getUserInfo());
-      }
-      await Promise.all(userDataRequests).then(() => {
-        console.log(
-          "Сведения авторизованного пользователя, необходимые для личного кабинета, доступны"
-        );
-      });
       if (tabName === "basic-tab") {
         if (this.user.shortInfo.roleId === this.teacherRoleId) {
           if (!this.dictionaries.statusModel_2.length) {

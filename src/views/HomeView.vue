@@ -82,7 +82,6 @@
                 <TheSignInFormBS46
                   v-if="!isAuthUser"
                   :app-loaded="appLoaded"
-                  :esia-link="esiaLink"
                   :sign-data="user.signInData"
                   :auth-error="authError"
                   @sign-in-local="$emit('sign-in-local', $event)"
@@ -176,7 +175,6 @@ export default {
   },
   props: [
     "appLoaded",
-    "esiaLink",
     "url",
     "user",
     "userSelectedRoleId",

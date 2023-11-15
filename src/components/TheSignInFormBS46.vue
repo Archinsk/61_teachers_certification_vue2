@@ -56,11 +56,7 @@
     <!--    <button class="btn btn-outline-primary btn-block">Отмена</button>-->
     <hr />
     <p class="mb-3">Авторизоваться через портал государственных услуг</p>
-    <button
-      class="btn btn-primary"
-      :disabled="!appLoaded || !esiaLink"
-      @click="$emit('sign-in-esia', signInData)"
-    >
+    <button class="btn btn-primary" @click="$emit('sign-in-esia', signInData)">
       <img
         src="../assets/gu_icon.svg"
         style="height: 1.5rem; padding: 0.125rem"
@@ -74,7 +70,7 @@
 <script>
 export default {
   name: "TheSignInFormBS46",
-  props: ["appLoaded", "esiaLink", "signData", "authError"],
+  props: ["appLoaded", "signData", "authError"],
 
   data() {
     return {
