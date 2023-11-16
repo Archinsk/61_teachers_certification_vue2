@@ -14,7 +14,7 @@
     </div>
     <div class="container">
       <div class="row my-0 mb-4">
-        <div class="col-12">
+        <!--<div class="col-12">
           <div class="alert alert-danger mt-4 mb-0" role="alert">
             <h4>
               5 октября стартовало голосование по выбору победителя премии
@@ -31,7 +31,7 @@
               признательны Вам за обратную связь.
             </h4>
           </div>
-        </div>
+        </div>-->
         <div class="col-12 col-sm-6 mt-4">
           <CardBootstrapCustomBS46 header class="h-100 shadow">
             <template v-slot:card-header>
@@ -90,7 +90,6 @@
                 <TheSignInFormBS46
                   v-if="!isAuthUser"
                   :app-loaded="appLoaded"
-                  :esia-link="esiaLink"
                   :sign-data="user.signInData"
                   :auth-error="authError"
                   @sign-in-local="$emit('sign-in-local', $event)"
@@ -184,7 +183,6 @@ export default {
   },
   props: [
     "appLoaded",
-    "esiaLink",
     "url",
     "user",
     "userSelectedRoleId",
@@ -206,6 +204,10 @@ export default {
     userSelectedRoleId: function () {
       this.userRoleIdSelected = this.userSelectedRoleId;
     },
+  },
+
+  async created() {
+    await this.$emit("get-home-view-data");
   },
 
   mounted: function () {

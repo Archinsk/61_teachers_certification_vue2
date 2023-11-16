@@ -14,7 +14,6 @@
         :news-list="newsList"
         :url="url"
         :app-loaded="appLoaded"
-        :esia-link="esiaLink"
         :user="user"
         :user-selected-role-id="userSelectedRoleId"
         :teacher-info="teacherInfo"
@@ -99,6 +98,8 @@
         @hide-app-loader="loaderFinish(appsLoader)"
         @update-registries="updateRegistries"
         @set-application-stamp="setApplicationStamp($event)"
+        @get-home-view-data="getHomeViewData"
+        @get-account-view-data="getAccountViewData($event)"
       />
       <ModalBootstrapCustomBS46 modal-id="notify" header>
         <template v-slot:modal-title> Оповещение </template>
@@ -166,6 +167,7 @@ export default {
       // urlAdd: "https://teachers.coko38.ru/api-teacher/api/",
       urlAdd: "http://192.168.18.102:8180/api-teacher/api/",
       user: {
+        isAuth: false,
         signInData: {
           login: "",
           password: "",
@@ -224,7 +226,6 @@ export default {
       loadersDelay: 1000,
 
       // Авторизация
-      esiaLink: "",
       esiaLogoutLink: "",
       authError: {
         type: "",
@@ -723,6 +724,7 @@ export default {
 
       // "Журнал действий"
       logsServiceId: 2,
+      auditResponse: [],
       logsTable: {
         id: "logsTable",
         columnsList: [
@@ -2858,24 +2860,16 @@ export default {
         withCredentials: true,
       })
         .then((response) => {
-          if (this.isFirstLoad) {
-            this.isFirstLoad = false;
-            this.esiaLink = response.data.url;
-            console.groupCollapsed("Ссылка на авторизацию ЕСИА");
-            console.log(response.data);
-            console.groupEnd();
-          } else {
-            console.log(response);
-            location.href = response.data.url;
-            this.esiaLink = "";
-          }
+          console.groupCollapsed("Ссылка на авторизацию ЕСИА");
+          console.log(response.data);
+          console.groupEnd();
+          location.href = response.data.url;
         })
         .catch((error) => {
           if (error.response) {
             if (error.response.status === 406) {
               console.log("Пользователь уже авторизован");
-              this.getUserId();
-              this.getUserInfo();
+              this.user.isAuth = true;
             } else if (error.response.status === 404) {
               console.log(
                 "Проверка авторизованности пользователя не удалась. Ошибка при составлении ссылки на вход ЕСИА со стороны закрытой части"
@@ -2984,8 +2978,8 @@ export default {
     },
 
     // Получение информации о пользователе
-    getUserId() {
-      axios(this.url + "auth/get-user", {
+    async getUserId() {
+      await axios(this.url + "auth/get-user", {
         withCredentials: true,
       })
         .then((response) => {
@@ -3006,8 +3000,8 @@ export default {
           }
         });
     },
-    getUserInfo() {
-      axios(this.url + "core/get-user", {
+    async getUserInfo() {
+      await axios(this.url + "core/get-user", {
         withCredentials: true,
       })
         .then((response) => {
@@ -3050,11 +3044,6 @@ export default {
       console.groupCollapsed("Пользователь проинициализирован с ролью");
       console.log(role);
       console.groupEnd();
-      if (this.user.shortInfo.roleId === this.teacherRoleId) {
-        this.getTeacher();
-      } else if (this.user.shortInfo.roleId === this.expertRoleId) {
-        this.getExpert();
-      }
     },
 
     // Смена роли пользователя
@@ -3247,8 +3236,8 @@ export default {
     //       console.groupEnd();
     //     });
     // },
-    getApps() {
-      axios
+    async getApps() {
+      await axios
         .get(this.urlAdd + this.appRequestQuery, {
           withCredentials: true,
         })
@@ -3332,8 +3321,8 @@ export default {
     },
 
     // Получение списка заявлений пользователя
-    getMessages() {
-      axios
+    async getMessages() {
+      await axios
         .get(this.urlAdd + this.messageRequestQuery, {
           withCredentials: true,
         })
@@ -3470,8 +3459,8 @@ export default {
     //       console.groupEnd();
     //     });
     // },
-    getExpertises() {
-      axios
+    async getExpertises() {
+      await axios
         .get(this.urlAdd + this.expertiseRequestQuery, {
           withCredentials: true,
         })
@@ -3552,12 +3541,13 @@ export default {
     },
 
     // Список записей журнала действий
-    getAudit() {
-      axios
+    async getAudit() {
+      await axios
         .get(this.urlAdd + "data/getAudit", {
           withCredentials: true,
         })
         .then((response) => {
+          this.auditResponse = response.data;
           let logsTableRows = this.logsConvertToTable(response.data).reverse();
           this.logsTable.rowsList = logsTableRows;
           this.logsTable.pagination.itemsTotal = logsTableRows.length;
@@ -3869,8 +3859,8 @@ export default {
     },
 
     // Данные личного кабинета
-    getTeacher() {
-      axios
+    async getTeacher() {
+      await axios
         .get(this.urlAdd + "teacher/get", {
           withCredentials: true,
         })
@@ -3915,8 +3905,8 @@ export default {
           setTimeout(this.loaderFinish, this.loadersDelay, this.profileLoader);
         });
     },
-    getExpert() {
-      axios
+    async getExpert() {
+      await axios
         .get(this.urlAdd + "expert/get", {
           withCredentials: true,
         })
@@ -4072,9 +4062,6 @@ export default {
           withCredentials: true,
         })
         .then((response) => {
-          // this.dictionaries[dictionaryCode] = this.convertDictionary(
-          //   response.data
-          // );
           this.expertisesSchedule = this.parseGakJournal(response.data);
           console.groupCollapsed("Расписание аттестации");
           console.log(response.data);
@@ -4272,6 +4259,129 @@ export default {
         console.log("Реестры обновлены");
       });
     },
+    async getHomeViewData() {
+      if (!this.user.shortInfo.userId) {
+        await this.getUserId();
+      }
+      if (this.user.shortInfo.userId && !this.user.fullInfo.userId) {
+        await this.getUserInfo();
+      }
+      let homeViewRequests = [];
+      if (!this.fileResources.length) {
+        homeViewRequests.push(this.getFileResources());
+      }
+      if (!this.expertisesSchedule) {
+        homeViewRequests.push(this.getGakJournal());
+      }
+      await Promise.all(homeViewRequests).then(() => {
+        console.log(
+          "Общедоступные сведения, необходимые для главной страницы, доступны"
+        );
+      });
+    },
+    async getAccountViewData(tabName) {
+      if (!this.user.shortInfo.userId) {
+        await this.getUserId();
+      }
+      if (this.user.shortInfo.userId && !this.user.fullInfo.userId) {
+        await this.getUserInfo();
+      }
+      if (tabName === "basic-tab") {
+        if (this.user.shortInfo.roleId === this.teacherRoleId) {
+          if (!this.dictionaries.statusModel_2.length) {
+            await this.getDictionary("statusModel_2", '"Статусы заявлений"');
+          }
+          if (!this.appsResponse.length) {
+            await this.getApps();
+          }
+          console.log(
+            "Сведения для вкладки «Мои заявления» личного кабинета педагога доступны"
+          );
+        } else if (this.user.shortInfo.roleId === this.expertRoleId) {
+          let expertisesTabRequests = [];
+          if (!this.dictionaries.statusModel_101.length) {
+            expertisesTabRequests.push(
+              this.getDictionary("statusModel_101", '"Статусы экспертиз"')
+            );
+          }
+          if (!this.dictionaries.resultExpert.length) {
+            expertisesTabRequests.push(
+              this.getDictionary("resultExpert", '"Результаты экспертиз"')
+            );
+          }
+          await Promise.all([expertisesTabRequests]);
+          if (!this.expertisesResponse.length) {
+            await this.getExpertises();
+          }
+          console.log(
+            "Cведения для вкладки «Мои экспертизы» личного кабинета эксперта доступны"
+          );
+        }
+      }
+      if (tabName === "messages-tab") {
+        if (!this.dictionaries.statusModel_1.length) {
+          await this.getDictionary("statusModel_1", '"Статусы сообщений"');
+        }
+        if (!this.messagesResponse.length) {
+          await this.getMessages();
+        }
+        console.log(
+          "Cведения для вкладки «Мои сообщения» личного кабинета педагога доступны"
+        );
+      }
+      if (tabName === "teacher-info-tab") {
+        if (!this.teacherInfo.id) {
+          await this.getTeacher();
+        }
+        console.log(
+          "Сведения для вкладки «Личная информация» личного кабинета педагога доступны"
+        );
+      }
+      if (tabName === "expert-info-tab") {
+        let expertInfoTabRequests = [];
+        if (!this.dictionaries.municipalEntityIrkutsk.length) {
+          expertInfoTabRequests.push(
+            this.getDictionary(
+              "municipalEntityIrkutsk",
+              '"Муниципальные образования"'
+            )
+          );
+        }
+        if (!this.dictionaries.jobGroups.length) {
+          expertInfoTabRequests.push(
+            this.getDictionary("jobGroups", '"Должность"')
+          );
+        }
+        if (!this.dictionaries.subjectArea.length) {
+          expertInfoTabRequests.push(
+            this.getDictionary("subjectArea", '"Предметная область"')
+          );
+          await Promise.all([expertInfoTabRequests]);
+          if (!this.expertInfo.id) {
+            await this.getExpert();
+          }
+        }
+        console.log(
+          "Cведения для вкладки «Личная информация» личного кабинета эксперта доступны"
+        );
+      }
+      if (tabName === "analytics-tab") {
+        if (!this.expertInfo.id) {
+          await this.expertInfo();
+        }
+        console.log(
+          "Cведения для вкладки «Аналитика» личного кабинета эксперта доступны"
+        );
+      }
+      if (tabName === "actions-journal-tab") {
+        if (!this.auditResponse.length) {
+          await this.getAudit();
+        }
+        console.log(
+          "Cведения для вкладки «Журнал действий» личного кабинета эксперта доступны"
+        );
+      }
+    },
   },
 
   created() {
@@ -4284,7 +4394,7 @@ export default {
     $("#notify").on("hidden.bs.modal", this.afterCloseNotify);
 
     // Получение общих сведений
-    Promise.all([
+    /*Promise.all([
       this.getLogin(),
       this.getFileResources(),
       this.getGakJournal(),
@@ -4293,7 +4403,7 @@ export default {
     ]).then(() => {
       console.log("Приложение загружено");
       this.appLoaded = true;
-    });
+    });*/
   },
 
   watch: {
