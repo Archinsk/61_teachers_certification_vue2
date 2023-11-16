@@ -162,10 +162,10 @@ export default {
 
   data() {
     return {
-      // url: "https://teachers.coko38.ru/api/",
-      url: "http://192.168.18.102:8180/api/",
-      // urlAdd: "https://teachers.coko38.ru/api-teacher/api/",
-      urlAdd: "http://192.168.18.102:8180/api-teacher/api/",
+      url: "https://teachers.coko38.ru/",
+      // url: "http://192.168.18.102:8180/",
+      urlAdd: "https://teachers.coko38.ru/api-teacher/api/",
+      // urlAdd: "http://192.168.18.102:8180/api-teacher/api/",
       user: {
         isAuth: false,
         signInData: {
@@ -2856,7 +2856,7 @@ export default {
   methods: {
     // Косвенная проверка авторизованности пользователя, получение ссылки на вход через ЕСИА (переход на страницу авторизации ЕСИА - вынести во внешний метод)
     async getLogin() {
-      await axios(this.url + "auth/get-login", {
+      await axios(this.url + "api/auth/get-login", {
         withCredentials: true,
       })
         .then((response) => {
@@ -2891,7 +2891,7 @@ export default {
       this.loaderStart(this.authLoader, "Проверка данных пользователя");
       this.user.signInData = signInData;
       axios
-        .post(this.url + "auth/local-login", signInData, {
+        .post(this.url + "api/auth/local-login", signInData, {
           withCredentials: true,
         })
         .then(() => {
@@ -2964,7 +2964,7 @@ export default {
     // signInWithRole(role, hideModal) {
     signInWithRole(role) {
       axios
-        .put(this.url + "core/put-metadata?orgId=0&roleId=" + role.id, "", {
+        .put(this.url + "api/core/put-metadata?orgId=0&roleId=" + role.id, "", {
           withCredentials: true,
         })
         .then((response) => {
@@ -2979,7 +2979,7 @@ export default {
 
     // Получение информации о пользователе
     async getUserId() {
-      await axios(this.url + "auth/get-user", {
+      await axios(this.url + "api/auth/get-user", {
         withCredentials: true,
       })
         .then((response) => {
@@ -3001,7 +3001,7 @@ export default {
         });
     },
     async getUserInfo() {
-      await axios(this.url + "core/get-user", {
+      await axios(this.url + "api/core/get-user", {
         withCredentials: true,
       })
         .then((response) => {
@@ -3050,7 +3050,7 @@ export default {
     setRole(roleId) {
       this.loaderStart(this.authLoader, "Смена роли пользователя");
       axios
-        .put(this.url + "core/put-metadata?orgId=0&roleId=" + roleId, "", {
+        .put(this.url + "api/core/put-metadata?orgId=0&roleId=" + roleId, "", {
           withCredentials: true,
         })
         .then((response) => {
@@ -3103,7 +3103,7 @@ export default {
     // Локальный выход
     signOutLocal() {
       this.loaderStart(this.authLoader, "Выход из системы");
-      axios(this.url + "auth/local-logout", {
+      axios(this.url + "api/auth/local-logout", {
         withCredentials: true,
       })
         .then(() => {
@@ -3159,7 +3159,7 @@ export default {
     },
     // Выход через ЕСИА
     getLogout() {
-      axios(this.url + "auth/get-logout", {
+      axios(this.url + "api/auth/get-logout", {
         withCredentials: true,
       })
         .then((response) => {
@@ -3595,7 +3595,7 @@ export default {
     async getForm(serviceId, appId) {
       let requestUrl;
       if (appId) {
-        requestUrl = this.url + "app/get-appData?id=" + appId;
+        requestUrl = this.url + "api/app/get-appData?id=" + appId;
         if (serviceId === this.appsServiceId) {
           console.log("Запрос формы существующего заявления");
         } else if (serviceId === this.messagesServiceId) {
@@ -3605,8 +3605,8 @@ export default {
         }
       } else {
         requestUrl =
-          // this.url + "serv/get-appData?id=" + this.$route.params.modelId;
-          this.url + "serv/get-appData?id=" + serviceId;
+          // this.url + "api/serv/get-appData?id=" + this.$route.params.modelId;
+          this.url + "api/serv/get-appData?id=" + serviceId;
         if (serviceId === this.appsServiceId) {
           console.log("Запрос стартовой формы заявления");
         } else if (serviceId === this.messagesServiceId) {
@@ -3704,7 +3704,7 @@ export default {
         // orgId: this.user.shortInfo.orgId,
       };
       axios
-        .post(this.url + "app/action-invoke", request, {
+        .post(this.url + "api/app/action-invoke", request, {
           withCredentials: true,
         })
         .then((response) => {
@@ -3978,7 +3978,7 @@ export default {
     },
     async getDictionary(dictionaryCode, logComment) {
       await axios
-        .get(this.url + "core/get-dictdata?code=" + dictionaryCode, {
+        .get(this.url + "api/core/get-dictdata?code=" + dictionaryCode, {
           withCredentials: true,
         })
         .then((response) => {
@@ -4094,7 +4094,7 @@ export default {
     },
 
     checkAuth() {
-      axios(this.url + "auth/get-login", {
+      axios(this.url + "api/auth/get-login", {
         withCredentials: true,
       }).then(() => {
         this.openNotify();
@@ -4407,16 +4407,6 @@ export default {
   },
 
   watch: {
-    // Получение заявлений
-    isAuthUser: function () {
-      if (this.isAuthUser) {
-        this.getMessages();
-        this.getApps();
-        this.getExpertises();
-        this.getAudit();
-      }
-    },
-
     // From 72
     /*"config.keepAliveSession": async function () {
       if (this.config.keepAliveSession) {
