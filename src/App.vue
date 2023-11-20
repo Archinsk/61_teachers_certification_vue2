@@ -163,9 +163,9 @@ export default {
   data() {
     return {
       url: "https://teachers.coko38.ru/",
-      // url: "http://192.168.18.102:8180/",
+      // url: "http://192.168.16.102:8180/",
       urlAdd: "https://teachers.coko38.ru/api-teacher/api/",
-      // urlAdd: "http://192.168.18.102:8180/api-teacher/api/",
+      // urlAdd: "http://192.168.16.102:8180/api-teacher/api/",
       user: {
         isAuth: false,
         signInData: {
