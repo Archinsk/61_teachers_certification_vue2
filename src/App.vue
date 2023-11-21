@@ -152,10 +152,10 @@ export default {
 
   data() {
     return {
-      url: "https://teachers.coko38.ru/api/",
-      // url: "http://192.168.17.59:8180/api/",
-      urlAdd: "https://teachers.coko38.ru/api-teacher/api/",
-      // urlAdd: "http://192.168.17.59:8180/api-teacher/api/",
+      // url: "https://teachers.coko38.ru/api/",
+      url: "http://192.168.16.102:8180/api/",
+      // urlAdd: "https://teachers.coko38.ru/api-teacher/api/",
+      urlAdd: "http://192.168.16.102:8180/api-teacher/api/",
       user: {
         isAuth: false,
         signInData: {
